@@ -24,9 +24,4 @@ public class TestCommands {
         cliContext.getCustomers().put(res.getName(), res);
         return res;
     }
-
-    @ShellMethod("List all customers")
-    public String customers() {
-        return cliContext.getCustomers().toString();
-    }
 }
