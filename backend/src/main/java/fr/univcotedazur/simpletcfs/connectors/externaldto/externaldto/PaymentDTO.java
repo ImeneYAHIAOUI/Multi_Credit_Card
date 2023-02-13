@@ -1,34 +1,28 @@
 package fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto;
 
+import fr.univcotedazur.simpletcfs.entities.CreditCard;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 // External DTO (Data Transfert Object) to POST payment to the external Bank system
+@AllArgsConstructor
 public class PaymentDTO {
 
-    private String creditCard;
+    @Getter
+    @Setter
+    private CreditCard creditCard;
 
+    @Getter
+    @Setter
     private double amount;
 
     public PaymentDTO() {
     }
 
-    public PaymentDTO(String creditCard, double amount) {
-        this.creditCard = creditCard;
-        this.amount = amount;
-    }
 
-    public String getCreditCard() {
-        return creditCard;
-    }
 
-    public void setCreditCard(String creditCard) {
-        this.creditCard = creditCard;
-    }
 
-    public double getAmount() {
-        return amount;
-    }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
 
 }
