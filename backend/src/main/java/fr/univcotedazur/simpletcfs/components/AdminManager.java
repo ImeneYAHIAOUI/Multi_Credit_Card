@@ -1,7 +1,9 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.*;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
+import fr.univcotedazur.simpletcfs.entities.AdminAccount;
+import fr.univcotedazur.simpletcfs.entities.Form;
+import fr.univcotedazur.simpletcfs.entities.Shop;
+import fr.univcotedazur.simpletcfs.entities.ShopKeeperAccount;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.*;
 import fr.univcotedazur.simpletcfs.repositories.AdminAccountRepository;
@@ -11,19 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder {
+public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder, ShopFinder, ShopkeeperFinder {
 
-    private AdminAccountRepository adminAccountRepository;
-    private ShopRepository shopRepository;
-    private ShopKeeperAccountRepository shopKeeperAccountRepository;
-
-    //TODO AdminManager doit implémenter les finder (je suppose)
-    private ShopFinder shopFinder;
-    private ShopkeeperFinder shopkeeperFinder;
+    private final AdminAccountRepository adminAccountRepository;
+    private final ShopRepository shopRepository;
+    private final ShopKeeperAccountRepository shopKeeperAccountRepository;
 
     @Autowired
     public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository) {
@@ -33,7 +31,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public AdminAccount findById(UUID id) {
+    public AdminAccount findAdminById(UUID id) {
         while (adminAccountRepository.findAll().iterator().hasNext()) {
             AdminAccount adminAccount = adminAccountRepository.findAll().iterator().next();
             if (adminAccount.getId().equals(id)) {
@@ -55,7 +53,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void deleteAdminAccount(AdminAccount account) {
-        if(findById(account.getId()) != null){
+        if(findAdminById(account.getId()) != null){
             adminAccountRepository.deleteById(account.getId());
         }
     }
@@ -73,7 +71,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void removeShop(Shop shop) {
-        if(shopFinder.findById(shop.getId()).isPresent()){
+        if(findShopById(shop.getId()).isPresent()){
             shopRepository.deleteById(shop.getId());
         }
     }
@@ -90,8 +88,27 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void deleteShopKeeperAccount(ShopKeeperAccount account) {
-        if(shopkeeperFinder.findShopKeeperAccountById(account.getId()).isPresent()){
+        if(findShopKeeperAccountById(account.getId()).isPresent()){
             shopRepository.deleteById(account.getId());
         }
+    }
+
+    @Override
+    public Optional<Shop> findShopById(UUID id){
+        return shopRepository.findById(id);
+    }
+
+    @Override
+    public  Optional<Shop> findShopByName(String name){
+        return shopRepository.findByName(name);
+
+    }
+    @Override
+    public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id){
+        return shopKeeperAccountRepository.findById(id);
+    }
+    @Override
+    public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name){
+        return shopKeeperAccountRepository.findByName(name);
     }
 }

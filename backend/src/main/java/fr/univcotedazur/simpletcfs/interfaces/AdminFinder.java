@@ -6,6 +6,6 @@ import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import java.util.UUID;
 
 public interface AdminFinder {
-    AdminAccount findById(UUID id);
+    AdminAccount findAdminById(UUID id);
 
 }
