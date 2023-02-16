@@ -1,9 +1,6 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.AdminAccount;
-import fr.univcotedazur.simpletcfs.entities.Form;
-import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.entities.ShopKeeperAccount;
+import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.*;
 import fr.univcotedazur.simpletcfs.repositories.AdminAccountRepository;
@@ -13,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -59,12 +58,12 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public Shop addShop(String name, String address, LocalTime openingHour, LocalTime closingHour) throws MissingInformationException{
-        if (name == null || address == null || openingHour == null || closingHour == null) {
+    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning) throws MissingInformationException{
+        if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
         //TODO mettre le planning correctement
-        Shop shop = new Shop(UUID.randomUUID(), name, address, null);
+        Shop shop = new Shop(UUID.randomUUID(), name, address, planning);
         shopRepository.save(shop,shop.getId());
         return shop;
     }
@@ -77,11 +76,11 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public ShopKeeperAccount createShopKeeperAccount(Form form) throws MissingInformationException {
+    public ShopKeeperAccount createShopKeeperAccount(Form form, Shop shop) throws MissingInformationException {
         if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();
         }
-        ShopKeeperAccount shopKeeperAccount = new ShopKeeperAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
+        ShopKeeperAccount shopKeeperAccount = new ShopKeeperAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
         shopKeeperAccountRepository.save(shopKeeperAccount, shopKeeperAccount.getId());
         return shopKeeperAccount;
     }
