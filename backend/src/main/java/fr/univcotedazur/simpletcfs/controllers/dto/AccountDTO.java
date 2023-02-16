@@ -15,8 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AccountDTO {
 
-    @Getter
-    private UUID id; // expected to be empty when POSTing the creation of Customer, and containing the UUID when returned
+
 
     @NotBlank(message = "name should not be blank")
     @Setter
@@ -36,7 +35,7 @@ public class AccountDTO {
     @NotEmpty(message = "BirthDate should not be empty")
     @Setter
     @Getter
-    private LocalDate birthDate;
+    private String birthDate;
 
 
 

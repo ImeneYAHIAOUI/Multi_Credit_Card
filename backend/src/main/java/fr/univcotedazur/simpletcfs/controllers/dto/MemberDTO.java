@@ -11,14 +11,10 @@ import java.util.UUID;
 
 public class MemberDTO extends AccountDTO{
 
-    @NotBlank(message = "membershipCard should not be blank")
-    @Setter
-    @Getter
-    private String membershipCard;
 
-    @Builder
-    public MemberDTO(UUID id, String name, String mail, String password, LocalDate birthDate, String membershipCard) {
-        super(id, name, mail, password, birthDate);
-        this.membershipCard = membershipCard;
+
+    public MemberDTO( String name, String mail, String password, String birthDate) {
+        super(name, mail, password, birthDate);
     }
+
 }
