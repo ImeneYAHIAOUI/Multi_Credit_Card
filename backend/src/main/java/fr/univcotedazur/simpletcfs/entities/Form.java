@@ -22,8 +22,11 @@ public class Form {
     @Setter
     private LocalDate birthDate;
 
-
-
-
+    public Form(String name, String mail, String password, LocalDate birthDate) {
+        this.name = name;
+        this.mail = mail;
+        this.password = password;
+        this.birthDate = birthDate;
+    }
 }
 

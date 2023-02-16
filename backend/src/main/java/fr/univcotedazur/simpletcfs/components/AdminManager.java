@@ -10,21 +10,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder, ShopFinder, ShopkeeperFinder {
+public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder{
 
     private final AdminAccountRepository adminAccountRepository;
     private final ShopRepository shopRepository;
     private final ShopKeeperAccountRepository shopKeeperAccountRepository;
+    private final ShopManager shopManager;
+
+
 
     @Autowired
-    public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository) {
+    public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager) {
         this.adminAccountRepository = adminAccountRepository;
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
+        this.shopManager = shopManager;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void removeShop(Shop shop) {
-        if(findShopById(shop.getId()).isPresent()){
+        if(shopManager.findShopById(shop.getId()).isPresent()){
             shopRepository.deleteById(shop.getId());
         }
     }
@@ -85,27 +88,9 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void deleteShopKeeperAccount(ShopKeeperAccount account) {
-        if(findShopKeeperAccountById(account.getId()).isPresent()){
+        if(shopManager.findShopKeeperAccountById(account.getId()).isPresent()){
             shopRepository.deleteById(account.getId());
         }
     }
 
-    @Override
-    public Optional<Shop> findShopById(UUID id){
-        return shopRepository.findById(id);
-    }
-
-    @Override
-    public  Optional<Shop> findShopByName(String name){
-        return shopRepository.findByName(name);
-
-    }
-    @Override
-    public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id){
-        return shopKeeperAccountRepository.findById(id);
-    }
-    @Override
-    public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name){
-        return shopKeeperAccountRepository.findByName(name);
-    }
 }
