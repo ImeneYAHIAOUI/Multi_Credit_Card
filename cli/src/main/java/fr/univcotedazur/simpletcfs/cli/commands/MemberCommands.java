@@ -22,7 +22,7 @@ public class MemberCommands {
     private CliContext cliContext;
 
     @ShellMethod("Register a member in the CoD backend (register CUSTOMER_NAME CREDIT_CARD_NUMBER)")
-    public CliMember register(UUID id, String name, String mail, String password, String birthDate) {
+    public CliMember register( String name, String mail, String password, String birthDate) {
         CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(name,mail,password,birthDate), CliMember.class);
         cliContext.getMemberAccounts().put(res.getName(), res);
         return res;
