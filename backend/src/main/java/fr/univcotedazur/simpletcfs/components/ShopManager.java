@@ -30,17 +30,21 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     }
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
-        if(shop.getPlanning().get(day)==null){
-            shop.getPlanning().put(day,new Planning(OpeningHours, ClosingHours));
+        if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
+            if(shop.getPlanning().get(day)==null){
+                shop.getPlanning().put(day,new Planning(OpeningHours, ClosingHours));
+            }
+            else{
+                shop.getPlanning().get(day).setOpeningHours(OpeningHours);
+                shop.getPlanning().get(day).setClosingHours(ClosingHours);
+            }
         }
-        else{
-            shop.getPlanning().get(day).setOpeningHours(OpeningHours);
-            shop.getPlanning().get(day).setClosingHours(ClosingHours);
-        }
+
     }
     @Override
     public void modifyAdress(Shop shop, String adress){
-        shop.setAddress(adress);
+        if(adress!=null)
+            shop.setAddress(adress);
     }
 
 
@@ -49,11 +53,7 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         return shopRepository.findById(id);
     }
 
-    @Override
-    public  Optional<Shop> findShopByName(String name){
-        return shopRepository.findByName(name);
 
-    }
     @Override
     public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id){
         return shopKeeperAccountRepository.findById(id);

@@ -9,6 +9,7 @@ import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,12 +60,12 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning) throws MissingInformationException{
+    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning, List<Product> productList) throws MissingInformationException{
         if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
         //TODO mettre le planning correctement
-        Shop shop = new Shop(UUID.randomUUID(), name, address, planning);
+        Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList);
         shopRepository.save(shop,shop.getId());
         return shop;
     }
