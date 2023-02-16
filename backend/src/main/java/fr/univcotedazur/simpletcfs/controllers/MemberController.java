@@ -7,6 +7,7 @@ import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
@@ -42,18 +46,21 @@ public class MemberController {
     public ResponseEntity<AccountDTO> register(@RequestBody @Valid MemberDTO memberDTO) {
         // Note that there is no validation at all on the CustomerDto mapped
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(convertMemberAccountToDto(memberManager.createAccount(memberDTO.getName(), memberDTO.getMail(), memberDTO.getPassword(), memberDTO.getBirthDate())));
+                    .body(convertMemberAccountToDto(memberManager.createAccount(memberDTO.getName(), memberDTO.getMail(), memberDTO.getPassword(),  LocalDate.parse(memberDTO.getBirthDate(),formatter))));
         } catch (AlreadyExistingMemberException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).build();
         } catch (MissingInformationException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
+        } catch (UnderAgeException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
         }
     }
 
     private MemberDTO convertMemberAccountToDto(MemberAccount member) { // In more complex cases, we could use ModelMapper
-        return new MemberDTO(member.getId(), member.getName(), member.getMail(), member.getPassword(), member.getBirthDate(), member.getMembershipCard().getNumber());
+        return new MemberDTO( member.getName(), member.getMail(), member.getPassword(), member.getBirthDate().toString());
     }
 
 }

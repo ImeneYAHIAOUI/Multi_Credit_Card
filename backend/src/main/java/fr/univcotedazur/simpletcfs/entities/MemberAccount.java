@@ -24,7 +24,7 @@ public class MemberAccount extends Account {
     AccountStatus status;
 
     public MemberAccount(UUID id, String name, String mail, String password, LocalDate birthDate, int points, double balance) {
-        super(id, mail, password, name, birthDate);
+        super(id, name, mail,password, birthDate);
         this.membershipCard =  new MembershipCard(LocalDate.now(), LocalDate.now().plusYears(2));
         this.points = points;
         this.balance = balance;

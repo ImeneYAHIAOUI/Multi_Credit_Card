@@ -7,6 +7,7 @@ import fr.univcotedazur.simpletcfs.entities.MembershipCard;
 import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
@@ -27,14 +28,18 @@ public class MemberManager implements MemberHandler, MemberFinder {
 
 
     @Override
-    public MemberAccount createAccount(String name, String mail, String password, LocalDate birthDate) throws MissingInformationException , AlreadyExistingMemberException {
+    public MemberAccount createAccount(String name, String mail, String password, LocalDate birthDate) throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
         if (name == null || mail == null || password == null || birthDate == null) {
             throw new MissingInformationException();
         }
-        if(findByMail(mail) != null ){
+        MemberAccount memberAccount = findByMail(mail);
+        if(memberAccount != null ){
             throw new AlreadyExistingMemberException();
         }
-        MemberAccount memberAccount = new MemberAccount(UUID.randomUUID(), name,mail, password, birthDate, 0, 0);
+        if(birthDate.isAfter(LocalDate.now().minusYears(16))){
+            throw new UnderAgeException();
+        }
+        memberAccount = new MemberAccount(UUID.randomUUID(), name,mail, password, birthDate, 0, 0);
         memberAccountRepository.save(memberAccount,memberAccount.getId());
         return memberAccount;
     }
@@ -52,8 +57,8 @@ public class MemberManager implements MemberHandler, MemberFinder {
     }
 
     @Override
-    public void deleteAccount(MemberAccount memberAccount) throws AccountNotFoundException {
-
+    public void deleteAccount(MemberAccount memberAccount) {
+        memberAccountRepository.deleteById(memberAccount.getId());
     }
 
     @Override
@@ -78,8 +83,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
 
     @Override
     public MemberAccount findByMail(String mail) {
-        while (memberAccountRepository.findAll().iterator().hasNext()) {
-            MemberAccount memberAccount = memberAccountRepository.findAll().iterator().next();
+        for (MemberAccount  memberAccount : memberAccountRepository.findAll()) {
             if (memberAccount.getMail().equals(mail)) {
                 return memberAccount;
             }
