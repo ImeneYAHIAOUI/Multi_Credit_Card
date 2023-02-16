@@ -11,13 +11,15 @@ import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperFinder;
 import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder {
+@Component
+public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
@@ -40,13 +42,15 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder {
     public void modifyAdress(Shop shop, String adress){
         shop.setAddress(adress);
     }
+
+
     @Override
-    public Optional<Shop> findById(UUID id){
+    public Optional<Shop> findShopById(UUID id){
         return shopRepository.findById(id);
     }
 
     @Override
-    public  Optional<Shop> findByName(String name){
+    public  Optional<Shop> findShopByName(String name){
         return shopRepository.findByName(name);
 
     }
