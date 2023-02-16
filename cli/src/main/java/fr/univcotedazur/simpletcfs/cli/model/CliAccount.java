@@ -12,9 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CliAccount {
 
-    @Getter
-    @Setter
-    private UUID id;
+
     @Getter
     @Setter
     private String name;
@@ -26,7 +24,7 @@ public class CliAccount {
     private String password;
     @Getter
     @Setter
-    private LocalDate birthDate;
+    private String birthDate;
 
 
 }
