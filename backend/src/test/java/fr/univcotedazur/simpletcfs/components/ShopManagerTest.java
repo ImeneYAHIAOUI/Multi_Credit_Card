@@ -34,7 +34,7 @@ public class ShopManagerTest {
          shop=shopRegistration.addShop("A", "1 rue de la paix", planning, new ArrayList<>());
     }
     @Test
-    public void testModifyAdress() {
+    public void testModifyAddress() {
 
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");
@@ -42,7 +42,7 @@ public class ShopManagerTest {
         assertEquals(shop.getAddress(),"2 rue de la liberté");
     }
     @Test
-    public void testModifyAdress2(){
+    public void testModifyAddress2(){
 
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");
