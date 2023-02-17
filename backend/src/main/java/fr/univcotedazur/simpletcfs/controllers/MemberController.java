@@ -37,7 +37,7 @@ public class MemberController {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ErrorDTO handleExceptions(MethodArgumentNotValidException e) {
         ErrorDTO errorDTO = new ErrorDTO();
-        errorDTO.setError("Cannot process Customer information");
+        errorDTO.setError("Cannot process Member information");
         errorDTO.setDetails(e.getMessage());
         return errorDTO;
     }

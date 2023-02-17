@@ -21,7 +21,7 @@ public class MemberCommands {
     @Autowired
     private CliContext cliContext;
 
-    @ShellMethod("Register a member in the CoD backend (register CUSTOMER_NAME CREDIT_CARD_NUMBER)")
+    @ShellMethod("Register a member in the multi-credit backend (register MEMBER_NAME MEMBER_MAIL MEMBER_PASSWORD MEMBER_BIRTHDATE)")
     public CliMember register( String name, String mail, String password, String birthDate) {
         CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(name,mail,password,birthDate), CliMember.class);
         cliContext.getMemberAccounts().put(res.getName(), res);
@@ -29,8 +29,9 @@ public class MemberCommands {
     }
 
     @ShellMethod("List all members")
-    public String customers() {
+    public String members() {
         return cliContext.getMemberAccounts().toString();
     }
+
 
 }
