@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.UUID;
 
 public class ShopKeeperAccount extends Account{
-
     @Getter
     @Setter
     private Shop shop;

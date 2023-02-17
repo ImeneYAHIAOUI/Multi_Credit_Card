@@ -8,6 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ShopFinder {
-    public Optional<Shop> findById(UUID id);
-    public  Optional<Shop> findByName(String name);
+    public Optional<Shop> findShopById(UUID id);
 }

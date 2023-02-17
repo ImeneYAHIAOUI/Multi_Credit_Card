@@ -11,13 +11,15 @@ import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperFinder;
 import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder {
+@Component
+public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
@@ -28,28 +30,30 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder {
     }
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
-        if(shop.getPlanning().get(day)==null){
-            shop.getPlanning().put(day,new Planning(OpeningHours, ClosingHours));
+        if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
+            if(shop.getPlanning().get(day)==null){
+                shop.getPlanning().put(day,new Planning(OpeningHours, ClosingHours));
+            }
+            else{
+                shop.getPlanning().get(day).setOpeningHours(OpeningHours);
+                shop.getPlanning().get(day).setClosingHours(ClosingHours);
+            }
         }
-        else{
-            shop.getPlanning().get(day).setOpeningHours(OpeningHours);
-            shop.getPlanning().get(day).setClosingHours(ClosingHours);
-        }
+
     }
     @Override
     public void modifyAdress(Shop shop, String adress){
-        shop.setAddress(adress);
+        if(adress!=null)
+            shop.setAddress(adress);
     }
+
+
     @Override
-    public Optional<Shop> findById(UUID id){
+    public Optional<Shop> findShopById(UUID id){
         return shopRepository.findById(id);
     }
 
-    @Override
-    public  Optional<Shop> findByName(String name){
-        return shopRepository.findByName(name);
 
-    }
     @Override
     public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id){
         return shopKeeperAccountRepository.findById(id);
