@@ -25,6 +25,4 @@ assignees: ''
 ## :sparkles: **Estimation**
 :warning: :warning: :warning:
 
-## :sparkles: Règle métier
-
 ## :sparkles: Critères d'acceptation
