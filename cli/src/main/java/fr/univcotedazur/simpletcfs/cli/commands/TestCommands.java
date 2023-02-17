@@ -7,13 +7,10 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
-import java.util.UUID;
-
 @ShellComponent
-public class MemberCommands {
+public class TestCommands {
 
-    public static final String BASE_URI = "/members";
+    public static final String BASE_URI = "/test";
 
     @Autowired
     RestTemplate restTemplate;
@@ -22,8 +19,8 @@ public class MemberCommands {
     private CliContext cliContext;
 
     @ShellMethod("Register a member in the CoD backend (register CUSTOMER_NAME CREDIT_CARD_NUMBER)")
-    public CliMember register( String name, String mail, String password, String birthDate) {
-        CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(name,mail,password,birthDate), CliMember.class);
+    public CliMember register(String name, String mail, String password, String birthDate) {
+        CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(name, mail,password,birthDate), CliMember.class);
         cliContext.getMemberAccounts().put(res.getName(), res);
         return res;
     }
@@ -32,5 +29,4 @@ public class MemberCommands {
     public String customers() {
         return cliContext.getMemberAccounts().toString();
     }
-
 }
