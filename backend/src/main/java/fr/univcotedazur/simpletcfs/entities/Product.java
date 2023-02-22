@@ -15,10 +15,14 @@ public class Product {
     @Getter
     @Setter
     private double price;
-    public Product(UUID id, String name, double price) {
+    @Getter
+    @Setter
+    private int points;
+    public Product(UUID id, String name, double price, int points) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.points = points;
     }
 
 
