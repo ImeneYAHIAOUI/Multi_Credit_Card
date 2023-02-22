@@ -14,6 +14,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo "${BUILD_URL}: Building ${BUILD_ID}..."
+                sh 'java -version'
+                sh 'mvn -version'
 
                 echo "Building Backend:"
                 sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
