@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         maven 'Maven 3.9.0'
-        jdk 'JDK19'
     }
 
     stages {
