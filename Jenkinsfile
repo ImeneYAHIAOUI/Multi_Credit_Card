@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                sh 'echo "Cloning..."'
+                echo "Cloning..."
             }
         }
         stage('Build') {
@@ -36,12 +36,12 @@ pipeline {
         }
         stage('Package') {
             steps {
-                sh 'echo "Packaging..."'
+                echo "Packaging..."
             }
         }
         stage('Deploy') {
             steps {
-                sh 'echo "Deploying..."'
+                echo "Deploying..."
             }
         }
     }
