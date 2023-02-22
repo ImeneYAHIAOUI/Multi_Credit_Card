@@ -5,15 +5,20 @@ import fr.univcotedazur.simpletcfs.exceptions.InsufficientPointsException;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 import fr.univcotedazur.simpletcfs.interfaces.Payment;
 import fr.univcotedazur.simpletcfs.interfaces.PointTrader;
+import fr.univcotedazur.simpletcfs.interfaces.TransactionExplorer;
 import fr.univcotedazur.simpletcfs.interfaces.TransactionProcessor;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.EnumSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
-public class TransactionManager implements TransactionProcessor {
+public class TransactionManager implements TransactionProcessor, TransactionExplorer {
     private TransactionRepository transactionRepository;
     private PointTrader pointTrader;
     private Payment payment;
@@ -22,6 +27,10 @@ public class TransactionManager implements TransactionProcessor {
         this.transactionRepository = transactionRepository;
         this.payment=payment;
         this.pointTrader=pointTrader;
+    }
+
+    public Optional<Transaction> findTransactionById(UUID id){
+        return transactionRepository.findById(id);
     }
     public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException{
             payment.payment(purchase,card);

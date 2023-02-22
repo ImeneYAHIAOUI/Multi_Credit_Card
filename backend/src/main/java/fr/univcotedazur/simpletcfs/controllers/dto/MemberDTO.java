@@ -11,8 +11,6 @@ import java.util.UUID;
 
 public class MemberDTO extends AccountDTO{
 
-
-
     public MemberDTO( String name, String mail, String password, String birthDate) {
         super(name, mail, password, birthDate);
     }
