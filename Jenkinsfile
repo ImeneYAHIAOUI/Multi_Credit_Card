@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git branch: 'master'
-                url: 'https://github.com/pns-isa-devops/isa-devops-22-23-team-f-23.git'
+                git branch: 'master', url: 'https://github.com/pns-isa-devops/isa-devops-22-23-team-f-23.git'
             }
         }
         stage('Build') {
