@@ -22,7 +22,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
         <cucumber.version>7.10.1</cucumber.version>
-        <sonar.host.url>http://vmpx06.polytech.unice.fr:8001/</sonar.host.url>
     </properties>
 
     <dependencyManagement>
@@ -121,12 +120,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.0.2155</version>
             </plugin>
         </plugins>
     </build>
