@@ -50,10 +50,10 @@ pipeline {
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo "Analyzing Backend:"
-                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
+                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
 
                     echo "Analyzing CLI:"
-                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
+                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
                 }
             }
         }
