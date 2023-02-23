@@ -21,8 +21,6 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     private final ShopKeeperAccountRepository shopKeeperAccountRepository;
     private final ShopManager shopManager;
 
-
-
     @Autowired
     public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager) {
         this.adminAccountRepository = adminAccountRepository;
