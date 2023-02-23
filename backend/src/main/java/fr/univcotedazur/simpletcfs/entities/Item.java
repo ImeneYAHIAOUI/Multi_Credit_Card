@@ -10,7 +10,7 @@ public class Item {
     @Setter
     @Getter
     public Product product;
-    public void Item(Product product, int amount){
+    public  Item(Product product, int amount){
         this.product = product;
         this.amount = amount;
     }

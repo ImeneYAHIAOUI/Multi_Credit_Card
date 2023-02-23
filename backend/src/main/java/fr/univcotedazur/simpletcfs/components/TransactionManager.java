@@ -42,7 +42,6 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
             memberAccount.addTransaction(purchase);
             transactionRepository.save(purchase, UUID.randomUUID());
         }
-
     }
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws InsufficientPointsException ,AccountNotFoundException{
         if(memberAccount==null)
