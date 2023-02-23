@@ -25,7 +25,6 @@ pipeline {
                 echo "Building CLI:"
                 sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
 
-
                 echo "--- Node and NPM versions ---"
                 sh 'node -v'
                 sh 'npm -v'
