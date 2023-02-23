@@ -1,6 +1,7 @@
 package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.InsufficientPointsException;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 import fr.univcotedazur.simpletcfs.interfaces.Payment;
@@ -32,17 +33,27 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
     public Optional<Transaction> findTransactionById(UUID id){
         return transactionRepository.findById(id);
     }
-    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException{
+    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
+        if(memberAccount==null)
+            throw new AccountNotFoundException();
+        else{
             payment.payment(purchase,card);
             pointTrader.addPoints(memberAccount,purchase);
             memberAccount.addTransaction(purchase);
             transactionRepository.save(purchase, UUID.randomUUID());
-    }
-    public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws InsufficientPointsException {
-        pointTrader.removePoints(memberAccount,usePoint);
-        memberAccount.addTransaction(usePoint);
-        transactionRepository.save(usePoint, UUID.randomUUID());
+        }
 
+    }
+    public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws InsufficientPointsException ,AccountNotFoundException{
+        if(memberAccount==null)
+            throw new AccountNotFoundException();
+        else{
+            pointTrader.removePoints(memberAccount,usePoint);
+            memberAccount.addTransaction(usePoint);
+            UUID id=UUID.randomUUID();
+            usePoint.setId(id);
+            transactionRepository.save(usePoint, id);
+        }
 
     }
 }

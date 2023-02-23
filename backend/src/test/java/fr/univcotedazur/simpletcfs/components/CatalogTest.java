@@ -36,11 +36,11 @@ public class CatalogTest {
         planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
         planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-         product=new Product(UUID.randomUUID(),"ring",1.0);
-         product1=new Product(UUID.randomUUID(),"Cookie",2.0);
-         product2=new Product(UUID.randomUUID(),"Cake",1.0);
-         product3=new Product(UUID.randomUUID(),"ring",1.0);
-        product4=new Product(UUID.randomUUID(),"chocolat",1.5);
+         product=new Product(UUID.randomUUID(),"ring",1.0,2);
+         product1=new Product(UUID.randomUUID(),"Cookie",2.0,4);
+         product2=new Product(UUID.randomUUID(),"Cake",1.0,1);
+         product3=new Product(UUID.randomUUID(),"ring",1.0,4);
+        product4=new Product(UUID.randomUUID(),"chocolat",1.5,1);
         catalog.addProductToCatalog( product);
         catalog.addProductToCatalog( product1);
         catalog.addProductToCatalog( product2);
