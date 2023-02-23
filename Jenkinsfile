@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         maven 'Maven 3.9.0'
+        sonarqube 'SQS4.8'
     }
 
     stages {
@@ -47,12 +48,14 @@ pipeline {
             }
         }
         stage('Code Analysis') {
-            withSonarQubeEnv() {
-                echo "Analyzing Backend:"
-                sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
+            steps {
+                withSonarQubeEnv('SQS4.8') {
+                    echo "Analyzing Backend:"
+                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
 
-                echo "Analyzing CLI:"
-                sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
+                    echo "Analyzing CLI:"
+                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
+                }
             }
         }
         stage('Package') {
