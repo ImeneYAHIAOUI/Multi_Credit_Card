@@ -47,8 +47,8 @@ pipeline {
             }
         }
         stage('Code Analysis') {
-            withSonarQubeEnv('SQS4.8') {
-                steps {
+            steps {
+                withSonarQubeEnv('SQS4.8') {
                     echo "Analyzing Backend:"
                     sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis'
 
