@@ -49,9 +49,12 @@ public class MemberController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(convertMemberAccountToDto(memberManager.createAccount(memberDTO.getName(), memberDTO.getMail(), memberDTO.getPassword(),  LocalDate.parse(memberDTO.getBirthDate(),formatter))));
+
         } catch (AlreadyExistingMemberException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
-            return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).build();
+            MemberAccount a = memberManager.findByMail(memberDTO.getMail());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail())));
         } catch (MissingInformationException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
         } catch (UnderAgeException e) {

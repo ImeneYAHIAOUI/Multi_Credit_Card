@@ -18,8 +18,11 @@ public class MemberCommands {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    private CliContext cliContext;
+    private final CliContext cliContext;
+
+    public MemberCommands(CliContext cliContext) {
+        this.cliContext = cliContext;
+    }
 
     @ShellMethod("Register a member in the multi-credit backend (register MEMBER_NAME MEMBER_MAIL MEMBER_PASSWORD MEMBER_BIRTHDATE)")
     public CliMember register( String name, String mail, String password, String birthDate) {

@@ -37,7 +37,7 @@ public class MemberControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validMember)))
-                .andExpect(MockMvcResultMatchers.status().isConflict())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
     }

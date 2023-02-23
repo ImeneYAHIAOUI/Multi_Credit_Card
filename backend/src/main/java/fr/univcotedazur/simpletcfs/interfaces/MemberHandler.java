@@ -12,7 +12,7 @@ public interface MemberHandler {
     MemberAccount createAccount(String name, String mail, String password, LocalDate birthDate) throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException;
     void archiveAccount(MemberAccount memberAccount) throws AccountNotFoundException;
     void restoreAccount(MemberAccount memberAccount) throws AccountNotFoundException;
-    void deleteAccount(MemberAccount memberAccount);
+    void deleteAccount(MemberAccount memberAccount) throws AccountNotFoundException;
     void updateAccount(MemberAccount memberAccount,Form form) throws
             AccountNotFoundException;
     void updateAccountsStatus();

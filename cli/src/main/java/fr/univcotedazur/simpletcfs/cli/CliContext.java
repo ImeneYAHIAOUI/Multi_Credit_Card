@@ -16,10 +16,11 @@ public class CliContext {
     @Getter
     private Map<String, CliMember> memberAccounts;
 
-    public CliContext() {
+
+    public CliContext()
+    {
         this.memberAccounts = new HashMap<>();
     }
-
 
     @Override
     public String toString() {
@@ -27,5 +28,4 @@ public class CliContext {
                 .map(key -> key + "=" + memberAccounts.get(key))
                 .collect(Collectors.joining(", ", "{", "}"));
     }
-
 }

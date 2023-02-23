@@ -63,7 +63,7 @@ public class CreateMemberAccountStepDefs {
     }
 
     @Then("this account is created")
-    public void the_member_creates_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+    public void the_member_creates_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
         assertEquals(memberFinder.findMember(memberAccount.getId()),memberAccount);
         memberHandler.deleteAccount(memberAccount);
@@ -85,7 +85,7 @@ public class CreateMemberAccountStepDefs {
     }
 
     @Then("this account is not created because they are already a member")
-    public void the_member_does_not_create_an_account()  {
+    public void the_member_does_not_create_an_account() throws AccountNotFoundException {
         assertThrows(AlreadyExistingMemberException.class, () -> memberHandler.createAccount(name,mail,password,birthDate));
         memberHandler.deleteAccount(memberAccount);
     }

@@ -7,6 +7,8 @@ import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
+import io.cucumber.java.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,13 @@ public class MemberManagerTests {
     @Autowired
     MemberFinder memberFinder;
 
+    @BeforeEach
+    void setUp(){
+        try {
+            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com"));
+        } catch (AccountNotFoundException ignored) {
+        }
+    }
     @Test
     public void testCreateAccount() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");

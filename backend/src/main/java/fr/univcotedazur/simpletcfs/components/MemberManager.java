@@ -57,8 +57,13 @@ public class MemberManager implements MemberHandler, MemberFinder {
     }
 
     @Override
-    public void deleteAccount(MemberAccount memberAccount) {
-        memberAccountRepository.deleteById(memberAccount.getId());
+    public void deleteAccount(MemberAccount memberAccount) throws AccountNotFoundException {
+        try {
+            memberAccountRepository.deleteById(memberAccount.getId());
+        }
+        catch (Exception e){
+            throw new AccountNotFoundException();
+        }
     }
 
     @Override
