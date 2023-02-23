@@ -14,18 +14,25 @@ pipeline {
         stage('Build') {
             steps {
                 echo "${BUILD_URL}: Building ${BUILD_ID}..."
+
+                echo "--- Java and Maven versions ---"
                 sh 'java -version'
                 sh 'mvn -version'
 
                 echo "Building Backend:"
                 sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
 
+                echo "Building CLI:"
+                sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
+
+
+                echo "--- Node and NPM versions ---"
+                sh 'node -v'
+                sh 'npm -v'
+
                 echo "Building Bank:"
                 sh 'npm --prefix bank install'
                 sh 'npm --prefix bank run build'
-
-                echo "Building CLI:"
-                sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
             }
         }
         stage('Test') {
@@ -33,11 +40,11 @@ pipeline {
                 echo "Testing Backend:"
                 sh 'mvn -f backend/pom.xml test'
 
-                echo "Testing Bank:"
-                sh 'npm --prefix bank test'
-
                 echo "Testing CLI:"
                 sh 'mvn -f cli/pom.xml test'
+
+                echo "Testing Bank:"
+                sh 'npm --prefix bank test'
             }
         }
         stage('Package') {
