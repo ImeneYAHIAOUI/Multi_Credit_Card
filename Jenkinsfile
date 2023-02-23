@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         maven 'Maven 3.9.0'
-        hudson.plugins.sonar.SonarRunnerInstallation 'SQS4.8'
     }
 
     stages {
