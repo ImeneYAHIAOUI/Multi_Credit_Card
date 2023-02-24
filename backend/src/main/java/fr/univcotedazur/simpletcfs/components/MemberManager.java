@@ -4,12 +4,10 @@ import fr.univcotedazur.simpletcfs.entities.AccountStatus;
 import fr.univcotedazur.simpletcfs.entities.Form;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.entities.MembershipCard;
-import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
+import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
+import fr.univcotedazur.simpletcfs.interfaces.ParkingHandler;
 import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,10 +18,11 @@ import java.util.UUID;
 @Component
 public class MemberManager implements MemberHandler, MemberFinder {
     private MemberAccountRepository memberAccountRepository;
-
+    private ParkingHandler parkingHandler;
     @Autowired
-    public MemberManager(MemberAccountRepository memberAccountRepository) {
+    public MemberManager(MemberAccountRepository memberAccountRepository, ParkingHandler parkingHandler) {
         this.memberAccountRepository = memberAccountRepository;
+        this.parkingHandler = parkingHandler;
     }
 
 
@@ -40,6 +39,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
             throw new UnderAgeException();
         }
         memberAccount = new MemberAccount(UUID.randomUUID(), name,mail, password, birthDate, 0, 0);
+        memberAccount.setStatus(AccountStatus.REGULAR);
         memberAccountRepository.save(memberAccount,memberAccount.getId());
         return memberAccount;
     }
@@ -94,6 +94,15 @@ public class MemberManager implements MemberHandler, MemberFinder {
             }
         }
         return null;
+    }
+
+    @Override
+    public void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber) throws NotVFPException
+    {
+        if(! memberAccount.getStatus().equals(AccountStatus.VFP))
+            throw new NotVFPException();
+        parkingHandler.registerParking(carRegistrationNumber);
+
     }
 
 

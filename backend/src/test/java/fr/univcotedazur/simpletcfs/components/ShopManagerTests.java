@@ -4,7 +4,6 @@ import fr.univcotedazur.simpletcfs.entities.Planning;
 import fr.univcotedazur.simpletcfs.entities.Shop;
 import fr.univcotedazur.simpletcfs.entities.WeekDay;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.interfaces.ShopFinder;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ShopManagerTest {
+public class ShopManagerTests {
     @Autowired
     private ShopManager shopManager;
     @Autowired

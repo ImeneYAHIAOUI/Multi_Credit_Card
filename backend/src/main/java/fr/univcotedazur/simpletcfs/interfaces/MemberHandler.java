@@ -18,4 +18,6 @@ public interface MemberHandler {
     void updateAccountsStatus();
     void updateAccountStatus(MemberAccount memberAccount, AccountStatus status) throws
             AccountNotFoundException;
+
+    void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber) throws NotVFPException;
 }

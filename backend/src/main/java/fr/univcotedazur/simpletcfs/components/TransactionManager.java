@@ -32,8 +32,8 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
     public Optional<Transaction> findTransactionById(UUID id){
         return transactionRepository.findById(id);
     }
-    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException{
-            payment.payment(purchase,card);
+    public void processPurchase(MemberAccount memberAccount, Purchase purchase, String creditCard) throws PaymentException{
+            payment.payment(purchase,creditCard);
             pointTrader.addPoints(memberAccount,purchase);
             memberAccount.addTransaction(purchase);
             transactionRepository.save(purchase, UUID.randomUUID());

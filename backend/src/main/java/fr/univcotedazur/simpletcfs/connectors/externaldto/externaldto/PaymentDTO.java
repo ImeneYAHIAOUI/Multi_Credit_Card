@@ -11,7 +11,7 @@ public class PaymentDTO {
 
     @Getter
     @Setter
-    private CreditCard creditCard;
+    private String creditCard;
 
     @Getter
     @Setter

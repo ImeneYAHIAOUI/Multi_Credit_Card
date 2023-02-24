@@ -8,6 +8,6 @@ import fr.univcotedazur.simpletcfs.exceptions.InsufficientPointsException;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 
 public interface TransactionProcessor {
-    void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException;
+    void processPurchase(MemberAccount memberAccount, Purchase purchase, String creditCard) throws PaymentException;
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws InsufficientPointsException;
 }

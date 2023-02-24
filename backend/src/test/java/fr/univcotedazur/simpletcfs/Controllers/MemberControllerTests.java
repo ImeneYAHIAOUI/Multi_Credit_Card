@@ -1,28 +1,65 @@
 package fr.univcotedazur.simpletcfs.Controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.simpletcfs.controllers.MemberController;
 import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
+import fr.univcotedazur.simpletcfs.controllers.dto.ParkingDTO;
+import fr.univcotedazur.simpletcfs.entities.AccountStatus;
+import fr.univcotedazur.simpletcfs.entities.MemberAccount;
+import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
+import fr.univcotedazur.simpletcfs.interfaces.ISWUPLS;
+import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
+import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
+import org.apache.http.message.BasicHttpResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.client.ResourceAccessException;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+
 public class MemberControllerTests {
+    @Mock
+    HttpURLConnection mockHttpConnection;
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MemberHandler memberHandler;
+    @Autowired
+    private MemberFinder memberFinder;
+    @SpyBean
+    ISWUPLS iswupls;
+    @BeforeEach
+    void setUp(){
+        try {
+            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com"));
+        } catch (AccountNotFoundException ignored) {
+        }
+    }
 
     @Test
     public void validMemberTest() throws Exception {
@@ -83,5 +120,36 @@ public class MemberControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void ParkingTests() throws Exception {
+
+        ParkingDTO parkingDTO = new ParkingDTO("123456789","John.Doe@mail.com");
+            mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(parkingDTO)))
+                    .andExpect(MockMvcResultMatchers.status().isNotFound())
+                    .andExpect(MockMvcResultMatchers.content()
+                            .contentType(MediaType.APPLICATION_JSON));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+            memberHandler.createAccount("John Doe", "John.Doe@mail.com", "pass", LocalDate.parse("11/04/2001", formatter));
+            mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(parkingDTO)))
+                    .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                    .andExpect(MockMvcResultMatchers.content()
+                            .contentType(MediaType.APPLICATION_JSON));
+            MemberAccount account = memberFinder.findByMail("John.Doe@mail.com");
+            account.setStatus(AccountStatus.VFP);
+
+            mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(parkingDTO)))
+                    .andExpect(MockMvcResultMatchers.status().isCreated())
+                    .andExpect(MockMvcResultMatchers.content()
+                            .contentType(MediaType.APPLICATION_JSON));
+            verify(iswupls).startParkingTimer("123456789");
+
     }
 }
