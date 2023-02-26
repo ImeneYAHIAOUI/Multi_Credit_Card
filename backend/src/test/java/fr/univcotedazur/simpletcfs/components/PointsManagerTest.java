@@ -50,7 +50,7 @@ public class PointsManagerTest {
         assertEquals(50, account.getPoints());
     }
     @Test
-    public void removePointsTest1()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+    public void removePointsTest1(){
         account=memberFinder.findByMail("John.Doe@mail.com");
         account.setPoints(10);
         UsePoints transaction=new UsePoints();
@@ -58,8 +58,9 @@ public class PointsManagerTest {
         assertThrows(InsufficientPointsException.class,()-> pointsManager.removePoints(account,transaction));
         assertEquals(10, account.getPoints());
     }
+
     @Test
-    public void addPointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+    public void addPointsTest(){
         account=memberFinder.findByMail("John.Doe@mail.com");
         account.setPoints(100);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);

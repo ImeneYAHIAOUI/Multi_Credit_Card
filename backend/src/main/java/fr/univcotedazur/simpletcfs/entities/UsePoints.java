@@ -6,5 +6,8 @@ import lombok.Setter;
 public class UsePoints extends Transaction{
     @Getter
     @Setter
-    public int usedPoints;
+    public int useddPoints;
+    @Setter
+    @Getter
+    public Gift gift;
 }

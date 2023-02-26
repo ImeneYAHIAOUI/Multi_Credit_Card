@@ -13,4 +13,11 @@ public abstract class Transaction {
     @Setter
     @Getter
     UUID id;
+    @Setter
+    @Getter
+    MemberAccount memberAccount;
+    @Getter
+    @Setter
+    Shop shop;
+
 }

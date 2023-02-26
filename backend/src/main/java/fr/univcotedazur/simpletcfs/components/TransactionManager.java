@@ -1,6 +1,8 @@
 package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
+import fr.univcotedazur.simpletcfs.exceptions.DeclinedTransactionException;
 import fr.univcotedazur.simpletcfs.exceptions.InsufficientPointsException;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 import fr.univcotedazur.simpletcfs.interfaces.Payment;
@@ -16,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class TransactionManager implements TransactionProcessor, TransactionExplorer {
@@ -32,17 +35,33 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
     public Optional<Transaction> findTransactionById(UUID id){
         return transactionRepository.findById(id);
     }
-    public void processPurchase(MemberAccount memberAccount, Purchase purchase, String creditCard) throws PaymentException{
-            payment.payment(purchase,creditCard);
+    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
+        if(memberAccount==null)
+            throw new AccountNotFoundException();
+        else{
+            payment.payment(purchase,card);
             pointTrader.addPoints(memberAccount,purchase);
             memberAccount.addTransaction(purchase);
             transactionRepository.save(purchase, UUID.randomUUID());
+        }
     }
-    public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws InsufficientPointsException {
-        pointTrader.removePoints(memberAccount,usePoint);
-        memberAccount.addTransaction(usePoint);
-        transactionRepository.save(usePoint, UUID.randomUUID());
+    public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
+        if(memberAccount==null)
+            throw new AccountNotFoundException();
+        else{
+            if(memberAccount.getStatus()!=usePoint.getGift().RequiredStatus||
+                    StreamSupport.stream(transactionRepository.findAll().spliterator(), false)
+                            .filter(transaction -> transaction.getMemberAccount().equals(memberAccount))
+                            .noneMatch(transaction -> transaction instanceof Purchase)){
+                throw new DeclinedTransactionException();
+            }else{
+                pointTrader.removePoints(memberAccount,usePoint);
+                memberAccount.addTransaction(usePoint);
+                UUID id=UUID.randomUUID();
+                usePoint.setId(id);
+                transactionRepository.save(usePoint, id);
+            }
 
-
+        }
     }
 }
