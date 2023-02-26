@@ -23,12 +23,16 @@ public class Shop {
     @Getter
     @Setter
     public List<Product> productList;
-    public Shop(UUID id, String name, String address, Map<WeekDay, Planning> planning, List<Product> products) {
+    @Getter
+    @Setter
+    public List<Gift> giftList;
+    public Shop(UUID id, String name, String address, Map<WeekDay, Planning> planning, List<Product> products, List<Gift> gifts) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.planning = planning;
         productList=products;
+        giftList=gifts;
     }
     public void addProduct(Product product){
         productList.add(product);
@@ -36,7 +40,9 @@ public class Shop {
     public void removeProduct(Product product){
         productList.remove(product);
     }
-
+    public void addGift(Gift gift){
+        giftList.add(gift);
+    }
 
 }
 

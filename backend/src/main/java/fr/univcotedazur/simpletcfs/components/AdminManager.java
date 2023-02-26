@@ -58,12 +58,12 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning, List<Product> productList) throws MissingInformationException{
+    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning, List<Product> productList,List<Gift> giftList) throws MissingInformationException{
         if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
         //TODO mettre le planning correctement
-        Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList);
+        Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList,giftList);
         shopRepository.save(shop,shop.getId());
         return shop;
     }

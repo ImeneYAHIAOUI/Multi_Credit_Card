@@ -44,7 +44,8 @@ public class ShopController {
         // from the request body. This is because the @Valid annotation
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(convertShopToDto(new Shop(UUID.randomUUID(),shopDTO.getName(),shopDTO.getAddress(), shopDTO.getPlanning(),shopDTO.getProductList())));
+                .body(convertShopToDto(new Shop(UUID.randomUUID(),shopDTO.getName(),shopDTO.getAddress(), shopDTO.getPlanning(),shopDTO.getProductList(),shopDTO.getGiftList()
+                )));
     }
 
     @GetMapping("/{shopId}")
@@ -65,6 +66,6 @@ public class ShopController {
         return ResponseEntity.ok("address of shop with id "+shopId+" is successfully updated");
     }
     private ShopDTO convertShopToDto(Shop shop) { // In more complex cases, we could use ModelMapper
-        return new ShopDTO( shop.getName(), shop.getAddress(), shop.getPlanning(),shop.getProductList());
+        return new ShopDTO( shop.getName(), shop.getAddress(), shop.getPlanning(),shop.getProductList(),shop.getGiftList());
     }
 }

@@ -48,7 +48,7 @@ public class CatalogTest {
         productList.add(product);
         productList.add(product1);
         productList.add(product2);
-        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, productList);
+        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, productList,null);
 
     }
 
