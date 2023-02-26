@@ -1,12 +1,15 @@
 package fr.univcotedazur.simpletcfs.controllers;
 
 import fr.univcotedazur.simpletcfs.components.MemberManager;
+import fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto.ISWUPLSDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ErrorDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.AccountDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
+import fr.univcotedazur.simpletcfs.controllers.dto.ParkingDTO;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.exceptions.NotVFPException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 
 import javax.validation.Valid;
 
@@ -28,6 +32,8 @@ public class MemberController {
     public static final String BASE_URI = "/members";
     @Autowired
     private MemberManager memberManager;
+
+
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     // The 422 (Unprocessable Entity) status code means the server understands the content type of the request entity
@@ -52,7 +58,6 @@ public class MemberController {
 
         } catch (AlreadyExistingMemberException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
-            MemberAccount a = memberManager.findByMail(memberDTO.getMail());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail())));
         } catch (MissingInformationException e) {
@@ -61,6 +66,26 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
         }
     }
+
+    @PostMapping(path = "parking", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ParkingDTO> startParkingTime(@RequestBody @Valid ParkingDTO ParkingDTO)
+    {
+        MemberAccount memberAccount = memberManager.findByMail(ParkingDTO.getMail());
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not found"));
+        }
+        try {
+            memberManager.useParkingTime(memberAccount,ParkingDTO.getCarRegistrationNumber());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ParkingDTO);
+        } catch (NotVFPException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not vfp"));
+        }catch(ResourceAccessException e){
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ParkingDTO(" ","ISWPLS not responding"));
+        }
+    }
+
 
     private MemberDTO convertMemberAccountToDto(MemberAccount member) { // In more complex cases, we could use ModelMapper
         return new MemberDTO( member.getName(), member.getMail(), member.getPassword(), member.getBirthDate().toString());

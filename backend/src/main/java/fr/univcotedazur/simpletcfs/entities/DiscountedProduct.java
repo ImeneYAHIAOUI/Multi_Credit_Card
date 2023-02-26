@@ -9,8 +9,8 @@ public class DiscountedProduct extends Product{
     @Getter
     @Setter
     private Double DiscountPourcentage;
-    public DiscountedProduct(UUID id, String name, double price, Double DiscountPourcentage) {
-        super(id, name, price,0);
+    public DiscountedProduct(UUID id, String name, double price, int points, Double DiscountPourcentage) {
+        super(id, name, price,points);
         this.DiscountPourcentage=DiscountPourcentage;
     }
 }
