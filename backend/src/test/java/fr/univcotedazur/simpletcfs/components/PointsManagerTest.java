@@ -45,7 +45,7 @@ public class PointsManagerTest {
         setUp("John.Doe@mail.com","John");
         account.setPoints(100);
         UsePoints transaction=new UsePoints();
-        transaction.setUseddPoints(50);
+        transaction.setUsedPoints(50);
         assertDoesNotThrow(()-> pointsManager.removePoints(account,transaction));
         assertEquals(50, account.getPoints());
     }
@@ -54,7 +54,7 @@ public class PointsManagerTest {
         account=memberFinder.findByMail("John.Doe@mail.com");
         account.setPoints(10);
         UsePoints transaction=new UsePoints();
-        transaction.setUseddPoints(50);
+        transaction.setUsedPoints(50);
         assertThrows(InsufficientPointsException.class,()-> pointsManager.removePoints(account,transaction));
         assertEquals(10, account.getPoints());
     }

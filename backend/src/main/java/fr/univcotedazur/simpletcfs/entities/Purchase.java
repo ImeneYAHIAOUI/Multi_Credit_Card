@@ -15,7 +15,7 @@ public class Purchase extends Transaction{
     public double totalPrice;
     @Getter
     @Setter
-    public String creditCard;
+    public CreditCard creditCard;
     @Getter
     @Setter
     public List<Item> item;

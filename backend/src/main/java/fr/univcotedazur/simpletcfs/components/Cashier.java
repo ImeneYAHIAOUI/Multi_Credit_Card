@@ -21,7 +21,7 @@ public class Cashier implements Payment {
     }
 
 
-    public void payment(Purchase purchase, String creditCard) throws PaymentException {
+    public void payment(Purchase purchase, CreditCard creditCard) throws PaymentException {
         bank.pay(creditCard, purchase.getTotalPrice());
         purchase.setCreditCard(creditCard);
         purchase.setDate(new Date(System.currentTimeMillis()));

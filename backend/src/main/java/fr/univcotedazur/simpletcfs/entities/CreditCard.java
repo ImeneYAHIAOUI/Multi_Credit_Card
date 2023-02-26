@@ -10,4 +10,7 @@ public class CreditCard {
     String number;
     LocalDate expirationDate;
     String cvv;
+    public String ToString(){
+        return "Owner: " + owner + " Number: " + number + " Expiration Date: " + expirationDate + " CVV: " + cvv;
+    }
 }

@@ -47,7 +47,7 @@ public class TransactionManagerTest {
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
         transaction.setGift(gift);
-        transaction.setUseddPoints(50);
+        transaction.setUsedPoints(50);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         Purchase tran=new Purchase(List.of(new Item(product3,2)));
@@ -69,7 +69,7 @@ public class TransactionManagerTest {
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
         transaction.setGift(gift);
-        transaction.setUseddPoints(100);
+        transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         Purchase tran=new Purchase(List.of(new Item(product3,2)));
@@ -90,7 +90,7 @@ public class TransactionManagerTest {
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
         transaction.setGift(gift);
-        transaction.setUseddPoints(100);
+        transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
         assertThrows(DeclinedTransactionException.class,()-> transactionManager.processPointsUsage(account,transaction));
         assertEquals(10, account.getPoints());
@@ -101,7 +101,7 @@ public class TransactionManagerTest {
     @Test
     public void processPointsUsageTest3(){
         UsePoints transaction=new UsePoints();
-        transaction.setUseddPoints(100);
+        transaction.setUsedPoints(100);
         assertThrows(AccountNotFoundException.class,()-> transactionManager.processPointsUsage(account,transaction));
         assertEquals(transaction.getId(),null);
     }
