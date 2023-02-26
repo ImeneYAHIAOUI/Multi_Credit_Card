@@ -16,7 +16,6 @@ public class PointsManager implements PointTrader {
         else throw new InsufficientPointsException();
     }
     public void addPoints(MemberAccount memberAccount, Purchase purchase) {
-        if(memberAccount!=null)
             memberAccount.setPoints(memberAccount.getPoints()+ purchase.getEarnedPoints());
     }
 }
