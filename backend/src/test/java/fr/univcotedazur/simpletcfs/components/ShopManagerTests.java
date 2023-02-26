@@ -5,6 +5,8 @@ import fr.univcotedazur.simpletcfs.entities.Shop;
 import fr.univcotedazur.simpletcfs.entities.WeekDay;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ public class ShopManagerTests {
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
          shop=shopRegistration.addShop("A", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
     }
+
     @Test
     public void testModifyAddress() {
 
