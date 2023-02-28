@@ -4,6 +4,7 @@ Feature: change shop hours
 
   Background:
     Given a shop who wants to change his planning
+
   Scenario: change shop hours for specific day
     When The shop modifies its operating hours to be open monday between from 8 am and  8 pm
     Then the shop can change the shop hours for Monday

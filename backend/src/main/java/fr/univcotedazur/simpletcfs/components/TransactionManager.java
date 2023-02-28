@@ -45,7 +45,9 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
             purchase.setDate( new java.util.Date(millis));
             pointTrader.addPoints(memberAccount,purchase);
             memberAccount.addTransaction(purchase);
-            transactionRepository.save(purchase, UUID.randomUUID());
+            UUID id=UUID.randomUUID();
+            purchase.setId(id);
+            transactionRepository.save(purchase,id);
         }
     }
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{

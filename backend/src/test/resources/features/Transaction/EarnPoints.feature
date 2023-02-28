@@ -5,7 +5,6 @@ Feature: earns points
   Background:
     Given a client has an account in the system
 
-
   Scenario: client earn points when he makes a purchase
     When the client makes a valid purchase
     Then the client earns points
