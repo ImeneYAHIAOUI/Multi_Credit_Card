@@ -40,6 +40,9 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
             throw new AccountNotFoundException();
         else{
             payment.payment(purchase,card);
+            purchase.setMemberAccount(memberAccount);
+            long millis = System.currentTimeMillis();
+            purchase.setDate( new java.util.Date(millis));
             pointTrader.addPoints(memberAccount,purchase);
             memberAccount.addTransaction(purchase);
             transactionRepository.save(purchase, UUID.randomUUID());
