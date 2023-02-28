@@ -40,9 +40,6 @@ public class Shop {
     public void removeProduct(Product product){
         productList.remove(product);
     }
-    public void addGift(Gift gift){
-        giftList.add(gift);
-    }
 
 }
 

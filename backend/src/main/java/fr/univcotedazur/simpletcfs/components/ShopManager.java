@@ -1,9 +1,7 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.Planning;
-import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.entities.ShopKeeperAccount;
-import fr.univcotedazur.simpletcfs.entities.WeekDay;
+import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopFinder;
 import fr.univcotedazur.simpletcfs.interfaces.ShopHandler;
@@ -46,8 +44,21 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         if(adress!=null)
             shop.setAddress(adress);
     }
+    @Override
+    public void addGift(Shop shop, Gift gift){
+        if(gift!=null && !shop.getGiftList().contains(gift))
+            shop.getGiftList().add(gift);
+    }
+    @Override
+    public void removeGift(Shop shop, Gift gift) throws GiftNotFoundException {
+        if(gift!=null ){
+            if(shop.getGiftList().contains(gift))
+                shop.getGiftList().remove(gift);
+            else
+                throw new GiftNotFoundException();
+        }
 
-
+    }
     @Override
     public Optional<Shop> findShopById(UUID id){
         return shopRepository.findById(id);

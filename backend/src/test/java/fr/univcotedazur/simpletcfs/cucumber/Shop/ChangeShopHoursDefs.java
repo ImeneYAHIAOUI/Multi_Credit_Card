@@ -1,4 +1,4 @@
-package fr.univcotedazur.simpletcfs.cucumber;
+package fr.univcotedazur.simpletcfs.cucumber.Shop;
 
 import fr.univcotedazur.simpletcfs.components.ShopManager;
 import fr.univcotedazur.simpletcfs.entities.Planning;
