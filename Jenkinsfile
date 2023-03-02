@@ -61,22 +61,12 @@ pipeline {
         }
         stage('Package') {
             steps {
-                script {
-                    def server = Artifactory.server('DevOpsArtifactory')
-                    def buildInfo = Artifactory.newBuildInfo()
 
-                    // Publish backend artifact
-                    server.publishBuildInfo(buildInfo) {
-                        def artifacts = server.upload spec: backend / pom.xml, recursive: true
-                        buildInfo.append artifacts
-                    }
+                echo "Packaging Backend:"
+//                sh 'mvn -f backend/pom.xml artifactory:publish -DskipTests=true'
 
-                    // Publish CLI artifact
-                    server.publishBuildInfo(buildInfo) {
-                        def artifacts = server.upload spec: cli / pom.xml, recursive: true
-                        buildInfo.append artifacts
-                    }
-                }
+                echo "Packaging CLI:"
+//                sh 'mvn -f cli/pom.xml artifactory:publish -DskipTests=true'
             }
         }
         stage('Deploy') {

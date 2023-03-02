@@ -18,4 +18,8 @@ public class CreditCard {
         this.expirationDate = expirationDate;
         this.cvv = cvv;
     }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }

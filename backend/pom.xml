@@ -143,4 +143,16 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>f63901626607-releases</name>
+            <url>http://vmpx06.polytech.unice.fr:8081/artifactory/libs-release</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>f63901626607-snapshots</name>
+            <url>http://vmpx06.polytech.unice.fr:8081/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

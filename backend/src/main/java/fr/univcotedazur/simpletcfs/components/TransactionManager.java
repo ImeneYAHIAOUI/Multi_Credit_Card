@@ -19,48 +19,50 @@ import java.util.stream.StreamSupport;
 
 @Component
 public class TransactionManager implements TransactionProcessor, TransactionExplorer {
+    private final MemberFinder memberFinder;
     private TransactionRepository transactionRepository;
     private PointTrader pointTrader;
     private Payment payment;
 
-    private final MemberFinder memberFinder;
     @Autowired
     public TransactionManager(TransactionRepository transactionRepository, PointTrader pointTrader, Payment payment, MemberFinder memberFinder) {
         this.transactionRepository = transactionRepository;
-        this.payment=payment;
-        this.pointTrader=pointTrader;
+        this.payment = payment;
+        this.pointTrader = pointTrader;
         this.memberFinder = memberFinder;
     }
 
-    public Optional<Transaction> findTransactionById(UUID id){
+    public Optional<Transaction> findTransactionById(UUID id) {
         return transactionRepository.findById(id);
     }
-    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
-        if(memberFinder.findMember(memberAccount.getId()) == null) throw new AccountNotFoundException();
-        else{
-            payment.payment(purchase,card);
+
+    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException {
+        if (memberFinder.findMember(memberAccount.getId()) == null) throw new AccountNotFoundException();
+        else {
+            payment.payment(purchase, card);
             purchase.setMemberAccount(memberAccount);
             long millis = System.currentTimeMillis();
-            purchase.setDate( new java.util.Date(millis));
-            pointTrader.addPoints(memberAccount,purchase);
+            purchase.setDate(new java.util.Date(millis).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+            pointTrader.addPoints(memberAccount, purchase);
             memberAccount.addTransaction(purchase);
-            UUID id=UUID.randomUUID();
+            UUID id = UUID.randomUUID();
             purchase.setId(id);
-            transactionRepository.save(purchase,id);
+            transactionRepository.save(purchase, id);
         }
     }
-    public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
-        if(memberFinder.findMember(memberAccount.getId()) == null) throw new AccountNotFoundException();
-        else{
-            if(memberAccount.getStatus()!=usePoint.getGift().RequiredStatus||
+
+    public void processPointsUsage(MemberAccount memberAccount, UsePoints usePoint) throws DeclinedTransactionException, InsufficientPointsException, AccountNotFoundException {
+        if (memberFinder.findMember(memberAccount.getId()) == null) throw new AccountNotFoundException();
+        else {
+            if (memberAccount.getStatus() != usePoint.getGift().RequiredStatus ||
                     StreamSupport.stream(transactionRepository.findAll().spliterator(), false)
                             .filter(transaction -> transaction.getMemberAccount().equals(memberAccount))
-                            .noneMatch(transaction -> transaction instanceof Purchase)){
+                            .noneMatch(transaction -> transaction instanceof Purchase)) {
                 throw new DeclinedTransactionException();
-            }else{
-                pointTrader.removePoints(memberAccount,usePoint);
+            } else {
+                pointTrader.removePoints(memberAccount, usePoint);
                 memberAccount.addTransaction(usePoint);
-                UUID id=UUID.randomUUID();
+                UUID id = UUID.randomUUID();
                 usePoint.setId(id);
                 transactionRepository.save(usePoint, id);
             }
