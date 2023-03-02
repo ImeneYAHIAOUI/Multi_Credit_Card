@@ -1,49 +1,65 @@
 package fr.univcotedazur.simpletcfs.controllers.dto;
 
-import fr.univcotedazur.simpletcfs.entities.MembershipCard;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
-import java.util.UUID;
 
-@AllArgsConstructor
 public class AccountDTO {
 
 
 
     @NotBlank(message = "name should not be blank")
-    @Setter
-    @Getter
+
     private String name;
 
     @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid")
-    @Setter
-    @Getter
+
     private String mail;
 
     @Pattern(regexp = ".{8,20}", message = "password should be at least 8 characters long and at most 20 characters long")
-    @Setter
-    @Getter
+
     private String password;
 
     @NotEmpty(message = "BirthDate should not be empty")
-    @Setter
-    @Getter
+
     private String birthDate;
 
+    public AccountDTO(String name, String mail, String password, String birthDate) {
+        this.name = name;
+        this.mail = mail;
+        this.password = password;
+        this.birthDate = birthDate;
+    }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getMail() {
+        return mail;
+    }
 
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
+    public String getBirthDate() {
+        return birthDate;
+    }
 
-
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
 }

@@ -1,23 +1,18 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 import java.util.List;
 
 public class Purchase extends Transaction{
-    @Getter
-    @Setter
+
     public  int earnedPoints;
 
-    @Setter
-    @Getter
+
     public double totalPrice;
-    @Getter
-    @Setter
+
     public CreditCard creditCard;
-    @Getter
-    @Setter
+
     public List<Item> item;
     public Purchase(List<Item> items){
         this.item = items;
@@ -28,5 +23,37 @@ public class Purchase extends Transaction{
             this.totalPrice += item.getProduct().getPrice() * item.getAmount();
         });
 
+    }
+
+    public int getEarnedPoints() {
+        return earnedPoints;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
+
+    public List<Item> getItem() {
+        return item;
+    }
+
+    public void setEarnedPoints(int earnedPoints) {
+        this.earnedPoints = earnedPoints;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
+    }
+
+    public void setItem(List<Item> item) {
+        this.item = item;
     }
 }

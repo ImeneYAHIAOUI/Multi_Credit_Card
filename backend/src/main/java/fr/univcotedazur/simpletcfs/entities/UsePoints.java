@@ -1,13 +1,26 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 public class UsePoints extends Transaction{
-    @Getter
-    @Setter
+
     public int usedPoints;
-    @Setter
-    @Getter
     public Gift gift;
+
+    public int getUsedPoints() {
+        return usedPoints;
+    }
+
+    public Gift getGift() {
+        return gift;
+    }
+
+    public void setUsedPoints(int usedPoints) {
+        this.usedPoints = usedPoints;
+    }
+
+    public void setGift(Gift gift) {
+        this.gift = gift;
+    }
+
 }
