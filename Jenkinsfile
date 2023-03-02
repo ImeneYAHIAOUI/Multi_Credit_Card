@@ -61,7 +61,7 @@ pipeline {
         }
         stage('Package') {
             steps {
-                withArtifactoryEnv('DevOpsArtifactory') {
+                script {
                     def server = Artifactory.server('DevOpsArtifactory')
                     def buildInfo = Artifactory.newBuildInfo()
 
