@@ -21,6 +21,8 @@ public interface Repository<T, ID> {
 
     // Retrieves an entity by its id.
     Optional<T> findById(ID id);
+    // Retrieves an entity by its name.
+    Optional<T> findByName(String name);
 
     // Saves a given entity through its id.
     <S extends T> void save(S entity, ID id);

@@ -18,6 +18,11 @@ public class BasicRepositoryImpl<T, ID> implements Repository<T, ID> {
     }
 
     @Override
+    public Optional<T> findByName(String name){
+        return  Optional.ofNullable(storage.get(name));
+    }
+
+    @Override
     public void deleteById(ID id) {
         storage.remove(id);
     }

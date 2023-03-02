@@ -8,7 +8,6 @@ COPY ./src ./src
 RUN ./mvnw -B verify
 
 FROM eclipse-temurin:17-jre-jammy
-LABEL org.opencontainers.image.authors="Philippe Collet philippe.collet@univ-cotedazur.fr"
 ARG JAR_FILE
 RUN addgroup dockergroup; adduser --ingroup dockergroup --disabled-password --system --shell /bin/false dockeruser
 WORKDIR /opt/app

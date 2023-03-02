@@ -1,7 +1,7 @@
 package fr.univcotedazur.simpletcfs.connectors;
 
 import fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto.PaymentDTO;
-import fr.univcotedazur.simpletcfs.entities.Customer;
+import fr.univcotedazur.simpletcfs.entities.CreditCard;
 import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,11 +19,11 @@ public class BankProxy implements Bank {
     private RestTemplate restTemplate = new RestTemplate();
 
     @Override
-    public boolean pay(Customer customer, double value) {
+    public boolean pay(CreditCard creditCard, double value) {
         try {
             ResponseEntity<PaymentDTO> result = restTemplate.postForEntity(
                     bankHostandPort + "/cctransactions",
-                    new PaymentDTO(customer.getCreditCard(), value),
+                    new PaymentDTO(creditCard.ToString(), value),
                     PaymentDTO.class
             );
             return (result.getStatusCode().equals(HttpStatus.CREATED));
