@@ -1,10 +1,8 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 public class CreditCard {
     String owner;
     String number;
@@ -12,5 +10,12 @@ public class CreditCard {
     String cvv;
     public String ToString(){
         return "Owner: " + owner + " Number: " + number + " Expiration Date: " + expirationDate + " CVV: " + cvv;
+    }
+
+    public CreditCard(String owner, String number, LocalDate expirationDate, String cvv) {
+        this.owner = owner;
+        this.number = number;
+        this.expirationDate = expirationDate;
+        this.cvv = cvv;
     }
 }

@@ -102,6 +102,7 @@ public class TransactionManagerTest {
     public void processPointsUsageTest3(){
         UsePoints transaction=new UsePoints();
         transaction.setUsedPoints(100);
+        account = new MemberAccount(UUID.randomUUID(),"john","mail","pass",LocalDate.of(2001,11,04),0,0);
         assertThrows(AccountNotFoundException.class,()-> transactionManager.processPointsUsage(account,transaction));
         assertEquals(transaction.getId(),null);
     }
