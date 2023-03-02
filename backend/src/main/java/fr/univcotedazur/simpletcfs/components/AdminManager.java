@@ -1,6 +1,7 @@
 package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingAdminException;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
@@ -44,9 +45,22 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public AdminAccount createAdminAccount(Form form) throws MissingInformationException {
+    public AdminAccount findAdminByMail(String mail) {
+        for (AdminAccount  adminAccount : adminAccountRepository.findAll()) {
+            if (adminAccount.getMail().equals(mail)) {
+                return adminAccount;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public AdminAccount createAdminAccount(Form form) throws MissingInformationException, AlreadyExistingAdminException {
         if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();
+        }
+        if(this.findAdminByMail(form.getMail()) != null){
+            throw new AlreadyExistingAdminException();
         }
         AdminAccount adminAccount = new AdminAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
         adminAccountRepository.save(adminAccount, adminAccount.getId());
@@ -65,7 +79,6 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
-        //TODO mettre le planning correctement
         Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList,giftList);
         shopRepository.save(shop,shop.getId());
         return shop;

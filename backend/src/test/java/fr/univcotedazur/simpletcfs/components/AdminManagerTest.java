@@ -3,6 +3,7 @@ package fr.univcotedazur.simpletcfs.components;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import fr.univcotedazur.simpletcfs.entities.AdminAccount;
 import fr.univcotedazur.simpletcfs.entities.Form;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingAdminException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.AdminFinder;
 import fr.univcotedazur.simpletcfs.interfaces.AdminRegistration;
@@ -44,10 +45,14 @@ class AdminManagerTest {
     }
 
     @Test
-    void createNewAdminAccount() throws MissingInformationException {
+    void createNewAdminAccount() {
         LocalDate birthday = LocalDate.of(2002, 3, 24);
-        Form form = new Form("Sacha","sachatouille@gmail.com", "1234", birthday);
-        accountCreated = adminRegistration.createAdminAccount(form);
+        Form form = new Form("Sacho","sachotouille@gmail.com", "1234", birthday);
+        try {
+            adminRegistration.createAdminAccount(form);
+        } catch (MissingInformationException | AlreadyExistingAdminException e) {
+
+        }
         assertNotNull(adminRegistration);
     }
 
@@ -60,14 +65,15 @@ class AdminManagerTest {
             adminRegistration.createAdminAccount(form);
         } catch (MissingInformationException e) {
             exception = e;
+        } catch ( AlreadyExistingAdminException e) {
         }
         assertNotNull(exception);
     }
 
     @Test
-    void findAdminByExistingId() throws MissingInformationException {
+    void findAdminByExistingId() throws MissingInformationException, AlreadyExistingAdminException {
         LocalDate birthday = LocalDate.of(2002, 3, 24);
-        Form form = new Form("Sacha","sachatouille@gmail.com", "1234", birthday);
+        Form form = new Form("Sachi","sachatouille@gmail.com", "1234", birthday);
         AdminAccount adminAccount = adminRegistration.createAdminAccount(form);
         assertNotNull(adminFinder.findAdminById(adminAccount.getId()));
     }

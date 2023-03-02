@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface AdminFinder {
     AdminAccount findAdminById(UUID id);
+    AdminAccount findAdminByMail(String mail);
     ShopKeeperAccount findShopkeeperAccountByMail(String mail);
 
 }
