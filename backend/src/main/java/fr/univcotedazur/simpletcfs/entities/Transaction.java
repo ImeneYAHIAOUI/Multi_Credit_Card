@@ -1,23 +1,52 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.Getter;
-import lombok.Setter;
 
+import org.apache.tomcat.jni.Local;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
 public abstract class Transaction {
-    @Setter
-    @Getter
-    Date date;
-    @Setter
-    @Getter
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public MemberAccount getMemberAccount() {
+        return memberAccount;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setMemberAccount(MemberAccount memberAccount) {
+        this.memberAccount = memberAccount;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
+
+    LocalDate date;
+
     UUID id;
-    @Setter
-    @Getter
+
     MemberAccount memberAccount;
-    @Getter
-    @Setter
+
     Shop shop;
 
 }

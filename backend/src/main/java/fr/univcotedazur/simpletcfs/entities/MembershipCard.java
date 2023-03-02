@@ -1,23 +1,17 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+
 
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MembershipCard {
-    @Getter
     private String number;
-    @Getter
-    @Setter
+
     private boolean isValide;
-    @Getter
-    @Setter
+
     private LocalDate creationDate;
-    @Getter
-    @Setter
+
     private LocalDate expirationDate;
 
     public MembershipCard( LocalDate creationDate, LocalDate expirationDate) {
@@ -27,4 +21,35 @@ public class MembershipCard {
         this.expirationDate = expirationDate;
     }
 
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public boolean isValide() {
+        return isValide;
+    }
+
+    public void setValide(boolean valide) {
+        isValide = valide;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }

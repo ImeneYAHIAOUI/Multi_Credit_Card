@@ -5,10 +5,7 @@ import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.DeclinedTransactionException;
 import fr.univcotedazur.simpletcfs.exceptions.InsufficientPointsException;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
-import fr.univcotedazur.simpletcfs.interfaces.Payment;
-import fr.univcotedazur.simpletcfs.interfaces.PointTrader;
-import fr.univcotedazur.simpletcfs.interfaces.TransactionExplorer;
-import fr.univcotedazur.simpletcfs.interfaces.TransactionProcessor;
+import fr.univcotedazur.simpletcfs.interfaces.*;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,19 +22,21 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
     private TransactionRepository transactionRepository;
     private PointTrader pointTrader;
     private Payment payment;
+
+    private final MemberFinder memberFinder;
     @Autowired
-    public TransactionManager(TransactionRepository transactionRepository, PointTrader pointTrader, Payment payment) {
+    public TransactionManager(TransactionRepository transactionRepository, PointTrader pointTrader, Payment payment, MemberFinder memberFinder) {
         this.transactionRepository = transactionRepository;
         this.payment=payment;
         this.pointTrader=pointTrader;
+        this.memberFinder = memberFinder;
     }
 
     public Optional<Transaction> findTransactionById(UUID id){
         return transactionRepository.findById(id);
     }
     public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
-        if(memberAccount==null)
-            throw new AccountNotFoundException();
+        if(memberFinder.findMember(memberAccount.getId()) == null) throw new AccountNotFoundException();
         else{
             payment.payment(purchase,card);
             purchase.setMemberAccount(memberAccount);
@@ -51,8 +50,7 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
         }
     }
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
-        if(memberAccount==null)
-            throw new AccountNotFoundException();
+        if(memberFinder.findMember(memberAccount.getId()) == null) throw new AccountNotFoundException();
         else{
             if(memberAccount.getStatus()!=usePoint.getGift().RequiredStatus||
                     StreamSupport.stream(transactionRepository.findAll().spliterator(), false)

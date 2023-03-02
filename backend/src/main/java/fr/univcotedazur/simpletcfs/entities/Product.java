@@ -1,22 +1,16 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.UUID;
 
 public class Product {
 
-    @Getter
-    @Setter
+
     private String name;
-    @Getter
     private UUID id;
-    @Getter
-    @Setter
+
     private double price;
-    @Getter
-    @Setter
+
     private int points;
     public Product(UUID id, String name, double price, int points) {
         this.id = id;
@@ -25,5 +19,31 @@ public class Product {
         this.points = points;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 }

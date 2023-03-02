@@ -1,17 +1,31 @@
 package fr.univcotedazur.simpletcfs.cli.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
-@AllArgsConstructor
+
 public class CliParking {
-    @Getter
-    @Setter
+
     private String carRegistrationNumber;
-    @Getter
-    @Setter
+
     private String mail;
 
+    public CliParking(String carRegistrationNumber, String mail) {
+        this.carRegistrationNumber = carRegistrationNumber;
+        this.mail = mail;
+    }
 
+    public String getCarRegistrationNumber() {
+        return carRegistrationNumber;
+    }
+
+    public void setCarRegistrationNumber(String carRegistrationNumber) {
+        this.carRegistrationNumber = carRegistrationNumber;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 }

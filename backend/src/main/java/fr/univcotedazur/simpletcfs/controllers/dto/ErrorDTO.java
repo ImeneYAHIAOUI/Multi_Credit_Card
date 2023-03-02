@@ -1,14 +1,27 @@
 package fr.univcotedazur.simpletcfs.controllers.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 public class ErrorDTO {
 
-    @Getter
-    @Setter
+
     private String error;
-    @Getter
-    @Setter
+
     private String details;
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
 }
