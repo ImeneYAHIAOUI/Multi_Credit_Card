@@ -1,0 +1,384 @@
+---
+task:
+  mode: serial
+  commands:
+    -
+      command: system
+      args:
+        - portbind
+        - "{{router.entrypoints.externalPort:8082}}"
+      message:
+        failure: "Router external port ({{router.entrypoints.externalPort:8082}}) is being used by another process"
+        success: "Router external port ({{router.entrypoints.externalPort:8082}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{router.entrypoints.internalPort:8046}}"
+      message:
+        failure: "Router internal port ({{router.entrypoints.internalPort:8046}}) is being used by another process"
+        success: "Router internal port ({{router.entrypoints.internalPort:8046}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{router.entrypoints.traefikApiPort:8049}}"
+      message:
+        failure: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is being used by another process"
+        success: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{router.entrypoints.grpcPort:8047}}"
+      message:
+        failure: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is being used by another process"
+        success: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{artifactory.port:8081}}"
+      message:
+        failure: "Artifactory port ({{artifactory.port:8081}}) is being used by another process"
+        success: "Artifactory port ({{artifactory.port:8081}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{access.port:8040}}"
+      message:
+        failure: "Access port ({{access.port:8040}}) is being used by another process"
+        success: "Access port ({{access.port:8040}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{access.grpcPort:8045}}"
+      message:
+        failure: "Access grpc port ({{access.grpcPort:8045}}) is being used by another process"
+        success: "Access grpc port ({{access.grpcPort:8045}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{metadata.port:8086}}"
+      message:
+        failure: "Metadata Port ({{metadata.port:8086}}) is being used by another process"
+        success: "Metadata Port ({{metadata.port:8086}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{frontend.port:8070}}"
+      message:
+        failure: "Frontend Port ({{frontend.port:8070}}) is being used by another process"
+        success: "Frontend Port ({{frontend.port:8070}}) is open"
+    - 
+      command: system
+      args:
+        - portbind
+        - "{{replicator.port:8048}}"
+      message:
+        failure: "Replicator Port ({{replicator.port:8048}}) is being used by another process"
+        success: "Replicator Port ({{replicator.port:8048}}) is open"
+    -
+      command: system
+      args:
+        - ulimit
+        - "1024"
+      flag:
+        process: true
+      message:
+        failure: "Ulimit level for processes is less than the recommended minimum 1024"
+        success: "Ulimit level for processes is satisfactory--no change required"
+    -
+      command: system
+      args:
+        - ulimit
+        - "32000"
+      flag:
+        file-descriptor: true
+      message:
+        failure: "Ulimit level for open files is less than the recommended minimum 32000"
+        success: "Ulimit level for open files is satisfactory--no change required"
+    -
+      args:
+        - firewallport
+        - "{{router.entrypoints.externalPort:8082}}"
+      command: system
+      message:
+        failure: "Router external port ({{router.entrypoints.externalPort:8082}}) is blocked by firewall"
+        success: "Router external port ({{router.entrypoints.externalPort:8082}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{router.entrypoints.internalPort:8046}}"
+      command: system
+      message:
+        failure: "Router internal port {{router.entrypoints.internalPort:8046}} is blocked by firewall"
+        success: "Router internal port {{router.entrypoints.internalPort:8046}} is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{router.entrypoints.traefikApiPort:8049}}"
+      command: system
+      message:
+        failure: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is blocked by firewall"
+        success: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{router.entrypoints.grpcPort:8047}}"
+      command: system
+      message:
+        failure: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is blocked by firewall"
+        success: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{artifactory.port:8081}}"
+      command: system
+      message:
+        failure: "Artifactory port ({{artifactory.port:8081}}) is blocked by firewall"
+        success: "Artifactory port ({{artifactory.port:8081}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{access.port:8040}}"
+      command: system
+      message:
+        failure: "Access port ({{access.port:8040}}) is blocked by firewall"
+        success: "Access port ({{access.port:8040}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{access.grpcPort:8045}}"
+      command: system
+      message:
+        failure: "Access grpc port ({{access.grpcPort:8045}}) is blocked by firewall"
+        success: "Access grpc port ({{access.grpcPort:8045}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{metadata.port:8086}}"
+      command: system
+      message:
+        failure: "Metadata Port ({{metadata.port:8086}}) is blocked by firewall"
+        success: "Metadata Port ({{metadata.port:8086}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{frontend.port:8070}}"
+      command: system
+      message:
+        failure: "Frontend Port ({{frontend.port:8070}}) is blocked by firewall"
+        success: "Frontend Port ({{frontend.port:8070}}) is not blocked by firewall"
+    - 
+      args:
+        - firewallport
+        - "{{replicator.port:8048}}"
+      command: system
+      message:
+        failure: "Replicator Port ({{replicator.port:8048}}) is blocked by firewall"
+        success: "Replicator Port ({{replicator.port:8048}}) is not blocked by firewall"
+    -
+      args:
+        - firewalliptables
+        - "{{router.entrypoints.externalPort:8082}}"
+      command: system
+      message:
+        failure: "Router external port ({{router.entrypoints.externalPort:8082}}) is blocked by iptables"
+        success: "Router external port ({{router.entrypoints.externalPort:8082}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{router.entrypoints.internalPort:8046}}"
+      command: system
+      message:
+        failure: "Router internal port ({{router.entrypoints.internalPort:8046}}) is blocked by iptables"
+        success: "Router internal port ({{router.entrypoints.internalPort:8046}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{router.entrypoints.traefikApiPort:8049}}"
+      command: system
+      message:
+        failure: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is blocked by iptables"
+        success: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{router.entrypoints.grpcPort:8047}}"
+      command: system
+      message:
+        failure: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is blocked by iptables"
+        success: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{artifactory.port:8081}}"
+      command: system
+      message:
+        failure: "Artifactory port ({{artifactory.port:8081}}) is blocked by iptables"
+        success: "Artifactory port ({{artifactory.port:8081}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{access.port:8040}}"
+      command: system
+      message:
+        failure: "Access port ({{access.port:8040}}) is blocked by iptables"
+        success: "Access port ({{access.port:8040}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{access.grpcPort:8045}}"
+      command: system
+      message:
+        failure: "Access grpc port ({{access.grpcPort:8045}}) is blocked by iptables"
+        success: "Access grpc port ({{access.grpcPort:8045}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{metadata.port:8086}}"
+      command: system
+      message:
+        failure: "Metadata Port ({{metadata.port:8086}}) is blocked by iptables"
+        success: "Metadata Port ({{metadata.port:8086}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{frontend.port:8070}}"
+      command: system
+      message:
+        failure: "Frontend Port ({{frontend.port:8070}}) is blocked by iptables"
+        success: "Frontend Port ({{frontend.port:8070}}) is not blocked by iptables"
+    - 
+      args:
+        - firewalliptables
+        - "{{replicator.port:8048}}"
+      command: system
+      message:
+        failure: "Replicator Port ({{replicator.port:8048}}) is blocked by iptables"
+        success: "Replicator Port ({{replicator.port:8048}}) is not blocked by iptables"
+    -
+      args:
+        - firewallip6tables
+        - "{{router.entrypoints.externalPort:8082}}"
+      command: system
+      message:
+        failure: "Router external port ({{router.entrypoints.externalPort:8082}}) is blocked by ip6tables"
+        success: "Router external port ({{router.entrypoints.externalPort:8082}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{router.entrypoints.internalPort:8046}}"
+      command: system
+      message:
+        failure: "Router internal port ({{router.entrypoints.internalPort:8046}}) is blocked by ip6tables"
+        success: "Router internal port ({{router.entrypoints.internalPort:8046}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{router.entrypoints.traefikApiPort:8049}}"
+      command: system
+      message:
+        failure: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is blocked by ip6tables"
+        success: "Router traefik port ({{router.entrypoints.traefikApiPort:8049}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{router.entrypoints.grpcPort:8047}}"
+      command: system
+      message:
+        failure: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is blocked by ip6tables"
+        success: "Router grpc port ({{router.entrypoints.grpcPort:8047}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{artifactory.port:8081}}"
+      command: system
+      message:
+        failure: "Artifactory port ({{artifactory.port:8081}}) is blocked by ip6tables"
+        success: "Artifactory port ({{artifactory.port:8081}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{access.port:8040}}"
+      command: system
+      message:
+        failure: "Access port ({{access.port:8040}}) is blocked by ip6tables"
+        success: "Access port ({{access.port:8040}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{access.grpcPort:8045}}"
+      command: system
+      message:
+        failure: "Access grpc port ({{access.grpcPort:8045}}) is blocked by ip6tables"
+        success: "Access grpc port ({{access.grpcPort:8045}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{metadata.port:8086}}"
+      command: system
+      message:
+        failure: "Metadata Port ({{metadata.port:8086}}) is blocked by ip6tables"
+        success: "Metadata Port ({{metadata.port:8086}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{frontend.port:8070}}"
+      command: system
+      message:
+        failure: "Frontend Port ({{frontend.port:8070}}) is blocked by ip6tables"
+        success: "Frontend Port ({{frontend.port:8070}}) is not blocked by ip6tables"
+    - 
+      args:
+        - firewallip6tables
+        - "{{replicator.port:8048}}"
+      command: system
+      message:
+        failure: "Replicator Port ({{replicator.port:8048}}) is blocked by ip6tables"
+        success: "Replicator Port ({{replicator.port:8048}}) is not blocked by ip6tables"
+    -
+      args:
+        - ping
+        - localhost
+      command: system
+      message:
+        failure: "Ping to localhost failed"
+        success: "Ping to localhost successful"
+    -
+      command: system
+      args:
+        - env
+        - HTTP_PROXY
+      message:
+        success: "Environment variable HTTP_PROXY is not set"
+        failure: "Environment variable HTTP_PROXY is set. Consider removing it"
+    -
+      command: system
+      args:
+        - env
+        - HTTPS_PROXY
+      message:
+        success: "Environment variable HTTPS_PROXY is not set"
+        failure: "Environment variable HTTPS_PROXY is set. Consider removing it"
+    -
+      command: system
+      args:
+        - env
+        - NO_PROXY
+      message:
+        success: "Environment variable NO_PROXY is not set"
+        failure: "Environment variable NO_PROXY is set. Consider removing it"
+    -
+      command: system
+      args:
+        - env
+        - ALL_PROXY
+      message:
+        success: "Environment variable ALL_PROXY is not set"
+        failure: "Environment variable ALL_PROXY is set. Consider removing it"

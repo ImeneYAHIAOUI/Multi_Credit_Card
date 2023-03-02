@@ -4,6 +4,7 @@ pipeline {
     tools {
         maven 'Maven 3.9.0'
         jdk 'JDK17'
+        nodejs 'NodeJS18'
     }
 
     stages {

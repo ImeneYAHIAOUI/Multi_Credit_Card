@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  jenkins:
+    container_name: jenkins
+    build:
+      context: ./Jenkins
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8080"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube
+    ports:
+      - "8001:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+
+volumes:
+  jenkins_data:
+  sonarqube_data:
