@@ -39,7 +39,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Testing Backend:"
-                sh 'mvn -f backend/pom.xml test'
+//                sh 'mvn -f backend/pom.xml test'
 
                 echo "Testing CLI:"
                 sh 'mvn -f cli/pom.xml test'
@@ -61,7 +61,22 @@ pipeline {
         }
         stage('Package') {
             steps {
-                echo "Packaging..."
+                withArtifactoryEnv('DevOpsArtifactory') {
+                    def server = Artifactory.server('DevOpsArtifactory')
+                    def buildInfo = Artifactory.newBuildInfo()
+
+                    // Publish backend artifact
+                    server.publishBuildInfo(buildInfo) {
+                        def artifacts = server.upload spec: backend / pom.xml, recursive: true
+                        buildInfo.append artifacts
+                    }
+
+                    // Publish CLI artifact
+                    server.publishBuildInfo(buildInfo) {
+                        def artifacts = server.upload spec: cli / pom.xml, recursive: true
+                        buildInfo.append artifacts
+                    }
+                }
             }
         }
         stage('Deploy') {

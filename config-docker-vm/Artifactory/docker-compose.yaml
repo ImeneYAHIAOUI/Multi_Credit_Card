@@ -22,3 +22,8 @@ services:
       nofile:
         soft: 32000
         hard: 40000
+
+networks:
+  default:
+    external:
+      name: teamf_default
