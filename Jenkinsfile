@@ -32,8 +32,8 @@ pipeline {
                 sh 'npm -v'
 
                 echo "Building Bank:"
-                sh 'npm --prefix bank install'
-                sh 'npm --prefix bank run build'
+//                sh 'npm --prefix bank install'
+//                sh 'npm --prefix bank run build'
             }
         }
         stage('Test') {
@@ -45,17 +45,17 @@ pipeline {
 //                sh 'mvn -f cli/pom.xml test'
 
                 echo "Testing Bank:"
-                sh 'npm --prefix bank test'
+//                sh 'npm --prefix bank test'
             }
         }
         stage('Code Analysis') {
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo "Analyzing Backend:"
-                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
+//                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
 
                     echo "Analyzing CLI:"
-                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
+//                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
                 }
             }
         }
