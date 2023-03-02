@@ -23,17 +23,8 @@ public class Cashier implements Payment {
 
 
     public void payment(Purchase purchase, CreditCard creditCard) throws PaymentException {
-
-        if(creditCard==null || creditCard.getExpirationDate().isBefore(LocalDate.now()))
-            throw new PaymentException();
-        if(purchase!=null){
-            boolean status = false;
-            status = bank.pay(creditCard, purchase.getTotalPrice());
-            if (!status) {
-                throw new PaymentException();
-            }
-        }
-
-
+        bank.pay(creditCard, purchase.getTotalPrice());
+        purchase.setCreditCard(creditCard);
+        purchase.setDate(LocalDate.now());
     }
 }

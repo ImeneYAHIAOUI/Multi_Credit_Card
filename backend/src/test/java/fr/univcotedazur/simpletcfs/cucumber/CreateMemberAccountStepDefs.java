@@ -49,6 +49,10 @@ public class CreateMemberAccountStepDefs {
 
     @And("the mail {string}")
     public void with_mail(String mail) {
+        try {
+            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com"));
+        } catch (AccountNotFoundException ignored) {
+        }
         this.mail = mail;
     }
 
