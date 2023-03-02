@@ -1,17 +1,30 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 public class Item {
-    @Getter
-    @Setter
+
     public int amount;
-    @Setter
-    @Getter
+
     public Product product;
     public  Item(Product product, int amount){
         this.product = product;
         this.amount = amount;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

@@ -1,9 +1,6 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,21 +8,16 @@ import java.util.List;
 import java.util.UUID;
 
 public class MemberAccount extends Account {
-    @Getter
-    @Setter
+
     private MembershipCard membershipCard;
-    @Getter
-    @Setter
+
     int points = 0;
-    @Getter
-    @Setter
+
     double balance = 0;
 
-    @Getter
-    @Setter
+
     AccountStatus status;
-    @Setter
-    @Getter
+
     List<Transaction> transactions;
 
     public MemberAccount(UUID id, String name, String mail, String password, LocalDate birthDate, int points, double balance) {
@@ -39,5 +31,43 @@ public class MemberAccount extends Account {
         transactions.add(transaction);
     }
 
+    public MembershipCard getMembershipCard() {
+        return membershipCard;
+    }
 
+    public void setMembershipCard(MembershipCard membershipCard) {
+        this.membershipCard = membershipCard;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
 }
