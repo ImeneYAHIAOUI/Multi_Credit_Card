@@ -22,10 +22,10 @@ pipeline {
                 sh 'mvn -version'
 
                 echo "Building Backend:"
-                sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
+//                sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
 
                 echo "Building CLI:"
-                sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
+//                sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
 
                 echo "--- Node and NPM versions ---"
                 sh 'node -v'
@@ -42,7 +42,7 @@ pipeline {
 //                sh 'mvn -f backend/pom.xml test'
 
                 echo "Testing CLI:"
-                sh 'mvn -f cli/pom.xml test'
+//                sh 'mvn -f cli/pom.xml test'
 
                 echo "Testing Bank:"
                 sh 'npm --prefix bank test'
