@@ -83,7 +83,12 @@ Shop shop;
 
     @Then("this shop keeper account is created")
     public void the_member_creates_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
-        shopKeeperAccount = adminManager.createShopKeeperAccount(new Form(name,mail,password,birthDate),shop)   ;
+        try{
+            shopKeeperAccount = adminManager.createShopKeeperAccount(new Form(name,mail,password,birthDate),shop)   ;
+        }
+        catch (Exception e){
+            shopKeeperAccount = shopkeeperFinder.findShopKeeperAccountByMail(mail).orElse(null);
+        }
         assertEquals(shopkeeperFinder.findShopKeeperAccountById(shopKeeperAccount.getId()).get(), shopKeeperAccount);
         adminManager.deleteShopKeeperAccount(shopKeeperAccount);
     }

@@ -2,7 +2,9 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public class Purchase extends Transaction{
 
@@ -14,7 +16,8 @@ public class Purchase extends Transaction{
     public CreditCard creditCard;
 
     public List<Item> item;
-    public Purchase(List<Item> items){
+    public Purchase(LocalDate date, UUID id, MemberAccount memberAccount, Shop shop,List<Item> items){
+        super(date,id,memberAccount,shop);
         this.item = items;
         this.earnedPoints = 0;
         this.totalPrice = 0;

@@ -6,5 +6,5 @@ import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 public interface Bank {
 
 
-    boolean pay(CreditCard creditCard, double value) throws PaymentException;
+    boolean pay(CreditCard creditCard, double value) ;
 }

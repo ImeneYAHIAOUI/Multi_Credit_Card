@@ -10,10 +10,8 @@ import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -40,8 +38,7 @@ public class TransactionManager implements TransactionProcessor, TransactionExpl
         else{
             payment.payment(purchase,card);
             purchase.setMemberAccount(memberAccount);
-            long millis = System.currentTimeMillis();
-            purchase.setDate( new java.util.Date(millis));
+            purchase.setDate(LocalDate.now());
             pointTrader.addPoints(memberAccount,purchase);
             memberAccount.addTransaction(purchase);
             UUID id=UUID.randomUUID();
