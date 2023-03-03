@@ -9,6 +9,13 @@ import java.util.UUID;
 
 public abstract class Transaction {
 
+    public Transaction(LocalDate date, UUID id, MemberAccount memberAccount, Shop shop) {
+        this.date = date;
+        this.id = id;
+        this.memberAccount = memberAccount;
+        this.shop = shop;
+    }
+
     public LocalDate getDate() {
         return date;
     }

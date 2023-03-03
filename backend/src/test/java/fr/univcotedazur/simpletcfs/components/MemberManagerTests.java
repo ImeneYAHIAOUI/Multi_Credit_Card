@@ -1,12 +1,15 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.AccountStatus;
-import fr.univcotedazur.simpletcfs.entities.MemberAccount;
+import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ParkingHandler;
+import fr.univcotedazur.simpletcfs.interfaces.TransactionProcessor;
+import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.TestPropertySource;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +20,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import static org.awaitility.Awaitility.await;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -27,16 +32,17 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *","VFP.MinPurchasesNumber=5"})
-
 public class MemberManagerTests {
 
+    @Autowired
+    TransactionRepository transactionRepository;
     @SpyBean
     MemberHandler memberHandler;
     @Autowired
     MemberFinder memberFinder;
-
     @SpyBean
     ParkingHandler parkingHandler;
+
 
 
 
@@ -106,11 +112,55 @@ public class MemberManagerTests {
     }
 
     @Test
-    public void testUpdateAccounts()
-    {
+    public void testUpdateAccounts() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        memberHandler.createAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+
+
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
                 verify(memberHandler, Mockito.atLeast(4)).updateAccountsStatus());
+        assertEquals(memberFinder.findByMail("John.Doe@mail.com").getStatus(), AccountStatus.VFP);
+        assertEquals(memberFinder.findByMail("John.Doe2@mail.com").getStatus(), AccountStatus.REGULAR);
+        transactionRepository.deleteAll();
+        memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com"));
+        memberHandler.deleteAccount(memberFinder.findByMail("John.Doe2@mail.com"));
 
+    }
+
+    @Test
+    public void testUpdateAccounts2() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        memberHandler.createAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        memberHandler.updateAccountStatus(memberFinder.findByMail("John.Doe2@mail.com"),AccountStatus.VFP);
+
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com"),null,new ArrayList<>()),UUID.randomUUID());
+
+
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
+                verify(memberHandler, Mockito.atLeast(4)).updateAccountsStatus());
+        assertEquals(memberFinder.findByMail("John.Doe@mail.com").getStatus(), AccountStatus.VFP);
+        assertEquals(memberFinder.findByMail("John.Doe2@mail.com").getStatus(), AccountStatus.REGULAR);
+        transactionRepository.deleteAll();
+        memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com"));
+        memberHandler.deleteAccount(memberFinder.findByMail("John.Doe2@mail.com"));
     }
 
 

@@ -73,4 +73,15 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name){
         return shopKeeperAccountRepository.findByName(name);
     }
+
+    @Override
+    public Optional<ShopKeeperAccount> findShopKeeperAccountByMail(String mail)
+    {
+        for (ShopKeeperAccount  shopKeeperAccount : shopKeeperAccountRepository.findAll()) {
+            if (shopKeeperAccount.getMail().equals(mail)) {
+                return Optional.of(shopKeeperAccount);
+            }
+        }
+        return Optional.empty();
+    }
 }

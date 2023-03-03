@@ -60,14 +60,14 @@ public class TransactionManagerTest {
     public void processPointsUsageTest() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
         setUp("John.Doe@mail.com","John");
         account.setPoints(100);
-        UsePoints transaction=new UsePoints();
+        UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
         transaction.setGift(gift);
         transaction.setUsedPoints(50);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        Purchase tran=new Purchase(List.of(new Item(product3,2)));
+        Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         tran.setMemberAccount(account);
         transactionRepository.save(tran,UUID.randomUUID());
         assertDoesNotThrow(()-> transactionManager.processPointsUsage(account,transaction));
@@ -81,7 +81,7 @@ public class TransactionManagerTest {
         transactionRepository.deleteAll();
          setUp("joel.Doe@mail.com","joel");
         account.setPoints(10);
-        UsePoints transaction=new UsePoints();
+        UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         transaction.setMemberAccount(account);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
@@ -89,7 +89,7 @@ public class TransactionManagerTest {
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        Purchase tran=new Purchase(List.of(new Item(product3,2)));
+        Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         tran.setMemberAccount(account);
         transactionRepository.save(tran,UUID.randomUUID());
         assertThrows(InsufficientPointsException.class,()-> transactionManager.processPointsUsage(account,transaction));
@@ -102,7 +102,7 @@ public class TransactionManagerTest {
         transactionRepository.deleteAll();
         setUp("sourour.Doe@mail.com","joel");
         account.setPoints(10);
-        UsePoints transaction=new UsePoints();
+        UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         transaction.setMemberAccount(account);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
@@ -117,11 +117,10 @@ public class TransactionManagerTest {
 
     @Test
     public void processPointsUsageTest3(){
-        UsePoints transaction=new UsePoints();
-        transaction.setUsedPoints(100);
         account = new MemberAccount(UUID.randomUUID(),"john","mail","pass",LocalDate.of(2001,11,04),0,0);
+        UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
+        transaction.setUsedPoints(100);
         assertThrows(AccountNotFoundException.class,()-> transactionManager.processPointsUsage(account,transaction));
-        assertEquals(transaction.getId(),null);
     }
     @Test
     public void processPurchaseTest()throws Exception{
@@ -129,7 +128,7 @@ public class TransactionManagerTest {
         memberAccoutRepository.deleteAll();
 
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        purchaseOfJohn=new Purchase(List.of(new Item(product3,2)));
+        purchaseOfJohn=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         assertNull(memberFinder.findByMail("john.d@gmail.com"));
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findMember(john.getId()));
@@ -148,7 +147,7 @@ public class TransactionManagerTest {
         transactionRepository.deleteAll();
         memberAccoutRepository.deleteAll();
         Product product=new Product(UUID.randomUUID(),"cake",1.0,10);
-        purchaseOfPat=new Purchase(List.of(new Item(product,5)));
+        purchaseOfPat=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product,5)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findMember(pat.getId()));
         creditCardOfPat=new CreditCard("1234567999123456","Pat", LocalDate.parse("11/04/2028", formatter),"123");
@@ -162,6 +161,6 @@ public class TransactionManagerTest {
     }
     @Test
     public void processPurchaseTest2(){
-        assertThrows(AccountNotFoundException.class,()->transactionManager.processPurchase(null, purchaseOfPat,creditCardOfPat));
+        assertThrows(AccountNotFoundException.class,()->transactionManager.processPurchase( new MemberAccount(UUID.randomUUID(),"john","mail","pass",LocalDate.of(2001,11,04),0,0), purchaseOfPat,creditCardOfPat));
     }
 }
