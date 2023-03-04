@@ -22,51 +22,46 @@ pipeline {
                 sh 'mvn -version'
 
                 echo "Building Backend:"
-//                sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
+                sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
 
                 echo "Building CLI:"
-//                sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
+                sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
 
                 echo "--- Node and NPM versions ---"
                 sh 'node -v'
                 sh 'npm -v'
 
                 echo "Building Bank:"
-//                sh 'npm --prefix bank install'
-//                sh 'npm --prefix bank run build'
+                sh 'npm --prefix bank install'
+                sh 'npm --prefix bank run build'
             }
         }
         stage('Test') {
             steps {
                 echo "Testing Backend:"
-//                sh 'mvn -f backend/pom.xml test'
+                sh 'mvn -f backend/pom.xml test'
 
                 echo "Testing CLI:"
-//                sh 'mvn -f cli/pom.xml test'
+                sh 'mvn -f cli/pom.xml test'
 
                 echo "Testing Bank:"
-//                sh 'npm --prefix bank test'
+                sh 'npm --prefix bank test'
             }
         }
         stage('Code Analysis') {
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo "Analyzing Backend:"
-//                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
+                    sh 'mvn -f backend/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
 
                     echo "Analyzing CLI:"
-//                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
+                    sh 'mvn -f cli/pom.xml sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
                 }
             }
         }
         stage('Package') {
             steps {
-
-                echo "Packaging Backend:"
-//                sh 'mvn -f backend/pom.xml artifactory:publish -DskipTests=true'
-
-                echo "Packaging CLI:"
-//                sh 'mvn -f cli/pom.xml artifactory:publish -DskipTests=true'
+                echo "Packaging..."
             }
         }
         stage('Deploy') {
