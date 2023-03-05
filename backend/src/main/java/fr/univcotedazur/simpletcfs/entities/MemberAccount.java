@@ -2,33 +2,35 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
+
+@Entity
 public class MemberAccount extends Account {
 
+    @OneToOne(cascade = CascadeType.ALL)
     private MembershipCard membershipCard;
 
-    int points = 0;
+    int points;
 
-    double balance = 0;
+    double balance;
 
 
     AccountStatus status;
 
-    List<Transaction> transactions;
 
-    public MemberAccount(UUID id, String name, String mail, String password, LocalDate birthDate, int points, double balance) {
-        super(id, name, mail,password, birthDate);
+    public MemberAccount(String name, String mail, String password, LocalDate birthDate, int points, double balance) {
+        super( name, mail,password, birthDate);
         this.membershipCard =  new MembershipCard(LocalDate.now(), LocalDate.now().plusYears(2));
         this.points = points;
         this.balance = balance;
-        transactions= new ArrayList<Transaction>();
     }
-    public void addTransaction(Transaction transaction){
-        transactions.add(transaction);
+
+    public MemberAccount() {
+
     }
 
     public MembershipCard getMembershipCard() {
@@ -63,11 +65,6 @@ public class MemberAccount extends Account {
         this.status = status;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
+
 }

@@ -6,7 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ShopkeeperFinder {
-    public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id);
+
+    Optional<ShopKeeperAccount> findShopKeeperAccountById(Long id);
+
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name);
 
     public Optional<ShopKeeperAccount> findShopKeeperAccountByMail(String mail);

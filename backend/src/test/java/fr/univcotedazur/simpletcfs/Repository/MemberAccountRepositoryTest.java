@@ -1,7 +1,7 @@
 package fr.univcotedazur.simpletcfs.Repository;
 
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
-import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
+import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,28 +19,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MemberAccountRepositoryTest {
 
     @Autowired
-    MemberAccountRepository memberAccountRepository;
+    MemberRepository memberAccountRepository;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
     MemberAccount memberAccount;
     @BeforeEach
     void setup() {
         memberAccountRepository.deleteAll();
-        UUID id = UUID.randomUUID();
-        memberAccount = new MemberAccount(id,"John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
+        memberAccount = new MemberAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
     }
 
     @Test
     void testSaveAndFind() {
-        memberAccountRepository.save(memberAccount,memberAccount.getId());
+        memberAccountRepository.save(memberAccount);
         Optional<MemberAccount> memberAccount2 = memberAccountRepository.findById(memberAccount.getId());
         assertTrue(memberAccount2.isPresent());
-        assertEquals(memberAccount, memberAccount2.get());
+        assertEquals(memberAccount.getId(), memberAccount2.get().getId());
     }
 
     @Test
     void testDeleteAll() {
         assertEquals(0, memberAccountRepository.count());
-        memberAccountRepository.save(memberAccount,memberAccount.getId());
+        memberAccountRepository.save(memberAccount);
         assertEquals(1, memberAccountRepository.count());
         memberAccountRepository.deleteAll();
         assertEquals(0, memberAccountRepository.count());
@@ -48,9 +47,9 @@ public class MemberAccountRepositoryTest {
 
     @Test
     void testDeleteOneAccount() {
-        memberAccountRepository.save(memberAccount,memberAccount.getId());
-        MemberAccount memberAccount2 = new MemberAccount(UUID.randomUUID(),"John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
-        memberAccountRepository.save(memberAccount2,memberAccount2.getId());
+        memberAccount = memberAccountRepository.save(memberAccount);
+        MemberAccount memberAccount2 = new MemberAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
+        memberAccountRepository.save(memberAccount2);
         assertEquals(2, memberAccountRepository.count());
         memberAccountRepository.deleteById(memberAccount.getId());
         assertEquals(1, memberAccountRepository.count());

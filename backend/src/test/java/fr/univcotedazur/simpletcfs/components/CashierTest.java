@@ -6,7 +6,7 @@ import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.Payment;
-import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
+import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,11 +17,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyDouble;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.when;
 class CashierTest {
 
     @Autowired
-    MemberAccountRepository memberAccoutRepository;
+    MemberRepository memberRepository;
 
     @Autowired
     private Payment cashier;
@@ -49,7 +48,7 @@ class CashierTest {
     MemberFinder memberFinder;
     MemberAccount account;
     @Autowired
-    TransactionManager transactionManager;
+    TransactionHandler transactionHandler;
     @Autowired
     TransactionRepository transactionRepository;
 
@@ -61,18 +60,18 @@ class CashierTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        memberAccoutRepository.deleteAll();
+        memberRepository.deleteAll();
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         purchaseOfJohn=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
 
         Product product=new Product(UUID.randomUUID(),"cake",1.0,10);
         purchaseOfPat=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product,5)));
-        assertNull(memberFinder.findByMail("john.d@gmail.com"));
+        assertNull(memberFinder.findByMail("john.d@gmail.com").orElse(null));
 
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(john.getId()));
+        assertNotNull(memberFinder.findMember(john.getId()).orElse(null));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(pat.getId()));
+        assertNotNull(memberFinder.findMember(pat.getId()).orElse(null));
         creditCardOfJohn=new CreditCard("1234567890123456","John", LocalDate.parse("11/04/2025", formatter),"123");
         creditCardOfPat=new CreditCard("1234567999123456","Pat", LocalDate.parse("11/04/2028", formatter),"123");
         // Mocking the bank proxy

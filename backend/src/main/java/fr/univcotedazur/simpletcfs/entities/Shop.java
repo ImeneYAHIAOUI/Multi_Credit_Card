@@ -2,9 +2,11 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+
 import java.util.*;
 import java.util.Map;
 import java.util.UUID;
+
 
 public class Shop {
 
@@ -27,6 +29,11 @@ public class Shop {
         productList=products;
         giftList=gifts;
     }
+
+    public Shop() {
+
+    }
+
     public void addProduct(Product product){
         productList.add(product);
     }

@@ -5,10 +5,8 @@ import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
-import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
+import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,14 +24,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class TransactionManagerTest {
+public class TransactionHandlerTest {
     @Autowired
     MemberFinder memberFinder;
     @MockBean
     private Bank bankMock;
     MemberAccount account;
     @Autowired
-    TransactionManager transactionManager;
+    TransactionHandler transactionHandler;
     @Autowired
     TransactionRepository transactionRepository;
     CreditCard creditCardOfJohn;
@@ -44,13 +42,13 @@ public class TransactionManagerTest {
     Purchase purchaseOfPat;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
     @Autowired
-    MemberAccountRepository memberAccoutRepository;
+    MemberRepository memberAccoutRepository;
 
     @Autowired
     MemberHandler memberHandler;
      void setUp(String mail,String name)throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        assertNull(memberFinder.findByMail(mail));
+        assertNull(memberFinder.findByMail(mail).orElse(null));
 
          account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findMember(account.getId()));
@@ -70,7 +68,7 @@ public class TransactionManagerTest {
         Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         tran.setMemberAccount(account);
         transactionRepository.save(tran,UUID.randomUUID());
-        assertDoesNotThrow(()-> transactionManager.processPointsUsage(account,transaction));
+        assertDoesNotThrow(()-> transactionHandler.processPointsUsage(account,transaction));
         assertEquals(50, account.getPoints());
         assertTrue(transactionRepository.existsById(transaction.getId()));
         assertTrue(transactionRepository.findById(transaction.getId()).isPresent());
@@ -92,7 +90,7 @@ public class TransactionManagerTest {
         Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         tran.setMemberAccount(account);
         transactionRepository.save(tran,UUID.randomUUID());
-        assertThrows(InsufficientPointsException.class,()-> transactionManager.processPointsUsage(account,transaction));
+        assertThrows(InsufficientPointsException.class,()-> transactionHandler.processPointsUsage(account,transaction));
         assertEquals(10, account.getPoints());
         assertFalse(transactionRepository.existsById(transaction.getId()));
         assertTrue(transactionRepository.findById(transaction.getId()).isEmpty());
@@ -109,7 +107,7 @@ public class TransactionManagerTest {
         transaction.setGift(gift);
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
-        assertThrows(DeclinedTransactionException.class,()-> transactionManager.processPointsUsage(account,transaction));
+        assertThrows(DeclinedTransactionException.class,()-> transactionHandler.processPointsUsage(account,transaction));
         assertEquals(10, account.getPoints());
         assertFalse(transactionRepository.existsById(transaction.getId()));
         assertTrue(transactionRepository.findById(transaction.getId()).isEmpty());
@@ -117,10 +115,10 @@ public class TransactionManagerTest {
 
     @Test
     public void processPointsUsageTest3(){
-        account = new MemberAccount(UUID.randomUUID(),"john","mail","pass",LocalDate.of(2001,11,04),0,0);
+        account = new MemberAccount("john","mail","pass",LocalDate.of(2001,11,04),0,0);
         UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         transaction.setUsedPoints(100);
-        assertThrows(AccountNotFoundException.class,()-> transactionManager.processPointsUsage(account,transaction));
+        assertThrows(AccountNotFoundException.class,()-> transactionHandler.processPointsUsage(account,transaction));
     }
     @Test
     public void processPurchaseTest()throws Exception{
@@ -129,17 +127,15 @@ public class TransactionManagerTest {
 
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         purchaseOfJohn=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
-        assertNull(memberFinder.findByMail("john.d@gmail.com"));
+        assertNull(memberFinder.findByMail("john.d@gmail.com").orElse(null));
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findMember(john.getId()));
         assertEquals(0, john.getPoints());
-        assertFalse(john.getTransactions().contains(purchaseOfJohn));
         creditCardOfJohn=new CreditCard("1234567890123456","John", LocalDate.parse("11/04/2025", formatter),"123");
         // Mocking the bank proxy
         when(bankMock.pay(eq(creditCardOfJohn), anyDouble())).thenReturn(true);
-        transactionManager.processPurchase(john, purchaseOfJohn,creditCardOfJohn);
+        transactionHandler.processPurchase(john, purchaseOfJohn,creditCardOfJohn);
         assertEquals(purchaseOfJohn.getEarnedPoints(), john.getPoints());
-        assertTrue(john.getTransactions().contains(purchaseOfJohn));
         assertTrue(transactionRepository.existsById(purchaseOfJohn.getId()));
     }
     @Test
@@ -153,14 +149,13 @@ public class TransactionManagerTest {
         creditCardOfPat=new CreditCard("1234567999123456","Pat", LocalDate.parse("11/04/2028", formatter),"123");
         // Mocking the bank proxy
         when(bankMock.pay(eq(creditCardOfPat), anyDouble())).thenReturn(false);
-        assertThrows(PaymentException.class,()->transactionManager.processPurchase(pat, purchaseOfPat,creditCardOfPat));
+        assertThrows(PaymentException.class,()-> transactionHandler.processPurchase(pat, purchaseOfPat,creditCardOfPat));
         assertFalse(transactionRepository.existsById(purchaseOfPat.getId()));
         assertEquals(0, pat.getPoints());
         assertNotEquals(purchaseOfPat.getEarnedPoints(), pat.getPoints());
-        assertFalse(pat.getTransactions().contains(purchaseOfPat));
     }
     @Test
     public void processPurchaseTest2(){
-        assertThrows(AccountNotFoundException.class,()->transactionManager.processPurchase( new MemberAccount(UUID.randomUUID(),"john","mail","pass",LocalDate.of(2001,11,04),0,0), purchaseOfPat,creditCardOfPat));
+        assertThrows(AccountNotFoundException.class,()-> transactionHandler.processPurchase( new MemberAccount("john","mail","pass",LocalDate.of(2001,11,04),0,0), purchaseOfPat,creditCardOfPat));
     }
 }

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public class AdminAccountRepository extends BasicRepositoryImpl<AdminAccount, UUID> {
+public class AdminAccountRepository extends BasicRepositoryImpl<AdminAccount, Long> {
 
 }

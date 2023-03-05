@@ -2,13 +2,25 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Entity
  public class Account {
 
-    private UUID id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
+    @NotBlank
     private String name;
 
     private String mail;
@@ -17,19 +29,22 @@ import java.util.UUID;
 
     private LocalDate birthDate;
 
-     public Account(UUID id, String name, String mail, String password, LocalDate birthDate) {
-         this.id = id;
+     public Account( String name, String mail, String password, LocalDate birthDate) {
          this.name = name;
          this.mail = mail;
          this.password = password;
          this.birthDate = birthDate;
      }
 
-     public UUID getId() {
+    public Account() {
+
+    }
+
+    public Long getId() {
          return id;
      }
 
-     public void setId(UUID id) {
+     public void setId(Long id) {
          this.id = id;
      }
 

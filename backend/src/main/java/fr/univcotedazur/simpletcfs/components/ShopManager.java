@@ -2,7 +2,6 @@ package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopFinder;
 import fr.univcotedazur.simpletcfs.interfaces.ShopHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperFinder;
@@ -11,12 +10,13 @@ import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@Transactional
 public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     private ShopRepository shopRepository;
@@ -66,12 +66,17 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
 
     @Override
-    public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id){
+    public Optional<ShopKeeperAccount> findShopKeeperAccountById(Long id){
         return shopKeeperAccountRepository.findById(id);
     }
     @Override
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name){
-        return shopKeeperAccountRepository.findByName(name);
+        for (ShopKeeperAccount  shopKeeperAccount : shopKeeperAccountRepository.findAll()) {
+            if (shopKeeperAccount.getMail().equals(name)) {
+                return Optional.of(shopKeeperAccount);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

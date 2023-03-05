@@ -2,6 +2,7 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
@@ -9,9 +10,13 @@ import java.util.UUID;
 public class ShopKeeperAccount extends Account{
 
     private Shop shop;
-    public ShopKeeperAccount(UUID id, String name, String mail, String phoneNumber, LocalDate birthday, Shop shop) {
-        super(id,name, mail, phoneNumber, birthday);
+    public ShopKeeperAccount( String name, String mail, String phoneNumber, LocalDate birthday, Shop shop) {
+        super(name, mail, phoneNumber, birthday);
         this.shop = shop;
+    }
+
+    public ShopKeeperAccount() {
+
     }
 
     public Shop getShop() {

@@ -6,7 +6,6 @@ import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
-import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperFinder;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
@@ -108,7 +107,10 @@ Shop shop;
     }
 
     @When("this shop tries to create an account with the same mail")
-    public void the_member_tries_to_create_an_account_with_the_same_mail()  {
+    public void the_member_tries_to_create_an_account_with_the_same_mail() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        adminManager.createShopKeeperAccount(
+                new Form(name,mail,password,birthDate),
+                shop);
         assertThrows(AlreadyExistingMemberException.class, () ->  adminManager.createShopKeeperAccount(
                 new Form(name,mail,password,birthDate),
                 shop));

@@ -37,9 +37,13 @@ public class PointsManagerTest {
 
     void setUp(String mail,String name)throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        assertNull(memberFinder.findByMail(mail));
-        account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(account.getId()));
+        try {
+            account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
+        }
+        catch (AlreadyExistingMemberException e){
+            account = memberFinder.findByMail(mail).get();
+        }
+        assertNotNull(memberFinder.findMember(account.getId()).orElse(null));
     }
     @Test
     public void removePointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
@@ -51,8 +55,9 @@ public class PointsManagerTest {
         assertEquals(50, account.getPoints());
     }
     @Test
-    public void removePointsTest1(){
-        account=memberFinder.findByMail("John.Doe@mail.com");
+    public void removePointsTest1() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
+        account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         account.setPoints(10);
         UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         transaction.setUsedPoints(50);
@@ -62,7 +67,7 @@ public class PointsManagerTest {
 
     @Test
     public void addPointsTest(){
-        account=memberFinder.findByMail("John.Doe@mail.com");
+        account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         account.setPoints(100);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         Purchase transaction=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));

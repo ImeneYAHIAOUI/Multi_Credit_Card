@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public class ShopKeeperAccountRepository extends BasicRepositoryImpl<ShopKeeperAccount, UUID> {
+public class ShopKeeperAccountRepository extends BasicRepositoryImpl<ShopKeeperAccount, Long> {
 }
 

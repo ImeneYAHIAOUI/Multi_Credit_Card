@@ -1,20 +1,18 @@
 package fr.univcotedazur.simpletcfs.cucumber.Transaction;
 
-import fr.univcotedazur.simpletcfs.components.TransactionManager;
+import fr.univcotedazur.simpletcfs.components.TransactionHandler;
 import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
-import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
-import io.cucumber.java.Before;
+import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-
+@SpringBootTest
 public class EarnsPointsDefs {
     MemberAccount memberAccount;
     String name;
@@ -39,9 +37,9 @@ public class EarnsPointsDefs {
     @Autowired
     MemberFinder memberFinder;
     @Autowired
-    TransactionManager transactionManager;
+    TransactionHandler transactionHandler;
     @Autowired
-    MemberAccountRepository memberAccountRepository;
+    MemberRepository memberAccountRepository;
     CreditCard card;
     @Autowired
     private Bank bankMock;
@@ -53,7 +51,7 @@ public class EarnsPointsDefs {
         password="123456";
         birthDate = LocalDate.parse("01/01/2000",formatter);
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findMember(memberAccount.getId()),memberAccount);
+        assertEquals(memberFinder.findMember(memberAccount.getId()).get().getId(),memberAccount.getId());
         card=new CreditCard("1234567890123456", "John Doe",  LocalDate.parse("01/01/2030",formatter), "123");
     }
 
@@ -63,7 +61,7 @@ public class EarnsPointsDefs {
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),memberAccount,null,List.of(new Item(product3,2)));
         when(bankMock.pay(any(CreditCard.class), anyDouble())).thenReturn(true);
-        transactionManager.processPurchase(memberAccount,tran,card );
+        transactionHandler.processPurchase(memberAccount,tran,card );
     }
     @Then("the client earns points")
     public void the_client_earns_points() {
@@ -75,7 +73,7 @@ public class EarnsPointsDefs {
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
         Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),memberAccount,null,List.of(new Item(product3,2)));
         when(bankMock.pay(any(CreditCard.class), anyDouble())).thenReturn(false);
-        Assertions.assertThrows(PaymentException.class, () -> transactionManager.processPurchase(memberAccount,tran,card));
+        Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchase(memberAccount,tran,card));
     }
     @Then("the client doesn't earn points")
     public void the_client_doesnt_earns_points() {

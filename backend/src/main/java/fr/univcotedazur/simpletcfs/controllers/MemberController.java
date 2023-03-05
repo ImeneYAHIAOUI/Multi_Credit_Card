@@ -59,7 +59,7 @@ public class MemberController {
         } catch (AlreadyExistingMemberException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail())));
+                    .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail()).orElse(null)));
         } catch (MissingInformationException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
         } catch (UnderAgeException e) {
@@ -70,7 +70,7 @@ public class MemberController {
     @PostMapping(path = "parking", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<ParkingDTO> startParkingTime(@RequestBody @Valid ParkingDTO ParkingDTO)
     {
-        MemberAccount memberAccount = memberManager.findByMail(ParkingDTO.getMail());
+        MemberAccount memberAccount = memberManager.findByMail(ParkingDTO.getMail()).orElse(null);
         if(memberAccount == null)
         {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not found"));

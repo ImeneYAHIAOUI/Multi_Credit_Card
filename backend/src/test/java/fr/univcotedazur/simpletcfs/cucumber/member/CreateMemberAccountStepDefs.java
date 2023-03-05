@@ -1,4 +1,4 @@
-package fr.univcotedazur.simpletcfs.cucumber;
+package fr.univcotedazur.simpletcfs.cucumber.member;
 
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
@@ -7,7 +7,6 @@ import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
-import fr.univcotedazur.simpletcfs.repositories.MemberAccountRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -50,7 +49,7 @@ public class CreateMemberAccountStepDefs {
     @And("the mail {string}")
     public void with_mail(String mail) {
         try {
-            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com"));
+            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com").orElse(null));
         } catch (AccountNotFoundException ignored) {
         }
         this.mail = mail;
@@ -69,7 +68,7 @@ public class CreateMemberAccountStepDefs {
     @Then("this account is created")
     public void the_member_creates_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findMember(memberAccount.getId()),memberAccount);
+        assertEquals(memberFinder.findMember(memberAccount.getId()).get().getId(),memberAccount.getId());
         memberHandler.deleteAccount(memberAccount);
     }
 
