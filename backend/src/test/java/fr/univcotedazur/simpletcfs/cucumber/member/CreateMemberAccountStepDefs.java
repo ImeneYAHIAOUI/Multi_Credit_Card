@@ -11,8 +11,6 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -68,7 +66,7 @@ public class CreateMemberAccountStepDefs {
     @Then("this account is created")
     public void the_member_creates_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findMember(memberAccount.getId()).get().getId(),memberAccount.getId());
+        assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
         memberHandler.deleteAccount(memberAccount);
     }
 

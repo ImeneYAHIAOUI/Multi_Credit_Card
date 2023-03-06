@@ -51,7 +51,7 @@ public class TransactionHandlerTest {
         assertNull(memberFinder.findByMail(mail).orElse(null));
 
          account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(account.getId()));
+        assertNotNull(memberFinder.findById(account.getId()));
 
     }
     @Test
@@ -129,7 +129,7 @@ public class TransactionHandlerTest {
         purchaseOfJohn=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         assertNull(memberFinder.findByMail("john.d@gmail.com").orElse(null));
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(john.getId()));
+        assertNotNull(memberFinder.findById(john.getId()));
         assertEquals(0, john.getPoints());
         creditCardOfJohn=new CreditCard("1234567890123456","John", LocalDate.parse("11/04/2025", formatter),"123");
         // Mocking the bank proxy
@@ -145,7 +145,7 @@ public class TransactionHandlerTest {
         Product product=new Product(UUID.randomUUID(),"cake",1.0,10);
         purchaseOfPat=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product,5)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(pat.getId()));
+        assertNotNull(memberFinder.findById(pat.getId()));
         creditCardOfPat=new CreditCard("1234567999123456","Pat", LocalDate.parse("11/04/2028", formatter),"123");
         // Mocking the bank proxy
         when(bankMock.pay(eq(creditCardOfPat), anyDouble())).thenReturn(false);

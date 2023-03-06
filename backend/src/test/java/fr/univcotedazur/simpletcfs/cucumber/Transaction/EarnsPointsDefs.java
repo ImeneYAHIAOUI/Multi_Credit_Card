@@ -51,7 +51,7 @@ public class EarnsPointsDefs {
         password="123456";
         birthDate = LocalDate.parse("01/01/2000",formatter);
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findMember(memberAccount.getId()).get().getId(),memberAccount.getId());
+        assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
         card=new CreditCard("1234567890123456", "John Doe",  LocalDate.parse("01/01/2030",formatter), "123");
     }
 

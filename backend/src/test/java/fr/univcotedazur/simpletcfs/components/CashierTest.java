@@ -69,9 +69,9 @@ class CashierTest {
         assertNull(memberFinder.findByMail("john.d@gmail.com").orElse(null));
 
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(john.getId()).orElse(null));
+        assertNotNull(memberFinder.findById(john.getId()).orElse(null));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(pat.getId()).orElse(null));
+        assertNotNull(memberFinder.findById(pat.getId()).orElse(null));
         creditCardOfJohn=new CreditCard("1234567890123456","John", LocalDate.parse("11/04/2025", formatter),"123");
         creditCardOfPat=new CreditCard("1234567999123456","Pat", LocalDate.parse("11/04/2028", formatter),"123");
         // Mocking the bank proxy

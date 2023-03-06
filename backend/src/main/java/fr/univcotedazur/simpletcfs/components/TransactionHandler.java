@@ -33,7 +33,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
         return transactionRepository.findById(id);
     }
     public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
-        if(memberAccount.getId() == null || memberFinder.findMember(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
             payment.payment(purchase,card);
             purchase.setMemberAccount(memberAccount);
@@ -45,7 +45,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
         }
     }
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
-        if(memberAccount.getId() == null || memberFinder.findMember(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
             if(memberAccount.getStatus()!=usePoint.getGift().RequiredStatus||
                     StreamSupport.stream(transactionRepository.findAll().spliterator(), false)

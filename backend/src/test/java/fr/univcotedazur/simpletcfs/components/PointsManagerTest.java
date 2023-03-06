@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +42,7 @@ public class PointsManagerTest {
         catch (AlreadyExistingMemberException e){
             account = memberFinder.findByMail(mail).get();
         }
-        assertNotNull(memberFinder.findMember(account.getId()).orElse(null));
+        assertNotNull(memberFinder.findById(account.getId()).orElse(null));
     }
     @Test
     public void removePointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{

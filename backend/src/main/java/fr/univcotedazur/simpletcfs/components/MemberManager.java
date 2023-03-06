@@ -61,13 +61,13 @@ public class MemberManager implements MemberHandler, MemberFinder {
 
     @Override
     public void archiveAccount(MemberAccount memberAccount) throws AccountNotFoundException {
-        if(memberAccount.getId() == null || findMember(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         memberAccount.setStatus(AccountStatus.EXPIRED);
     }
 
     @Override
     public void restoreAccount(MemberAccount memberAccount) throws AccountNotFoundException {
-        if(memberAccount.getId() == null || findMember(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         memberAccount.setStatus(AccountStatus.REGULAR);
     }
 
@@ -83,7 +83,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
 
     @Override
     public void updateAccount(MemberAccount memberAccount, Form form) throws AccountNotFoundException {
-        if(memberAccount.getId() == null || findMember(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         if (form.getName() != null)
             memberAccount.setName(form.getName());
         if(form.getPassword() != null)
@@ -107,12 +107,12 @@ public class MemberManager implements MemberHandler, MemberFinder {
 
     @Override
     public void updateAccountStatus(MemberAccount memberAccount, AccountStatus status) throws AccountNotFoundException {
-        if(memberAccount.getId() == null || findMember(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
-        findMember(memberAccount.getId()).get().setStatus(status);
+        if(memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        findById(memberAccount.getId()).get().setStatus(status);
     }
 
     @Override
-    public Optional<MemberAccount> findMember(Long id) {
+    public Optional<MemberAccount> findById(Long id) {
         return memberRepository.findById(id);
     }
 

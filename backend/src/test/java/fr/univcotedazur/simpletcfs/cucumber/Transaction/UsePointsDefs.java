@@ -52,7 +52,7 @@ public class UsePointsDefs {
         password="123456";
         birthDate = LocalDate.parse("01/01/2000",formatter);
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findMember(memberAccount.getId()).get().getId(),memberAccount.getId());
+        assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
          transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),memberAccount,null);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);

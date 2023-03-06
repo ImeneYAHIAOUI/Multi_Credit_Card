@@ -5,11 +5,8 @@ import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ParkingHandler;
-import fr.univcotedazur.simpletcfs.interfaces.TransactionProcessor;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.TestPropertySource;
@@ -24,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 import static org.awaitility.Awaitility.await;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -64,7 +60,7 @@ public class MemberManagerTests {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         assertNull(memberFinder.findByMail("John.Doe@mail.com").orElse(null));
         MemberAccount account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(account.getId()));
+        assertNotNull(memberFinder.findById(account.getId()));
         assertThrows(AlreadyExistingMemberException.class, () -> memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter)));
         assertThrows(MissingInformationException.class, () -> memberHandler.createAccount(null, "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter)));
         assertThrows(MissingInformationException.class, () -> memberHandler.createAccount("John Doe", null, "password", LocalDate.parse("11/04/2001", formatter)));
@@ -98,9 +94,9 @@ public class MemberManagerTests {
     public void testDeleteAccount() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException, AccountNotFoundException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findMember(account.getId()));
+        assertNotNull(memberFinder.findById(account.getId()));
         memberHandler.deleteAccount(account);
-        assertNull(memberFinder.findMember(account.getId()).orElse(null));
+        assertNull(memberFinder.findById(account.getId()).orElse(null));
     }
 
     @Test
