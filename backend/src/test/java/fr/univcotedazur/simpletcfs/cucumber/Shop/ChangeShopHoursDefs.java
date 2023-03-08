@@ -29,7 +29,7 @@ public class ChangeShopHoursDefs {
         planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
         planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-        shop=new Shop(UUID.randomUUID(),"Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());    }
+        shop=new Shop("Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());    }
 
     @When("The shop modifies its operating hours to be open monday between from {int} am and  {int} pm")
     public void the_shop_wants_to_change_the_shop_hours_for_monday(int open,int close) {

@@ -58,8 +58,9 @@ public class EarnsPointsDefs {
 
     @When("the client makes a valid purchase")
     public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException {
-        Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),memberAccount,null,List.of(new Item(product3,2)));
+        Product product3=new Product("ring",1.0,10);
+
+        Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
         when(bankMock.pay(any(CreditCard.class), anyDouble())).thenReturn(true);
         transactionHandler.processPurchase(memberAccount,tran,card );
     }
@@ -70,8 +71,8 @@ public class EarnsPointsDefs {
     @When("the client makes an invalid purchase")
     public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException {
         assertEquals(0,memberAccount.getPoints());
-        Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        Purchase tran=new Purchase(LocalDate.now(),UUID.randomUUID(),memberAccount,null,List.of(new Item(product3,2)));
+        Product product3=new Product("ring",1.0,10);
+        Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
         when(bankMock.pay(any(CreditCard.class), anyDouble())).thenReturn(false);
         Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchase(memberAccount,tran,card));
     }

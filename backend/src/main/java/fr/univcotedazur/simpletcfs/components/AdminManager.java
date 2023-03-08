@@ -63,8 +63,11 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
             throw new MissingInformationException();
         }
         //TODO mettre le planning correctement
-        Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList,giftList);
-        shopRepository.save(shop,shop.getId());
+        Shop shop = new Shop( name, address, planning,productList,giftList);
+        for ( Map.Entry<WeekDay, Planning> plan : planning.entrySet()) {
+          plan.getValue().setShop(shop);
+        }
+        shopRepository.save(shop);
         return shop;
     }
 

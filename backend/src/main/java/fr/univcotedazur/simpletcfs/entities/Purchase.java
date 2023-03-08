@@ -2,10 +2,14 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@PrimaryKeyJoinColumn( name = "idTransaction" )
 public class Purchase extends Transaction{
 
     public  int earnedPoints;
@@ -13,11 +17,19 @@ public class Purchase extends Transaction{
 
     public double totalPrice;
 
+    @OneToOne
     public CreditCard creditCard;
 
-    public List<Item> item;
-    public Purchase(LocalDate date, UUID id, MemberAccount memberAccount, Shop shop,List<Item> items){
-        super(date,id,memberAccount,shop);
+    @OneToMany( cascade = CascadeType.ALL)
+    public List<Item> item=new ArrayList<>();
+
+    public Purchase() {
+        super();
+
+    }
+
+    public Purchase(LocalDate date, MemberAccount memberAccount, List<Item> items){
+        super(date,memberAccount);
         this.item = items;
         this.earnedPoints = 0;
         this.totalPrice = 0;

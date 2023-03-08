@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -98,7 +99,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
     @Override
     public void updateAccountsStatus() {
         for (MemberAccount  memberAccount : memberRepository.findAll()) {
-            if(StreamSupport.stream(transactionRepository.findAll().spliterator(), false).filter(t2 -> t2.getDate().isAfter(LocalDate.now().minusWeeks(1))).filter(t -> t.getMemberAccount().getId().equals(memberAccount.getId())).count() >= Integer.parseInt(Objects.requireNonNull(env.getProperty("VFP.MinPurchasesNumber"))))
+            if(StreamSupport.stream(transactionRepository.findAll().spliterator(), false).filter(t2 -> ((Transaction)t2).getDate().isAfter(LocalDate.now().minusWeeks(1))).filter(t -> ((Transaction)t).getMemberAccount().getId().equals(memberAccount.getId())).count() >= Integer.parseInt(Objects.requireNonNull(env.getProperty("VFP.MinPurchasesNumber"))))
                 memberAccount.setStatus(AccountStatus.VFP);
             else
                 memberAccount.setStatus(AccountStatus.REGULAR);

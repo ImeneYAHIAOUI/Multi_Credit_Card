@@ -1,29 +1,47 @@
 package fr.univcotedazur.simpletcfs.entities;
 
 
+import org.hibernate.annotations.ManyToAny;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
+@Entity
 public class Product {
 
 
+    @NotBlank
     private String name;
-    private UUID id;
+    @Id
+    @GeneratedValue
+    @Column(name="Product_id", nullable=false)
+    private Long id;
 
     private double price;
-
+    @ManyToOne
+    @JoinColumn(name="Shop_id", nullable=false)
+    private Shop shop;
     private int points;
-    public Product(UUID id, String name, double price, int points) {
-        this.id = id;
+    public Product( String name, double price, int points) {
+
         this.name = name;
         this.price = price;
         this.points = points;
+    }
+    public Product() {
+
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public String getName() {
         return name;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 

@@ -22,7 +22,7 @@ public class Catalog implements CatalogEditor, ShopCatalogEditor, CatalogFinder 
         this.catalogRepository = catalogRepository;
     }
     @Override
-    public Optional<Product> findProductById(UUID id){
+    public Optional<Product> findProductById(Long id){
         return catalogRepository.findById(id);
     }
     @Override
@@ -50,12 +50,13 @@ public class Catalog implements CatalogEditor, ShopCatalogEditor, CatalogFinder 
             }
     }
     public void addProductToCatalog(Product product) {
-        if(!catalogRepository.existsById(product.getId()))
-            catalogRepository.save(product, product.getId());
+            catalogRepository.save(product);
     }
     public void removeProductFromCatalog(Product product) {
-        if(catalogRepository.existsById(product.getId()))
+        if(product.getId()!=null){
             catalogRepository.deleteById(product.getId());
+        }
+
     }
 
 }

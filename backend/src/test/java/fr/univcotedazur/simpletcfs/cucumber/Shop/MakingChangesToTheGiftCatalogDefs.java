@@ -31,7 +31,7 @@ public class MakingChangesToTheGiftCatalogDefs {
         planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
         planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-        shop=new Shop(UUID.randomUUID(),"Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
+        shop=new Shop("Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
         assertTrue(shop.getGiftList().isEmpty());
     }
     @When("the shop adds a gift to the catalog")
@@ -54,7 +54,7 @@ public class MakingChangesToTheGiftCatalogDefs {
         planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
         planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-        shop=new Shop(UUID.randomUUID(),"Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
+        shop=new Shop("Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
         gift1=new Gift();
         gift1.setRequiredStatus(AccountStatus.VFP);
         gift1.setPointsNeeded(100);

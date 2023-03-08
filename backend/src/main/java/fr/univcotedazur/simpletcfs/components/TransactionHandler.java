@@ -29,7 +29,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
         this.memberFinder = memberFinder;
     }
 
-    public Optional<Transaction> findTransactionById(UUID id){
+    public Optional<Transaction> findTransactionById(Long id){
         return transactionRepository.findById(id);
     }
     public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
@@ -39,24 +39,21 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
             purchase.setMemberAccount(memberAccount);
             purchase.setDate(LocalDate.now());
             pointTrader.addPoints(memberAccount,purchase);
-            UUID id=UUID.randomUUID();
-            purchase.setId(id);
-            transactionRepository.save(purchase,id);
+            transactionRepository.save(purchase);
         }
     }
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
         if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
             if(memberAccount.getStatus()!=usePoint.getGift().RequiredStatus||
-                    StreamSupport.stream(transactionRepository.findAll().spliterator(), false)
-                            .filter(transaction -> transaction.getMemberAccount().equals(memberAccount))
-                            .noneMatch(transaction -> transaction instanceof Purchase)){
+                    transactionRepository.findAll().stream().
+                            filter(transaction -> transaction.getMemberAccount().getId().equals(memberAccount.getId()))
+                            .noneMatch(transaction -> transaction instanceof Purchase))
+                 {
                 throw new DeclinedTransactionException();
             }else{
                 pointTrader.removePoints(memberAccount,usePoint);
-                UUID id=UUID.randomUUID();
-                usePoint.setId(id);
-                transactionRepository.save(usePoint, id);
+                transactionRepository.save(usePoint);
             }
 
         }

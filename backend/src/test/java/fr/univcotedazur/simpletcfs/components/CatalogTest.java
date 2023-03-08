@@ -24,6 +24,8 @@ public class CatalogTest {
     private ShopRegistration shopRegistration;
     @Autowired
     private Catalog catalog;
+    @Autowired
+    CatalogRepository catalogRepository;
     private Shop shop;
     private Product product;
     private Product product1;
@@ -36,20 +38,21 @@ public class CatalogTest {
         planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
         planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-         product=new Product(UUID.randomUUID(),"ring",1.0,0);
-         product1=new Product(UUID.randomUUID(),"Cookie",2.0,0);
-         product2=new Product(UUID.randomUUID(),"Cake",1.0,0);
-         product3=new Product(UUID.randomUUID(),"ring",1.0,0);
-        product4=new Product(UUID.randomUUID(),"chocolat",1.5,0);
+         product=new Product("ring",1.0,0);
+         product1=new Product("Cookie",2.0,0);
+         product2=new Product("Cake",1.0,0);
+         product3=new Product("ring",1.0,0);
+        product4=new Product("chocolat",1.5,0);
+        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, new ArrayList<>(),null);
+        product.setShop(shop);
+        product1.setShop(shop);
+        product2.setShop(shop);
         catalog.addProductToCatalog( product);
         catalog.addProductToCatalog( product1);
         catalog.addProductToCatalog( product2);
-        List<Product> productList=new ArrayList<>();
-        productList.add(product);
-        productList.add(product1);
-        productList.add(product2);
-        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, productList,null);
-
+        shop.addProduct(product);
+        shop.addProduct(product1);
+        shop.addProduct(product2);
     }
 
     @Test
@@ -57,17 +60,24 @@ public class CatalogTest {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
+        product3.setShop(shop);
+        catalogRepository.save(product3);
         catalog.editCatalog(List.of(product3),List.of(product));
         assertTrue(catalog.findProductById(product.getId()).isEmpty());
         assertTrue(catalog.findProductById(product3.getId()).isPresent());
     }
     @Test
     public void  editCatalogTest1() {
+
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
+        product3.setShop(shop);
+        catalogRepository.save(product3);
         catalog.editCatalog(List.of(product),List.of(product3));
         assertTrue(catalog.findProductById(product3.getId()).isEmpty());
+        product4.setShop(shop);
+        shop.addProduct(product4);
         catalog.editCatalog(List.of(product4),null);
         assertTrue(catalog.findProductById(product4.getId()).isPresent());
     }
@@ -80,6 +90,7 @@ public class CatalogTest {
         assertTrue(shop.getProductList().contains(product1));
         assertTrue(shop.getProductList().contains(product2));
         assertTrue(shop.getProductList().contains(product));
+        product3.setShop(shop);
         catalog.editShopCatalog(shop,List.of(product3),List.of(product));
         assertFalse(shop.getProductList().contains(product));
         assertTrue(shop.getProductList().contains(product3));
@@ -94,6 +105,7 @@ public class CatalogTest {
         assertTrue(shop.getProductList().contains(product1));
         assertTrue(shop.getProductList().contains(product2));
         assertTrue(shop.getProductList().contains(product));
+        product3.setShop(shop);
         catalog.editShopCatalog(shop,List.of(product3),null);
         assertTrue(shop.getProductList().contains(product3));
     }

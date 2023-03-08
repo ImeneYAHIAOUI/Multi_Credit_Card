@@ -3,6 +3,7 @@ package fr.univcotedazur.simpletcfs.cucumber.member;
 import fr.univcotedazur.simpletcfs.entities.AccountStatus;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.entities.Purchase;
+import fr.univcotedazur.simpletcfs.entities.Shop;
 import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
@@ -71,7 +72,7 @@ public class BecomeVFPStepDefs {
     @And("the member makes {int} purchases")
     public void theMemberMakesPurchases(int nbPurchases) {
         for (int i = 0; i < nbPurchases; i++) {
-            transactionRepository.save(new Purchase(LocalDate.now(), UUID.randomUUID(),memberFinder.findById(memberAccount.getId()).orElse(null),null,new ArrayList<>()),UUID.randomUUID());
+            transactionRepository.save(new Purchase(LocalDate.now(), memberFinder.findById(memberAccount.getId()).orElse(null),new ArrayList<>()));
         }
     }
 

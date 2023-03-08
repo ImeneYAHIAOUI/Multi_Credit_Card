@@ -61,11 +61,11 @@ class CashierTest {
     @BeforeEach
     public void setUp() throws Exception {
         memberRepository.deleteAll();
-        Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        purchaseOfJohn=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
+        Product product3=new Product("ring",1.0,10);
+        purchaseOfJohn=new Purchase(LocalDate.now(),account,List.of(new Item(product3,2)));
 
-        Product product=new Product(UUID.randomUUID(),"cake",1.0,10);
-        purchaseOfPat=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product,5)));
+        Product product=new Product("cake",1.0,10);
+        purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
         assertNull(memberFinder.findByMail("john.d@gmail.com").orElse(null));
 
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));

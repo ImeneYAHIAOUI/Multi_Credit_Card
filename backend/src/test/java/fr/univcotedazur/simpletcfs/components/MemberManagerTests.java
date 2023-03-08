@@ -119,14 +119,14 @@ public class MemberManagerTests {
         memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         memberHandler.createAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
 
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),new ArrayList<>()));
 
 
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
@@ -146,14 +146,14 @@ public class MemberManagerTests {
         memberHandler.createAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         memberHandler.updateAccountStatus(memberFinder.findByMail("John.Doe2@mail.com").orElse(null),AccountStatus.VFP);
 
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
-        transactionRepository.save(new Purchase(LocalDate.now(),UUID.randomUUID(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),null,new ArrayList<>()),UUID.randomUUID());
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),new ArrayList<>()));
+        transactionRepository.save(new Purchase(LocalDate.now(),memberFinder.findByMail("John.Doe2@mail.com").orElse(null),new ArrayList<>()));
 
 
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->

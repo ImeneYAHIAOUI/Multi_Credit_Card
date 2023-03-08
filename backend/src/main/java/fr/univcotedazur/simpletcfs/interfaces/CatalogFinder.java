@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CatalogFinder {
-    public Optional<Product> findProductById(UUID id);
+    public Optional<Product> findProductById(Long id);
 
 }

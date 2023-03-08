@@ -18,6 +18,7 @@ import java.util.UUID;
 
     @Id
     @GeneratedValue
+    @Column(name="Account_id", nullable=false)
     private Long id;
 
     @NotBlank

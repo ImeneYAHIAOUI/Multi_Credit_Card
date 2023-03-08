@@ -44,12 +44,12 @@ public class ShopController {
         // from the request body. This is because the @Valid annotation
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(convertShopToDto(new Shop(UUID.randomUUID(),shopDTO.getName(),shopDTO.getAddress(), shopDTO.getPlanning(),shopDTO.getProductList(),shopDTO.getGiftList()
+                .body(convertShopToDto(new Shop(shopDTO.getName(),shopDTO.getAddress(), shopDTO.getPlanning(),shopDTO.getProductList(),shopDTO.getGiftList()
                 )));
     }
 
     @GetMapping("/{shopId}")
-    public ResponseEntity<String> getTransactionById(@PathVariable("shopId") UUID shopId) {
+    public ResponseEntity<String> getTransactionById(@PathVariable("shopId") Long shopId) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");
@@ -57,7 +57,7 @@ public class ShopController {
         return ResponseEntity.ok().body(shop.toString());
     }
     @PostMapping(path = "/{shopId}/address", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateCustomerCart(@PathVariable("shopId") UUID shopId, @RequestBody String address) {
+    public ResponseEntity<String> updateCustomerCart(@PathVariable("shopId") Long shopId, @RequestBody String address) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");

@@ -16,6 +16,10 @@ public class ShopDTO {
     private String name;
     @Pattern(regexp = "^(.+)@(.+)$", message = "address should be valid")
     private String address;
+    private Long id;
+    public Long getId() {
+        return id;
+    }
     private Map<WeekDay, Planning> planning;
     private List<Product> productList;
     private List<Gift> giftList;

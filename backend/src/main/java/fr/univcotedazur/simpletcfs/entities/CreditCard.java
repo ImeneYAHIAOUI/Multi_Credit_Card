@@ -1,13 +1,31 @@
 package fr.univcotedazur.simpletcfs.entities;
 
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
 public class CreditCard {
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    private Long id;
+
     String owner;
     String number;
     LocalDate expirationDate;
     String cvv;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public CreditCard() {
+    }
     public String ToString(){
         return "Owner: " + owner + " Number: " + number + " Expiration Date: " + expirationDate + " CVV: " + cvv;
     }

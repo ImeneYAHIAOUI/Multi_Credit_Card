@@ -3,26 +3,38 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.Map;
 import java.util.UUID;
 
 
+@Entity
 public class Shop {
 
-    private UUID id;
+    @Id
+    @GeneratedValue
+    @Column(name="Shop_id", nullable=false)
+    private Long id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String address;
 
-    private Map<WeekDay, Planning> planning;
+    @OneToMany( cascade = CascadeType.ALL)
+    Map<WeekDay, Planning> planning=new HashMap<WeekDay, Planning>();
 
-    public List<Product> productList;
+    @OneToMany(cascade = CascadeType.ALL)
+    public List<Product> productList=new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    public List<Gift> giftList=new ArrayList<>();
 
-    public List<Gift> giftList;
-    public Shop(UUID id, String name, String address, Map<WeekDay, Planning> planning, List<Product> products, List<Gift> gifts) {
-        this.id = id;
+
+    public Shop(String name, String address, Map<WeekDay, Planning> planning, List<Product> products, List<Gift> gifts) {
+
         this.name = name;
         this.address = address;
         this.planning = planning;
@@ -40,8 +52,10 @@ public class Shop {
     public void removeProduct(Product product){
         productList.remove(product);
     }
-
-    public UUID getId() {
+public void addGift(Gift gift){
+        giftList.add(gift);
+    }
+    public Long getId() {
         return id;
     }
 

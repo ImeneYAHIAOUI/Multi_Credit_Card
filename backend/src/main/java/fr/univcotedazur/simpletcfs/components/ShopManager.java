@@ -60,7 +60,7 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     }
     @Override
-    public Optional<Shop> findShopById(UUID id){
+    public Optional<Shop> findShopById(Long id){
         return shopRepository.findById(id);
     }
 

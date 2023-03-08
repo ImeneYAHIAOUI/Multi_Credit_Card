@@ -32,7 +32,7 @@ public class TransactionController {
         return errorDTO;
     }
     @GetMapping("/{TransactionId}")
-    public ResponseEntity<String> getTransactionById(@PathVariable("transactionId") UUID transactionId) {
+    public ResponseEntity<String> getTransactionById(@PathVariable("transactionId") Long transactionId) {
         Optional<Transaction> transaction = transactionHandler.findTransactionById(transactionId);
         if(transaction.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("transactionId " + transactionId + " unknown");

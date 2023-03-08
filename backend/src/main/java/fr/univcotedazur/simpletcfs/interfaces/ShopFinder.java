@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface ShopFinder {
 
 
-    Optional<Shop> findShopById(UUID id);
+    Optional<Shop> findShopById(Long id);
 }

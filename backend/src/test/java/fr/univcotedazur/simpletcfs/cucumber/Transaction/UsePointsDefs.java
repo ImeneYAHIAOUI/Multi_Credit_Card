@@ -53,16 +53,17 @@ public class UsePointsDefs {
         birthDate = LocalDate.parse("01/01/2000",formatter);
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
         assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
-         transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),memberAccount,null);
+         transaction=new UsePoints(LocalDate.now(),memberAccount);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
         transaction.setGift(gift);
         transaction.setUsedPoints(100);
         memberAccount.setStatus(AccountStatus.VFP);
-        Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        tran=new Purchase(LocalDate.now(),UUID.randomUUID(),memberAccount,null,List.of(new Item(product3,2)));
+        Product product3=new Product("ring",1.0,10);
+
+        tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
         tran.setMemberAccount(memberAccount);
-        transactionRepository.save(tran,UUID.randomUUID());
+        transactionRepository.save(tran);
 
     }
     @Given("the client has {int} points")

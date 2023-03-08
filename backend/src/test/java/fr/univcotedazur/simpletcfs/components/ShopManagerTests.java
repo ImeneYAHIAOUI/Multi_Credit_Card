@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+
 public class ShopManagerTests {
     @Autowired
     private ShopManager shopManager;
@@ -32,7 +34,8 @@ public class ShopManagerTests {
         planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
         planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
         planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-         shop=shopRegistration.addShop("A", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
+        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
+
     }
 
     @Test
