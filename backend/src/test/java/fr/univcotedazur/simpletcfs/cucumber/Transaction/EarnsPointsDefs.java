@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 
+@SpringBootTest
 public class EarnsPointsDefs {
     MemberAccount memberAccount;
     String name;
