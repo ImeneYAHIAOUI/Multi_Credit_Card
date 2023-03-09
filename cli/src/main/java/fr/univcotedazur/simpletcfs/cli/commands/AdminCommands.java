@@ -21,14 +21,14 @@ public class AdminCommands {
         this.cliContext = cliContext;
     }
 
-    @ShellMethod("Register a member in the multi-credit backend (register MEMBER_NAME MEMBER_MAIL MEMBER_PASSWORD MEMBER_BIRTHDATE)")
+    @ShellMethod("Register an admin in the multi-credit backend (register ADMIN_NAME ADMIN_MAIL ADMIN_PASSWORD ADMIN_BIRTHDATE)")
     public CliAdmin register(String name, String mail, String password, String birthDate) {
         CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(name,mail,password,birthDate), CliAdmin.class);
         cliContext.getAdminAccounts().put(res.getName(), res);
         return res;
     }
 
-    @ShellMethod("List all members")
+    @ShellMethod("List all admins")
     public String admins() {
         return cliContext.printAdminAccounts();
     }
