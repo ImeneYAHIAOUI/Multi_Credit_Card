@@ -15,21 +15,15 @@ import java.util.UUID;
 
 @Entity
  public class Account {
-
     @Id
     @GeneratedValue
     @Column(name="Account_id", nullable=false)
     private Long id;
-
     @NotBlank
     private String name;
-
     private String mail;
-
     private String password;
-
     private LocalDate birthDate;
-
      public Account( String name, String mail, String password, LocalDate birthDate) {
          this.name = name;
          this.mail = mail;

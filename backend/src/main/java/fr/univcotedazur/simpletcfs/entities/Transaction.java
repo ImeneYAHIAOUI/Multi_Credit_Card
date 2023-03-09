@@ -13,9 +13,9 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Transaction {
     LocalDate date;
-
     @Id
     @GeneratedValue
+    @Column(name="Transaction_id", nullable=false)
     private Long idTransaction ;
     @ManyToOne
     @NotNull

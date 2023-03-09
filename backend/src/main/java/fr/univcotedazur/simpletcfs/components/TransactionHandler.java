@@ -32,7 +32,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
     public Optional<Transaction> findTransactionById(Long id){
         return transactionRepository.findById(id);
     }
-    public void processPurchase(MemberAccount memberAccount, Purchase purchase, CreditCard card) throws PaymentException, AccountNotFoundException{
+    public void processPurchase(MemberAccount memberAccount, Purchase purchase, String card) throws PaymentException, AccountNotFoundException{
         if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
             payment.payment(purchase,card);

@@ -9,18 +9,10 @@ import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Entity
+@Embeddable
 public class MembershipCard {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     private String number;
-
     private boolean isValide;
-
-
     private LocalDate creationDate;
     private LocalDate expirationDate;
 
@@ -28,13 +20,7 @@ public class MembershipCard {
 
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public MembershipCard( LocalDate creationDate, LocalDate expirationDate) {
         this.number = String.valueOf(ThreadLocalRandom.current().nextInt(100000000, 1000000000));

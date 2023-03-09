@@ -40,7 +40,7 @@ public class EarnsPointsDefs {
     TransactionHandler transactionHandler;
     @Autowired
     MemberRepository memberAccountRepository;
-    CreditCard card;
+    String card;
     @Autowired
     private Bank bankMock;
     @Given("a client has an account in the system")
@@ -52,7 +52,6 @@ public class EarnsPointsDefs {
         birthDate = LocalDate.parse("01/01/2000",formatter);
         memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
         assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
-        card=new CreditCard("1234567890123456", "John Doe",  LocalDate.parse("01/01/2030",formatter), "123");
     }
 
 
@@ -61,7 +60,7 @@ public class EarnsPointsDefs {
         Product product3=new Product("ring",1.0,10);
 
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        when(bankMock.pay(any(CreditCard.class), anyDouble())).thenReturn(true);
+        when(bankMock.pay("1234567999123456", anyDouble())).thenReturn(true);
         transactionHandler.processPurchase(memberAccount,tran,card );
     }
     @Then("the client earns points")
@@ -73,7 +72,7 @@ public class EarnsPointsDefs {
         assertEquals(0,memberAccount.getPoints());
         Product product3=new Product("ring",1.0,10);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        when(bankMock.pay(any(CreditCard.class), anyDouble())).thenReturn(false);
+        when(bankMock.pay("1234567999123456", anyDouble())).thenReturn(false);
         Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchase(memberAccount,tran,card));
     }
     @Then("the client doesn't earn points")

@@ -17,7 +17,6 @@ public class Product {
     @GeneratedValue
     @Column(name="Product_id", nullable=false)
     private Long id;
-
     private double price;
     @ManyToOne
     @JoinColumn(name="Shop_id", nullable=false)

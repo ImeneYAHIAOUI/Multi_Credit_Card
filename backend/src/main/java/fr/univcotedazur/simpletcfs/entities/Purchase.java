@@ -9,35 +9,34 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@PrimaryKeyJoinColumn( name = "idTransaction" )
 public class Purchase extends Transaction{
-
     public  int earnedPoints;
-
-
     public double totalPrice;
-
-    @OneToOne
-    public CreditCard creditCard;
-
-    @OneToMany( cascade = CascadeType.ALL)
+    private String creditCardNumber;
+    @OneToMany( targetEntity=Item.class, mappedBy="purchase" ,cascade = CascadeType.ALL)
     public List<Item> item=new ArrayList<>();
-
     public Purchase() {
         super();
-
     }
-
-    public Purchase(LocalDate date, MemberAccount memberAccount, List<Item> items){
+    public Purchase(LocalDate date, MemberAccount memberAccount, List<Item> items) {
         super(date,memberAccount);
-        this.item = items;
         this.earnedPoints = 0;
         this.totalPrice = 0;
         items.forEach(item -> {
+            this.item.add(item);
             this.earnedPoints += item.getProduct().getPoints() * item.getAmount();
             this.totalPrice += item.getProduct().getPrice() * item.getAmount();
         });
+    }
 
+  public void addItem(Item item){
+        this.item.add(item);
+        this.earnedPoints += item.getProduct().getPoints() * item.getAmount();
+        this.totalPrice += item.getProduct().getPrice() * item.getAmount();
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        this.creditCardNumber = creditCardNumber;
     }
 
     public int getEarnedPoints() {
@@ -48,9 +47,6 @@ public class Purchase extends Transaction{
         return totalPrice;
     }
 
-    public CreditCard getCreditCard() {
-        return creditCard;
-    }
 
     public List<Item> getItem() {
         return item;
@@ -64,9 +60,6 @@ public class Purchase extends Transaction{
         this.totalPrice = totalPrice;
     }
 
-    public void setCreditCard(CreditCard creditCard) {
-        this.creditCard = creditCard;
-    }
 
     public void setItem(List<Item> item) {
         this.item = item;

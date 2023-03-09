@@ -51,10 +51,8 @@ class CashierTest {
     TransactionHandler transactionHandler;
     @Autowired
     TransactionRepository transactionRepository;
+Purchase purchaseOfJohn;
 
-    CreditCard creditCardOfJohn;
-    CreditCard creditCardOfPat;
-    Purchase purchaseOfJohn;
     Purchase purchaseOfPat;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
@@ -72,24 +70,23 @@ class CashierTest {
         assertNotNull(memberFinder.findById(john.getId()).orElse(null));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findById(pat.getId()).orElse(null));
-        creditCardOfJohn=new CreditCard("1234567890123456","John", LocalDate.parse("11/04/2025", formatter),"123");
-        creditCardOfPat=new CreditCard("1234567999123456","Pat", LocalDate.parse("11/04/2028", formatter),"123");
+
         // Mocking the bank proxy
-        when(bankMock.pay(eq(creditCardOfJohn), anyDouble())).thenReturn(true);
-        when(bankMock.pay(eq(creditCardOfPat), anyDouble())).thenReturn(false);
+        when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(true);
+        when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(false);
     }
 
     @Test
     public void processToPayment() throws Exception {
         // paying order
-        cashier.payment(purchaseOfJohn, creditCardOfJohn);
+        cashier.payment(purchaseOfJohn, "1234567999123456");
         assertNotNull(transactionRepository.existsById(purchaseOfJohn.getId()));
     }
     @Test
     public void processToPayment1()  {
-        creditCardOfJohn.setExpirationDate(LocalDate.parse("11/04/2000", formatter));
+        //creditCardOfJohn.setExpirationDate(LocalDate.parse("11/04/2000", formatter));
         Assertions.assertThrows(PaymentException.class, () -> {
-            cashier.payment(purchaseOfJohn, creditCardOfJohn);
+            cashier.payment(purchaseOfJohn, "1234567999123456");
         });
     }
     @Test
@@ -102,7 +99,7 @@ class CashierTest {
     @Test
     public void identifyPaymentError() {
         Assertions.assertThrows(PaymentException.class, () -> {
-            cashier.payment(purchaseOfPat, creditCardOfPat);
+            cashier.payment(purchaseOfPat, "1234567999123456");
         });
     }
 }

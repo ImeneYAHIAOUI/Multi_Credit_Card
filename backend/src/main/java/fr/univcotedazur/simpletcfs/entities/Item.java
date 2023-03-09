@@ -8,15 +8,13 @@ public class Item {
     @Id
     @GeneratedValue
     private Long id;
-
     private int amount;
-
     @OneToOne
     @JoinColumn(name = "Product_id")
     private Product product;
 
-    @ManyToOne( cascade = CascadeType.ALL)
-    @JoinColumn(name = "idTransaction")
+    @ManyToOne
+    @JoinColumn(name = "Transaction_id")
     private Purchase purchase;
     public Item() {
     }

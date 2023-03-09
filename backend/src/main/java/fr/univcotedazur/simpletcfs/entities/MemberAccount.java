@@ -12,9 +12,10 @@ import java.util.Objects;
 @Entity
 public class MemberAccount extends Account {
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Embedded
     private MembershipCard membershipCard;
-    @OneToMany
+
+    @OneToMany( targetEntity=Transaction.class, mappedBy="memberAccount" )
     List<Transaction> transactions = new ArrayList<>();
     int points;
     double balance;

@@ -27,7 +27,7 @@ public class Shop {
     @OneToMany( cascade = CascadeType.ALL)
     Map<WeekDay, Planning> planning=new HashMap<WeekDay, Planning>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     public List<Product> productList=new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL)
     public List<Gift> giftList=new ArrayList<>();

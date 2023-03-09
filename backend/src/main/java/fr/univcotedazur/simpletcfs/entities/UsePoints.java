@@ -6,12 +6,11 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@PrimaryKeyJoinColumn( name = "idTransaction" )
 public class UsePoints extends Transaction{
 
     public int usedPoints;
     @OneToOne
-    @JoinColumn( name="giftId" )
+    @JoinColumn( name="Gift_id" )
     public Gift gift;
 
     public UsePoints() {
