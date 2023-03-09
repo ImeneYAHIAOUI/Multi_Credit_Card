@@ -92,7 +92,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
             throw new UnderAgeException();
         }
         shopKeeperAccount = new ShopKeeperAccount( form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
-        shopKeeperAccountRepository.save(shopKeeperAccount, shopKeeperAccount.getId());
+        shopKeeperAccountRepository.save(shopKeeperAccount);
         return shopKeeperAccount;
     }
 
