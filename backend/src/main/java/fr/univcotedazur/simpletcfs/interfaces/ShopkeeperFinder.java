@@ -9,4 +9,6 @@ public interface ShopkeeperFinder {
     public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id);
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name);
 
+    public Optional<ShopKeeperAccount> findShopKeeperAccountByMail(String mail);
+
 }

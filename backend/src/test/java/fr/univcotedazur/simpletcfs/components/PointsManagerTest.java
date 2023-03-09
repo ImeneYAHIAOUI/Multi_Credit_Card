@@ -34,6 +34,7 @@ public class PointsManagerTest {
 
     @Autowired
     MemberHandler memberHandler;
+
     void setUp(String mail,String name)throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         assertNull(memberFinder.findByMail(mail));
@@ -44,7 +45,7 @@ public class PointsManagerTest {
     public void removePointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
         setUp("John.Doe@mail.com","John");
         account.setPoints(100);
-        UsePoints transaction=new UsePoints();
+        UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         transaction.setUsedPoints(50);
         assertDoesNotThrow(()-> pointsManager.removePoints(account,transaction));
         assertEquals(50, account.getPoints());
@@ -53,7 +54,7 @@ public class PointsManagerTest {
     public void removePointsTest1(){
         account=memberFinder.findByMail("John.Doe@mail.com");
         account.setPoints(10);
-        UsePoints transaction=new UsePoints();
+        UsePoints transaction=new UsePoints(LocalDate.now(),UUID.randomUUID(),account,null);
         transaction.setUsedPoints(50);
         assertThrows(InsufficientPointsException.class,()-> pointsManager.removePoints(account,transaction));
         assertEquals(10, account.getPoints());
@@ -64,7 +65,7 @@ public class PointsManagerTest {
         account=memberFinder.findByMail("John.Doe@mail.com");
         account.setPoints(100);
         Product product3=new Product(UUID.randomUUID(),"ring",1.0,10);
-        Purchase transaction=new Purchase(List.of(new Item(product3,2)));
+        Purchase transaction=new Purchase(LocalDate.now(),UUID.randomUUID(),account,null,List.of(new Item(product3,2)));
         assertDoesNotThrow(()-> pointsManager.addPoints(account,transaction));
         assertEquals(120, account.getPoints());
     }
