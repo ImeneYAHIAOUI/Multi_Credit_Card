@@ -121,6 +121,7 @@ docker-compose up -d
    - **Maven Integration**
    - **NodeJS**
    - **SonarQube Scanner**
+   - **Artifactory**
 6. Reboot **Jenkins** to apply the changes
 7. Configure **Tool Configuration**: *Manage Jenkins > Global Tool Configuration*
    1. **JDK**
