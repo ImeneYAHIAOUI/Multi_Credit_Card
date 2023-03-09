@@ -29,7 +29,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(path = AdminController.BASE_URI, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminController {
 
-    public static final String BASE_URI = "/members";
+    public static final String BASE_URI = "/admins";
     @Autowired
     private AdminManager adminManager;
 
@@ -50,7 +50,7 @@ public class AdminController {
         return errorDTO;
     }
 
-    @PostMapping(path = "adminRegister", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<AccountDTO> register(@RequestBody @Valid AdminDTO adminDTO) {
         // Note that there is no validation at all on the CustomerDto mapped
         try {
