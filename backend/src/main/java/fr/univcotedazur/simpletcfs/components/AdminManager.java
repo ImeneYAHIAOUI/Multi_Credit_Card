@@ -4,7 +4,10 @@ import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
-import fr.univcotedazur.simpletcfs.interfaces.*;
+import fr.univcotedazur.simpletcfs.interfaces.AdminFinder;
+import fr.univcotedazur.simpletcfs.interfaces.AdminRegistration;
+import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperRegistration;
 import fr.univcotedazur.simpletcfs.repositories.AdminAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
@@ -16,7 +19,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @Transactional
@@ -46,7 +48,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
             throw new MissingInformationException();
         }
         AdminAccount adminAccount = new AdminAccount( form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
-         adminAccountRepository.save(adminAccount, adminAccount.getId());
+         adminAccountRepository.save(adminAccount);
         return adminAccount;
     }
 
@@ -62,7 +64,6 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
-        //TODO mettre le planning correctement
         Shop shop = new Shop( name, address, planning,productList,giftList);
         for ( Map.Entry<WeekDay, Planning> plan : planning.entrySet()) {
           plan.getValue().setShop(shop);
