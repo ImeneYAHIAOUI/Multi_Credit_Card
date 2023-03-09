@@ -23,6 +23,8 @@ services:
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_USER=postgresuser
       - POSTGRES_DB=tcf-db
+    volumes:
+      - database:/var/lib/postgresql/data
 
   # A simple java CLI
   tcf-cli:
@@ -42,3 +44,6 @@ services:
   bank-system:
     image: pcollet/tcf-bank-service
     container_name: bank
+
+volumes:
+  database: {}
