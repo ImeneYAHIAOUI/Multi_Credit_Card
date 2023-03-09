@@ -190,7 +190,6 @@ public class TransactionHandlerTest {
         Product product3=new Product("ring",1.0,10);
         Shop shop=new Shop("A", "1 rue de la paix",new HashMap<>(),new ArrayList<>(),new ArrayList<>());
         product3.setShop(shop);
-
         shopRepository.save(shop);
         shop.addProduct(product3);
         catalogRepository.save(product3);
