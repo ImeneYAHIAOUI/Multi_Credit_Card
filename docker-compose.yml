@@ -6,11 +6,13 @@ services:
     container_name: server
     environment:
       - BANK_WITH_PORT=bank-system:9090
+      - ISWUPLS_WITH_PORT=iswupls:8085
       - POSTGRES_HOST=postgres:5432
-    entrypoint: "bash -c '/opt/app/wait-for-it.sh $${BANK_WITH_PORT} -- java -jar /opt/app/app.jar --bank.host.baseurl=http://$${BANK_WITH_PORT}'"
+    entrypoint: "bash -c '/opt/app/wait-for-it.sh $${POSTGRES_HOST} -- java -jar /opt/app/app.jar --bank.host.baseurl=http://$${BANK_WITH_PORT} --iswupls.host.baseurl=http://$${ISWUPLS_WITH_PORT}'"
     depends_on:
       - bank-system
       - postgres
+      - iswupls
 
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
@@ -20,6 +22,7 @@ services:
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_USER=postgresuser
       - POSTGRES_DB=tcf-db
+
 
   # A simple java CLI
   tcf-cli:
@@ -39,3 +42,12 @@ services:
   bank-system:
     image: pcollet/tcf-bank-service
     container_name: bank
+
+  # I saw where you parked last summer rust external service
+  iswupls:
+    image: equipef/rust_iswupls
+    container_name: iswupls
+    ports:
+      - "8085:8085"
+
+

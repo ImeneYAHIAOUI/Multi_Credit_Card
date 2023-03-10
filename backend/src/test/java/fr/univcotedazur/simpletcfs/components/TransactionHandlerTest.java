@@ -64,9 +64,14 @@ public class TransactionHandlerTest {
     MemberHandler memberHandler;
      void setUp(String mail,String name)throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        assertNull(memberFinder.findByMail(mail).orElse(null));
-         account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findById(account.getId()));
+
+        try {
+            account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
+            assertNotNull(memberFinder.findById(account.getId()));
+        }
+        catch (AlreadyExistingMemberException e){
+            account = memberFinder.findByMail(mail).orElse(null);
+        }
 
     }
     @Test

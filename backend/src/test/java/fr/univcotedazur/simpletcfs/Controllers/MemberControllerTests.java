@@ -125,7 +125,7 @@ public class MemberControllerTests {
     @Test
     void ParkingTests() throws Exception {
 
-        ParkingDTO parkingDTO = new ParkingDTO("123456789","John.Doe@mail.com");
+        ParkingDTO parkingDTO = new ParkingDTO("123456789","John.Doe@mail.com",1);
             mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(parkingDTO)))

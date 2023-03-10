@@ -35,6 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
+@TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *","VFP.MinPurchasesNumber=5"})
 @Commit
 public class BecomeVFPStepDefs {
     MemberAccount memberAccount;
@@ -78,8 +79,8 @@ public class BecomeVFPStepDefs {
 
     @When("the member account status gets updated")
     public void theMemberAccountStatusGetsUpdated() {
-        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
-                verify(memberHandler, Mockito.atLeast(4)).updateAccountsStatus());
+        await().atMost(6, TimeUnit.SECONDS).untilAsserted(() ->
+                verify(memberHandler, Mockito.atLeast(5)).updateAccountsStatus());
     }
 
     @Then("the member statue becomes VFP")

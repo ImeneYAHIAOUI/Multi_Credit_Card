@@ -16,7 +16,9 @@ public class ParkingManager implements ParkingHandler {
         this.iswupls = iswupls;
     }
     @Override
-    public void registerParking(String CarRegistrationNumber) {
-        iswupls.startParkingTimer(CarRegistrationNumber);
+    public void registerParking(String CarRegistrationNumber,int parkingSpotNumber) {
+        if (! iswupls.startParkingTimer(CarRegistrationNumber,parkingSpotNumber))
+            throw new RuntimeException();
+
     }
 }

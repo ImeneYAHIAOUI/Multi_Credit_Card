@@ -103,13 +103,13 @@ public class MemberManagerTests {
     public void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertThrows(NotVFPException.class, () -> memberHandler.useParkingTime(account, "123456789"));
+        assertThrows(NotVFPException.class, () -> memberHandler.useParkingTime(account, "123456789",0));
         account.setStatus(AccountStatus.VFP);
         try {
-            memberHandler.useParkingTime(account, "123456789");
+            memberHandler.useParkingTime(account, "123456789",0);
         } catch (Exception ignored) {
 
-            verify(parkingHandler).registerParking("123456789");
+            verify(parkingHandler).registerParking("123456789",0);
         }
     }
 

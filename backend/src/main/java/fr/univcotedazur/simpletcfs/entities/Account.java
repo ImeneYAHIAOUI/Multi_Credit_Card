@@ -2,18 +2,13 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
+
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
  public class Account {
     @Id
     @GeneratedValue

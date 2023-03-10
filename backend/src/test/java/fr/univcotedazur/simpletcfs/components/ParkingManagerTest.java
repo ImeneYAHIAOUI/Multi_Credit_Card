@@ -26,12 +26,12 @@ public class ParkingManagerTest {
     @Test
     void registerParkingTest(){
         try {
-            parkingHandler.registerParking("123456789");
+            parkingHandler.registerParking("123456789",0);
         }
         catch(Exception ignored){
 
         }
-        verify(iswupls).startParkingTimer("123456789");
+        verify(iswupls).startParkingTimer("123456789",0);
     }
 
 

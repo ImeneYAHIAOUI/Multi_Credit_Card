@@ -3,6 +3,7 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.time.LocalDate;

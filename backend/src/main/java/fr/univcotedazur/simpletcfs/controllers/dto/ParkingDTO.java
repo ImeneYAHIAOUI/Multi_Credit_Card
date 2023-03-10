@@ -11,12 +11,27 @@ public class ParkingDTO {
     @NotBlank(message = "car registration number should not be blank")
     private String carRegistrationNumber;
 
-
-    public ParkingDTO(String carRegistrationNumber, String mail)
-    {
-        this.carRegistrationNumber = carRegistrationNumber;
+    public void setMail(String mail) {
         this.mail = mail;
     }
+
+    public int getParkingSpotNumber() {
+        return parkingSpotNumber;
+    }
+
+    public void setParkingSpotNumber(int parkingSpotNumber) {
+        this.parkingSpotNumber = parkingSpotNumber;
+    }
+
+    private int parkingSpotNumber;
+
+
+    public ParkingDTO(String carRegistrationNumber, String mail, int parkingSpotNumber) {
+        this.carRegistrationNumber = carRegistrationNumber;
+        this.mail = mail;
+        this.parkingSpotNumber = parkingSpotNumber;
+    }
+
 
     public String getCarRegistrationNumber()
     {

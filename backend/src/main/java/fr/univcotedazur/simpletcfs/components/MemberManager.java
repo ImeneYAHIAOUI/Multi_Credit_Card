@@ -128,11 +128,11 @@ public class MemberManager implements MemberHandler, MemberFinder {
     }
 
     @Override
-    public void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber) throws NotVFPException
+    public void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber,int parkingSpot) throws NotVFPException
     {
         if(! memberAccount.getStatus().equals(AccountStatus.VFP))
             throw new NotVFPException();
-        parkingHandler.registerParking(carRegistrationNumber);
+        parkingHandler.registerParking(carRegistrationNumber, parkingSpot);
 
     }
 
