@@ -32,6 +32,7 @@ public class ShopManagerTests {
     }
 
     @Test
+    @Transactional
     public void testModifyAddress() {
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");
@@ -50,12 +51,12 @@ public class ShopManagerTests {
         shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(15,00));
         shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
-        Planning planning =shop.getPlanningList().stream().filter(plan-> plan.getDayWorking()
+        Planning planning =shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Saturday)).findFirst().get();
         assertEquals(LocalTime.of(10,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(15,00), planning.getClosingHours());
         shopManager.modifyPlanning(shop,WeekDay.Friday,LocalTime.of(11,00),LocalTime.of(16,00));
-         planning =shop.getPlanningList().stream().filter(plan-> plan.getDayWorking()
+         planning =shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Friday)).findFirst().get();
         assertEquals(LocalTime.of(11,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(16,00), planning.getClosingHours());
@@ -65,11 +66,11 @@ public class ShopManagerTests {
         shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
         shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
-        assertTrue(shop.getPlanningList().stream().filter(plan-> plan.getDayWorking()
+        assertTrue(shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Wednesday)).findFirst().isEmpty());
 
         shopManager.modifyPlanning(shop,WeekDay.Wednesday,LocalTime.of(11,00),LocalTime.of(19,00));
-        Planning planning =shop.getPlanningList().stream().filter(plan-> plan.getDayWorking()
+        Planning planning =shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Wednesday)).findFirst().get();
         assertEquals(LocalTime.of(11,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());

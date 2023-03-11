@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Embeddable
 public class MembershipCard {
     private String number;
-    private boolean isValide;
     private LocalDate creationDate;
     private LocalDate expirationDate;
 
@@ -24,7 +23,6 @@ public class MembershipCard {
 
     public MembershipCard( LocalDate creationDate, LocalDate expirationDate) {
         this.number = String.valueOf(ThreadLocalRandom.current().nextInt(100000000, 1000000000));
-        this.isValide = true;
         this.creationDate = creationDate;
         this.expirationDate = expirationDate;
     }
@@ -38,12 +36,9 @@ public class MembershipCard {
     }
 
     public boolean isValide() {
-        return isValide;
+        return LocalDate.now().isBefore(expirationDate);
     }
 
-    public void setValide(boolean valide) {
-        isValide = valide;
-    }
 
     public LocalDate getCreationDate() {
         return creationDate;

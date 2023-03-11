@@ -40,8 +40,7 @@ public class ShopController {
         // from the request body. This is because the @Valid annotation
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(convertShopToDto(new Shop(shopDTO.getName(),shopDTO.getAddress(), shopDTO.getPlanning(),shopDTO.getProductList(),shopDTO.getGiftList()
-                )));
+                .body(convertShopToDto(new Shop(shopDTO.getName(),shopDTO.getAddress())));
     }
 
     @GetMapping("/{shopId}")
@@ -53,7 +52,7 @@ public class ShopController {
         return ResponseEntity.ok().body(shop.toString());
     }
     @PostMapping(path = "/{shopId}/address", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateCustomerCart(@PathVariable("shopId") Long shopId, @RequestBody String address) {
+    public ResponseEntity<String> updateAddress(@PathVariable("shopId") Long shopId, @RequestBody String address) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");
@@ -62,6 +61,6 @@ public class ShopController {
         return ResponseEntity.ok("address of shop with id "+shopId+" is successfully updated");
     }
     private ShopDTO convertShopToDto(Shop shop) { // In more complex cases, we could use ModelMapper
-        return new ShopDTO( shop.getName(), shop.getAddress(), shop.getPlanningList(),shop.getProductList(),shop.getGiftList());
+        return new ShopDTO( shop.getName(), shop.getAddress());
     }
 }

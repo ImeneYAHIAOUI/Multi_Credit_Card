@@ -63,7 +63,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
-        Shop shop = new Shop( name, address, planning,productList,giftList);
+        Shop shop = new Shop( name, address);
         for ( Planning plan : planning) {
           plan.setShop(shop);
         }

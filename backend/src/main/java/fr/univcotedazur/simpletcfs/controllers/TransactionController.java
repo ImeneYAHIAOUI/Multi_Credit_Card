@@ -36,7 +36,6 @@ public class TransactionController {
         Optional<Transaction> transaction = transactionHandler.findTransactionById(transactionId);
         if(transaction.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("transactionId " + transactionId + " unknown");
-
         return ResponseEntity.ok().body(transaction.toString());
     }
 

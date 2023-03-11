@@ -18,15 +18,11 @@ public class ShopDTO {
     public Long getId() {
         return id;
     }
-    private List<Planning> planningList;
-    private List<Product> productList;
-    private List<Gift> giftList;
-    public ShopDTO(String name, String address, List<Planning> planning, List<Product> productList, List<Gift> giftList) {
+
+    public ShopDTO(String name, String address) {
         this.name = name;
         this.address = address;
-        this.planningList = planning;
-        this.productList = productList;
-        this.giftList = giftList;
+
     }
 
     public String getName() {
@@ -45,27 +41,5 @@ public class ShopDTO {
         this.address = address;
     }
 
-    public List<Planning> getPlanning() {
-        return planningList;
-    }
 
-    public void setPlanning(List<Planning> planning) {
-        this.planningList = planning;
-    }
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
-
-    public List<Gift> getGiftList() {
-        return giftList;
-    }
-
-    public void setGiftList(List<Gift> giftList) {
-        this.giftList = giftList;
-    }
 }

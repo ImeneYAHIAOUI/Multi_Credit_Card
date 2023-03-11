@@ -29,11 +29,13 @@ public class Catalog implements CatalogEditor, ShopCatalogEditor, CatalogFinder 
     public void editShopCatalog(Shop shop, List<Product> addedProducts, List<Product> removedProducts) {
         if(addedProducts!=null)
             for (Product product : addedProducts) {
-            shop.addProduct(product);
+                 catalogRepository.save(product);
+            //shop.addProduct(product);
             }
         if(removedProducts!=null)
             for (Product product : removedProducts) {
-            shop.removeProduct(product);
+                catalogRepository.delete(product);
+
             }
         editCatalog(addedProducts, removedProducts);
     }
@@ -54,7 +56,7 @@ public class Catalog implements CatalogEditor, ShopCatalogEditor, CatalogFinder 
     }
     public void removeProductFromCatalog(Product product) {
         if(product.getId()!=null){
-            catalogRepository.deleteById(product.getId());
+            catalogRepository.delete(product);
         }
 
     }

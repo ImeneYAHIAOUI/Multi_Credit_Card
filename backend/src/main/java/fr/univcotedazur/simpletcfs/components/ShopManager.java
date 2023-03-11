@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -35,21 +36,32 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         this.planningRepository=planningRepository;
     }
     public Optional<Planning> findPlanningByDay(Shop shop, WeekDay day){
-        return shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
+        return getPlanningList(shop).stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
+    }
+    public List<Product> getProductList(Shop shop) {
+        return catalogRepository.findAll().stream().filter(product ->
+                product.getShop().getId().equals(shop.getId())).toList();
+    }
+    public List<Gift> getGiftList(Shop shop) {
+        return giftRepository.findAll().stream().filter(gift ->
+                gift.getShop().getId().equals(shop.getId())).toList();
+    }
+    public List<Planning> getPlanningList(Shop shop) {
+        return planningRepository.findAll().stream().filter(planning ->
+                planning.getShop().getId().equals(shop.getId())).toList();
     }
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
         if(shop!= null && day!= null ){
-            if( shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
+            if( getPlanningList(shop).stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
                 if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
                     Planning planning =new Planning(day,OpeningHours, ClosingHours);
                     planning.setShop(shop);
                     planningRepository.save(planning);
-                    shop.getPlanningList().add(planning);
                 }
             }
             else{
-                Planning planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
+                Planning planning = getPlanningList(shop).stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
                 if(OpeningHours!=null && ClosingHours!=null){
                     if( OpeningHours.isBefore(ClosingHours)){
                         planning.setOpeningHours(OpeningHours);
@@ -71,31 +83,39 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
             }
         }
     }
-
+    @Override
+    public void modifyName(Shop shop, String name){
+        if(name!=null){
+            shop.setName(name);
+            shopRepository.updateName(name, shop.getId());
+        }
+    }
 
     @Override
     public void modifyAddress(Shop shop, String address){
-        if(address!=null)
+        if(address!=null){
             shop.setAddress(address);
+            shopRepository.updateAddress(address, shop.getId());
+        }
     }
     @Override
     public void addGift(Shop shop, Gift gift){
-        if(gift!=null && !shop.getGiftList().contains(gift)){
-            shop.getGiftList().add(gift);
+        if(gift!=null && !getGiftList(shop).contains(gift)){
+            getGiftList(shop).add(gift);
             giftRepository.save(gift);
         }
     }
     @Override
     public void addProduct(Shop shop, Product product){
-        if(product!=null && !shop.getProductList().contains(product)){
+        if(product!=null && !getProductList(shop).contains(product)){
             catalogRepository.save(product);
-            shop.getProductList().add(product);
+            getProductList(shop).add(product);
         }
     }
     @Override
     public void removeProduct(Shop shop, Product product)throws ProductNotFoundException {
-        if(product!=null && shop.getProductList().contains(product)) {
-            shop.getProductList().remove(product);
+        if(product!=null && getProductList(shop).contains(product)) {
+            getProductList(shop).remove(product);
             catalogRepository.delete(product);
         }
         else
@@ -104,9 +124,9 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     @Override
     public void removeGift(Shop shop, Gift gift) throws GiftNotFoundException {
         if(gift!=null ){
-            if(shop.getGiftList().contains(gift)) {
+            if(getGiftList(shop).contains(gift)) {
                 giftRepository.delete(gift);
-                shop.getGiftList().remove(gift);
+                getGiftList(shop).remove(gift);
             }else
                 throw new GiftNotFoundException();
         }

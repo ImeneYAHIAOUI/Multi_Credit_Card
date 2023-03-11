@@ -6,17 +6,19 @@ import javax.persistence.*;
 @Entity
 public class Gift {
 
+
+    @Id
+    @GeneratedValue
+    @Column(name="Gift_id", nullable=false)
+    private Long giftId;
     @ManyToOne
     @JoinColumn(name="Shop_id", nullable=false)
     public Shop shop;
-    @Id
-    @GeneratedValue
-    private Long giftId;
-    public int pointsNeeded;
+    private int pointsNeeded;
 
-    public String description;
+    private String description;
 
-    public AccountStatus RequiredStatus;
+    private AccountStatus requiredStatus;
 
     public Gift(){
 
@@ -34,6 +36,19 @@ public class Gift {
         return description;
     }
 
+    public Long getGiftId() {
+        return giftId;
+    }
+
+    public void setGiftId(Long giftId) {
+        this.giftId = giftId;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+
     public void setShop(Shop shop) {
         this.shop = shop;
     }
@@ -43,11 +58,11 @@ public class Gift {
     }
 
     public AccountStatus getRequiredStatus() {
-        return RequiredStatus;
+        return requiredStatus;
     }
 
     public void setRequiredStatus(AccountStatus requiredStatus) {
-        RequiredStatus = requiredStatus;
+        this.requiredStatus = requiredStatus;
     }
 }
 

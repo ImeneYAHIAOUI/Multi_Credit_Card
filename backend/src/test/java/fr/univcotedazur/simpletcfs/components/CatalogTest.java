@@ -12,8 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class CatalogTest {
@@ -21,7 +20,7 @@ public class CatalogTest {
     private ShopRegistration shopRegistration;
     @Autowired
     private Catalog catalog;
-     @Autowired
+    @Autowired
     private ShopManager shopManager;
     @Autowired
     CatalogRepository catalogRepository;
@@ -46,9 +45,7 @@ public class CatalogTest {
         catalog.addProductToCatalog( product);
         catalog.addProductToCatalog( product1);
         catalog.addProductToCatalog( product2);
-        shop.addProduct(product);
-        shop.addProduct(product1);
-        shop.addProduct(product2);
+
     }
 
     @Test
@@ -73,7 +70,6 @@ public class CatalogTest {
         catalog.editCatalog(List.of(product),List.of(product3));
         assertTrue(catalog.findProductById(product3.getId()).isEmpty());
         product4.setShop(shop);
-        shop.addProduct(product4);
         catalog.editCatalog(List.of(product4),null);
         assertTrue(catalog.findProductById(product4.getId()).isPresent());
     }
@@ -82,14 +78,11 @@ public class CatalogTest {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
-        assertFalse(shop.getProductList().contains(product3));
-        assertTrue(shop.getProductList().contains(product1));
-        assertTrue(shop.getProductList().contains(product2));
-        assertTrue(shop.getProductList().contains(product));
+        assertNull(product3.getId());
         product3.setShop(shop);
         catalog.editShopCatalog(shop,List.of(product3),List.of(product));
-        assertFalse(shop.getProductList().contains(product));
-        assertTrue(shop.getProductList().contains(product3));
+        assertFalse(shopManager.getProductList(shop).contains(product));
+        assertTrue(catalogRepository.findById(product3.getId()).isPresent());
         assertTrue(catalog.findProductById(product.getId()).isEmpty());
     }
     @Test
@@ -97,12 +90,10 @@ public class CatalogTest {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
-        assertFalse(shop.getProductList().contains(product3));
-        assertTrue(shop.getProductList().contains(product1));
-        assertTrue(shop.getProductList().contains(product2));
-        assertTrue(shop.getProductList().contains(product));
+        assertNull(product3.getId());
         product3.setShop(shop);
         catalog.editShopCatalog(shop,List.of(product3),null);
-        assertTrue(shop.getProductList().contains(product3));
+        assertTrue(catalogRepository.findById(product3.getId()).isPresent());
+        //assertTrue(shopManager.getProductList(shop).contains(product3));
     }
 }

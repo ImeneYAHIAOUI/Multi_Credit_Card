@@ -29,8 +29,8 @@ public class UsePoints extends Transaction{
 
     public UsePoints(LocalDate date, MemberAccount memberAccount,  int usedPoints, Gift gift) {
         super(date,memberAccount);
-    this.usedPoints = usedPoints;
-    this.gift = gift;
+        this.usedPoints = usedPoints;
+        this.gift = gift;
     }
 
     public Gift getGift() {

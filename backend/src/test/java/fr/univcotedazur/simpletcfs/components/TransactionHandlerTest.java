@@ -85,13 +85,11 @@ public class TransactionHandlerTest {
         transaction.setUsedPoints(50);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
-        shop.addGift(gift);
         shopRepository.save(shop);
         catalogRepository.save(product3);
-        shop.addProduct(product3);
         giftRepository.save(gift);
         Item item=new Item(product3,2);
         Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));
@@ -119,12 +117,12 @@ public class TransactionHandlerTest {
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
-        shop.addGift(gift);
+
         shopRepository.save(shop);
-        shop.addProduct(product3);
+
         catalogRepository.save(product3);
         giftRepository.save(gift);
         Item item=new Item(product3,2);
@@ -154,12 +152,11 @@ public class TransactionHandlerTest {
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.REGULAR);
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
-        shop.addGift(gift);
+
         shopRepository.save(shop);
-        shop.addProduct(product3);
         catalogRepository.save(product3);
         giftRepository.save(gift);
         Item item=new Item(product3,2);
@@ -188,14 +185,10 @@ public class TransactionHandlerTest {
     public void processPurchaseTest()throws Exception{
         transactionRepository.deleteAll();
         memberAccoutRepository.deleteAll();
-        catalogRepository.deleteAll();
-        shopRepository.deleteAll();
-        itemRepository.deleteAll();
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         shopRepository.save(shop);
-        shop.addProduct(product3);
         catalogRepository.save(product3);
         Item item=new Item(product3,2);
         purchaseOfJohn=new Purchase(LocalDate.now(),account,List.of(item));

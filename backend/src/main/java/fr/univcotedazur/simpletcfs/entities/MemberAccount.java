@@ -15,7 +15,7 @@ public class MemberAccount extends Account {
     @Embedded
     private MembershipCard membershipCard;
 
-    @OneToMany( targetEntity=Transaction.class, mappedBy="memberAccount" )
+    @OneToMany( targetEntity=Transaction.class, mappedBy="memberAccount" ,cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Transaction> transactions = new ArrayList<>();
     int points;
     double balance;

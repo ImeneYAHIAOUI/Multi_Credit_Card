@@ -30,6 +30,9 @@ public class Product {
     public Product() {
 
     }
+    public Shop getShop() {
+        return shop;
+    }
 
     public void setShop(Shop shop) {
         this.shop = shop;

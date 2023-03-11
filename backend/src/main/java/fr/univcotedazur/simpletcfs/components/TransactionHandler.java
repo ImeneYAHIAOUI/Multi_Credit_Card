@@ -45,7 +45,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
         if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
-            if(memberAccount.getStatus()!=usePoint.getGift().RequiredStatus||
+            if(memberAccount.getStatus()!=usePoint.getGift().getRequiredStatus()||
                     transactionRepository.findAll().stream().
                             filter(transaction -> transaction.getMemberAccount().getId().equals(memberAccount.getId()))
                             .noneMatch(transaction -> transaction instanceof Purchase))

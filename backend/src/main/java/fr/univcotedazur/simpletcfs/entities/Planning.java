@@ -42,6 +42,10 @@ public class Planning {
         this.shop = shop;
     }
 
+    public Shop getShop() {
+        return shop;
+    }
+
     public LocalTime getOpeningHours() {
         return openingHours;
     }

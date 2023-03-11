@@ -16,5 +16,6 @@ public interface ShopHandler {
     void removeGift(Shop shop, Gift gift) throws GiftNotFoundException;
      void removeProduct(Shop shop, Product product)throws ProductNotFoundException;
      void addProduct(Shop shop, Product product);
+     void modifyName(Shop shop, String name);
 
 }

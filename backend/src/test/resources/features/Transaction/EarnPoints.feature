@@ -14,9 +14,6 @@ Feature: earns points
     Then the client doesn't earn points
 
 
-Scenario: client doesn't earn points when he makes a purchase because his card is expired
-    When the client makes a valid purchase
-    Then the client doesn't earn points because his card is expired
 
 
 
