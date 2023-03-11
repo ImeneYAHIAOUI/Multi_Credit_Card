@@ -1,9 +1,7 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.Planning;
 import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.entities.WeekDay;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,6 +21,8 @@ public class CatalogTest {
     private ShopRegistration shopRegistration;
     @Autowired
     private Catalog catalog;
+     @Autowired
+    private ShopManager shopManager;
     @Autowired
     CatalogRepository catalogRepository;
     private Shop shop;
@@ -34,16 +33,13 @@ public class CatalogTest {
     private Product product4;
     @BeforeEach
     public void setUp() throws MissingInformationException {
-        Map<WeekDay, Planning> planning=new HashMap();
-        planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
-        planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
-        planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
+
          product=new Product("ring",1.0,0);
          product1=new Product("Cookie",2.0,0);
          product2=new Product("Cake",1.0,0);
          product3=new Product("ring",1.0,0);
         product4=new Product("chocolat",1.5,0);
-        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, new ArrayList<>(),null);
+        shop=shopRegistration.addShop("A", "1 rue de la paix", new ArrayList<>(), new ArrayList<>(),null);
         product.setShop(shop);
         product1.setShop(shop);
         product2.setShop(shop);

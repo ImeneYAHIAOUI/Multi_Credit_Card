@@ -10,7 +10,6 @@ import java.util.UUID;
 @Entity
 public class Product {
 
-
     @NotBlank
     private String name;
     @Id

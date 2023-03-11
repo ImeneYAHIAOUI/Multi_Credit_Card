@@ -44,10 +44,10 @@ Shop shop;
     @Given("a shop who wants to create an account")
     public void aMemberWhoWantsToCreateAnAccount() throws MissingInformationException{
         shopRepository.deleteAll();
-        Map<WeekDay, Planning> planning=new HashMap();
-        planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
-        planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
-        planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
+        List<Planning> planning =new ArrayList<>();
+        planning.add(new Planning(WeekDay.Friday,LocalTime.of(10,00),LocalTime.of(15,00)));
+        planning.add(new Planning(WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00)));
+        planning.add(new Planning(WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00)));
         Product product=new Product("ring",1.0,0);
         Product product1=new Product("Cookie",2.0,0);
         Product product2=new Product("Cake",1.0,0);
@@ -57,7 +57,8 @@ Shop shop;
         productList.add(product);
         productList.add(product1);
         productList.add(product2);
-        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, productList,new ArrayList<>());
+        shop=shopRegistration.addShop("A", "1 rue de la paix", new ArrayList<>(), productList,new ArrayList<>());
+
     }
 
     @When("the shop submits the name {string}")

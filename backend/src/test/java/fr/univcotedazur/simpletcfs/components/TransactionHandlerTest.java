@@ -85,7 +85,7 @@ public class TransactionHandlerTest {
         transaction.setUsedPoints(50);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new HashMap<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
         product3.setShop(shop);
         gift.setShop(shop);
         shop.addGift(gift);
@@ -120,7 +120,7 @@ public class TransactionHandlerTest {
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new HashMap<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
         product3.setShop(shop);
         gift.setShop(shop);
         shop.addGift(gift);
@@ -155,7 +155,7 @@ public class TransactionHandlerTest {
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.REGULAR);
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new HashMap<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
         product3.setShop(shop);
         gift.setShop(shop);
         shop.addGift(gift);
@@ -193,7 +193,7 @@ public class TransactionHandlerTest {
         shopRepository.deleteAll();
         itemRepository.deleteAll();
         Product product3=new Product("ring",1.0,10);
-        Shop shop=new Shop("A", "1 rue de la paix",new HashMap<>(),new ArrayList<>(),new ArrayList<>());
+        Shop shop=new Shop("A", "1 rue de la paix",new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
         product3.setShop(shop);
         shopRepository.save(shop);
         shop.addProduct(product3);

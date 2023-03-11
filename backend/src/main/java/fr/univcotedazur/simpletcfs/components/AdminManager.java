@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -60,13 +59,13 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning, List<Product> productList,List<Gift> giftList) throws MissingInformationException{
+    public Shop addShop(String name, String address, List<Planning> planning, List<Product> productList, List<Gift> giftList) throws MissingInformationException{
         if (name == null || address == null || planning == null) {
             throw new MissingInformationException();
         }
         Shop shop = new Shop( name, address, planning,productList,giftList);
-        for ( Map.Entry<WeekDay, Planning> plan : planning.entrySet()) {
-          plan.getValue().setShop(shop);
+        for ( Planning plan : planning) {
+          plan.setShop(shop);
         }
         shopRepository.save(shop);
         return shop;

@@ -3,9 +3,7 @@ package fr.univcotedazur.simpletcfs.controllers;
 import fr.univcotedazur.simpletcfs.components.ShopManager;
 import fr.univcotedazur.simpletcfs.controllers.dto.ErrorDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ShopDTO;
-import fr.univcotedazur.simpletcfs.entities.Item;
 import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.entities.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -62,10 +58,10 @@ public class ShopController {
         if(shop.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");
         else
-            shopManager.modifyAdress(shop.get(),address);
+            shopManager.modifyAddress(shop.get(),address);
         return ResponseEntity.ok("address of shop with id "+shopId+" is successfully updated");
     }
     private ShopDTO convertShopToDto(Shop shop) { // In more complex cases, we could use ModelMapper
-        return new ShopDTO( shop.getName(), shop.getAddress(), shop.getPlanning(),shop.getProductList(),shop.getGiftList());
+        return new ShopDTO( shop.getName(), shop.getAddress(), shop.getPlanningList(),shop.getProductList(),shop.getGiftList());
     }
 }

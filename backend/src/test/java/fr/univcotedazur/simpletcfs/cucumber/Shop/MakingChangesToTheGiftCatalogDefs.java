@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,11 +24,12 @@ public class MakingChangesToTheGiftCatalogDefs {
     Gift gift;
     @Given("a shop with an empty gift list")
     public void a_shop_with_an_empty_gift_list() {
-        Map<WeekDay, Planning> planning=new HashMap();
-        planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
-        planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
-        planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
+        List<Planning> planning =new ArrayList<>();
+
         shop=new Shop("Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
+        shopManager.modifyPlanning(shop,WeekDay.Friday,LocalTime.of(10,00),LocalTime.of(15,00));
+        shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
+        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shop.getGiftList().isEmpty());
     }
     @When("the shop adds a gift to the catalog")
@@ -50,11 +48,11 @@ public class MakingChangesToTheGiftCatalogDefs {
     }
     @Given("a shop with a gift list")
     public void a_shop_with_a_gift_list() {
-        Map<WeekDay, Planning> planning=new HashMap();
-        planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
-        planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
-        planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
+        List<Planning> planning =new ArrayList<>();
         shop=new Shop("Pizza noli", "1 rue de la paix", planning, new ArrayList<>(),new ArrayList<>());
+        shopManager.modifyPlanning(shop,WeekDay.Friday,LocalTime.of(10,00),LocalTime.of(15,00));
+        shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
+        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
         gift1=new Gift();
         gift1.setRequiredStatus(AccountStatus.VFP);
         gift1.setPointsNeeded(100);

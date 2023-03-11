@@ -22,8 +22,6 @@ public class Gift {
 
     }
 
-
-
     public int getPointsNeeded() {
         return pointsNeeded;
     }

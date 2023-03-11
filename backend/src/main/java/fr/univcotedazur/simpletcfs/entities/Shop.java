@@ -6,8 +6,6 @@ package fr.univcotedazur.simpletcfs.entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
-import java.util.Map;
-import java.util.UUID;
 
 
 @Entity
@@ -24,8 +22,8 @@ public class Shop {
     @NotBlank
     private String address;
 
-    @OneToMany( cascade = CascadeType.ALL)
-    Map<WeekDay, Planning> planning=new HashMap<WeekDay, Planning>();
+    @OneToMany
+    List<Planning> planningList =new ArrayList<>();
 
     @OneToMany
     public List<Product> productList=new ArrayList<>();
@@ -33,11 +31,11 @@ public class Shop {
     public List<Gift> giftList=new ArrayList<>();
 
 
-    public Shop(String name, String address, Map<WeekDay, Planning> planning, List<Product> products, List<Gift> gifts) {
+    public Shop(String name, String address, List<Planning> planningList, List<Product> products, List<Gift> gifts) {
 
         this.name = name;
         this.address = address;
-        this.planning = planning;
+        this.planningList = planningList;
         productList=products;
         giftList=gifts;
     }
@@ -68,8 +66,8 @@ public void addGift(Gift gift){
         return address;
     }
 
-    public Map<WeekDay, Planning> getPlanning() {
-        return planning;
+    public List<Planning> getPlanningList() {
+        return planningList;
     }
 
     public List<Product> getProductList() {
@@ -88,8 +86,8 @@ public void addGift(Gift gift){
         this.address = address;
     }
 
-    public void setPlanning(Map<WeekDay, Planning> planning) {
-        this.planning = planning;
+    public void setPlanningList(List<Planning> planningList) {
+        this.planningList = planningList;
     }
 
     public void setProductList(List<Product> productList) {

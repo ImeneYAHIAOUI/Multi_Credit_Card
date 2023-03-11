@@ -2,8 +2,6 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
-import io.cucumber.java.af.En;
-
 import javax.persistence.*;
 import java.time.LocalTime;
 
@@ -11,30 +9,37 @@ import java.time.LocalTime;
 @Entity
 public class Planning {
 
-
     @Id
     @GeneratedValue
-    private Long Id;
-    private LocalTime OpeningHours;
+    @Column(name="Planning_id", nullable=false)
+    private Long id;
+    @Column(columnDefinition = "varchar(8)")
+    private LocalTime closingHours;
+    @Column(columnDefinition = "varchar(8)")
+    private LocalTime openingHours;
+    @Enumerated(EnumType.STRING)
+    private WeekDay dayWorking;
     @ManyToOne
-    @JoinColumn(name="Shop_id", nullable=false)
-    private Shop  shop;
+    @JoinColumn(name="shop")
+    private Shop shop;
 
-    private LocalTime ClosingHours;
     public Planning(){
 
     }
     public Long getId() {
-        return Id;
+        return id;
     }
-    public Planning(LocalTime openingHours, LocalTime closingHours) {
-        OpeningHours = openingHours;
-        ClosingHours = closingHours;
+    public Planning(WeekDay dayWorking, LocalTime openingHours, LocalTime closingHours) {
+        this.dayWorking = dayWorking;
+        this.openingHours = openingHours;
+        this.closingHours = closingHours;
     }
-    public Planning(Shop shop,LocalTime openingHours, LocalTime closingHours) {
-        shop=shop;
-        OpeningHours = openingHours;
-        ClosingHours = closingHours;
+    public WeekDay getDayWorking(){
+        return dayWorking;
+    }
+
+    public void setDayWorking(WeekDay dayWorking) {
+        this.dayWorking = dayWorking;
     }
 
     public void setShop(Shop shop) {
@@ -42,18 +47,18 @@ public class Planning {
     }
 
     public LocalTime getOpeningHours() {
-        return OpeningHours;
+        return openingHours;
     }
 
     public void setOpeningHours(LocalTime openingHours) {
-        OpeningHours = openingHours;
+        this.openingHours = openingHours;
     }
 
     public LocalTime getClosingHours() {
-        return ClosingHours;
+        return closingHours;
     }
 
     public void setClosingHours(LocalTime closingHours) {
-        ClosingHours = closingHours;
+        this.closingHours = closingHours;
     }
 }
