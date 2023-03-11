@@ -10,6 +10,7 @@ import fr.univcotedazur.simpletcfs.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -52,18 +53,19 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
                 if(OpeningHours!=null && ClosingHours!=null){
                     if( OpeningHours.isBefore(ClosingHours)){
                         planning.setOpeningHours(OpeningHours);
-                        //planningRepository.updateOpeningHours(OpeningHours,planning.getId());
+                        planningRepository.updateOpeningHours(OpeningHours,planning.getId());
                         planning.setClosingHours(ClosingHours);
+                        planningRepository.updateClosingHours(ClosingHours, planning.getId());
                     }
                 }else if(OpeningHours==null && ClosingHours!=null){
                     if(planning.getOpeningHours().isBefore(ClosingHours)) {
                         planning.setClosingHours(ClosingHours);
-                        //planningRepository.updateClosingHours(ClosingHours, planning.getId());
+                        planningRepository.updateClosingHours(ClosingHours, planning.getId());
                     }
                 }else if( OpeningHours!=null  ){
                     if(OpeningHours.isBefore(planning.getClosingHours())) {
                         planning.setOpeningHours(OpeningHours);
-                        //planningRepository.updateOpeningHours(OpeningHours,planning.getId());
+                        planningRepository.updateOpeningHours(OpeningHours,planning.getId());
                     }
                 }
             }

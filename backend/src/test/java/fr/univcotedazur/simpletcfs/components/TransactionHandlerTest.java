@@ -89,7 +89,6 @@ public class TransactionHandlerTest {
         product3.setShop(shop);
         gift.setShop(shop);
         shop.addGift(gift);
-
         shopRepository.save(shop);
         catalogRepository.save(product3);
         shop.addProduct(product3);

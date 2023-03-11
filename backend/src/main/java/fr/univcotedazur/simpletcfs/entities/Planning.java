@@ -1,11 +1,7 @@
 package fr.univcotedazur.simpletcfs.entities;
 
-
-
 import javax.persistence.*;
 import java.time.LocalTime;
-
-
 @Entity
 public class Planning {
 
