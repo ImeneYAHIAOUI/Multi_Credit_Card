@@ -18,7 +18,8 @@ public class ShopDTO {
     public Long getId() {
         return id;
     }
-    public ShopDTO(String name, String address) {
+    public ShopDTO(Long id,String name, String address) {
+        this.id=id;
         this.name = name;
         this.address = address;
     }

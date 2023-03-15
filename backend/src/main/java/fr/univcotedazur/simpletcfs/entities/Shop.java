@@ -25,6 +25,7 @@ public class Shop {
     public List<Product> productList=new ArrayList<>();
     @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy = "shop")
     public List<Gift> giftList=new ArrayList<>();
+
     public Shop(String name, String address) {
         this.name = name;
         this.address = address;
@@ -73,6 +74,13 @@ public class Shop {
         if (!(o instanceof Shop shop)) return false;
         return Objects.equals(name, shop.name) &&
                 Objects.equals(address, shop.address);
+    }
+    public String ToString(){
+        return "Shop{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 
     public void setName(String name) {

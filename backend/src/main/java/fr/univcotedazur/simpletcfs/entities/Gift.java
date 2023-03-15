@@ -13,6 +13,8 @@ public class Gift {
     @ManyToOne
     @JoinColumn(name="Shop_id", nullable=false)
     public Shop shop;
+    @OneToOne(mappedBy = "gift")
+    private UsePoints usePoints;
     private int pointsNeeded;
 
     private String description;

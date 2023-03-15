@@ -122,7 +122,6 @@ public class TransactionHandlerTest {
         Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
-
         shopRepository.save(shop);
         shop.addProduct(product3);
         catalogRepository.save(product3);

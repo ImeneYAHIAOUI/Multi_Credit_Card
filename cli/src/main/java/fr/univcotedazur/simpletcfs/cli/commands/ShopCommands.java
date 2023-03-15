@@ -24,16 +24,19 @@ public class ShopCommands {
     }
 
     @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
-    public CliShop save(String name, String address) {
+    public String save(String name, String address) {
         CliShop res = restTemplate.postForObject(BASE_URI + "/save", new CliShop(name,address), CliShop.class);
         cliContext.getShops().put(res.getName(), res);
-        return res;
+        return res.toString();
     }
-    @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
-    public String modifyAddress( String address) {
-        return restTemplate.postForObject(BASE_URI + "/save/"+address,null, String.class);
+    @ShellMethod("modify shop's address in the multi-credit backend (modify SHOP_id SHOP_ADDRESS )")
+    public String modifyAddress( Long id, String address) {
+        return restTemplate.postForObject(BASE_URI + "/"+id.toString()+"/"+address,null, String.class);
     }
-
+    @ShellMethod(" get shop (get SHOP_id )")
+    public String getShop( Long id) {
+        return restTemplate.getForObject(BASE_URI + "/"+id.toString(),String.class);
+    }
     @ShellMethod("List all shops")
     public String shops() {
         return   cliContext.getShops().toString();

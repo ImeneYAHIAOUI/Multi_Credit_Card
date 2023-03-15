@@ -23,7 +23,6 @@ public abstract class Transaction {
     MemberAccount memberAccount;
     public Transaction() {
     }
-
     public Transaction(LocalDate date, MemberAccount memberAccount) {
         this.date = date;
         this.memberAccount = memberAccount;
