@@ -2,11 +2,10 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Gift {
-
-
     @Id
     @GeneratedValue
     @Column(name="Gift_id", nullable=false)
@@ -19,9 +18,22 @@ public class Gift {
     private String description;
 
     private AccountStatus requiredStatus;
-
+    public Gift(int pointsNeeded, String description, AccountStatus requiredStatus) {
+        this.pointsNeeded = pointsNeeded;
+        this.description = description;
+        this.requiredStatus = requiredStatus;
+    }
     public Gift(){
 
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Gift gift)) return false;
+        return Objects.equals(pointsNeeded, gift.pointsNeeded) &&
+                Objects.equals(requiredStatus, gift.requiredStatus)
+                && Objects.equals(description, gift.description)
+                && Objects.equals(shop, gift.shop);
     }
 
     public int getPointsNeeded() {

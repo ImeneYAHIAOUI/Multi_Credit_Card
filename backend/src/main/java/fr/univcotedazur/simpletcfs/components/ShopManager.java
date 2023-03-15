@@ -1,6 +1,8 @@
 package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingProductException;
 import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.ProductNotFoundException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopFinder;
@@ -22,46 +24,32 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
     private GiftRepository giftRepository;
-    private CatalogRepository catalogRepository;
     private  PlanningRepository planningRepository;
     @Autowired
     public ShopManager(ShopRepository shopRepository,
                        ShopKeeperAccountRepository shopKeeperAccountRepository,
-                       GiftRepository giftRepository,
-                       CatalogRepository catalogRepository, PlanningRepository  planningRepository){
+                       GiftRepository giftRepository,PlanningRepository  planningRepository){
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
         this.giftRepository = giftRepository;
-        this.catalogRepository = catalogRepository;
         this.planningRepository=planningRepository;
     }
     public Optional<Planning> findPlanningByDay(Shop shop, WeekDay day){
-        return getPlanningList(shop).stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
-    }
-    public List<Product> getProductList(Shop shop) {
-        return catalogRepository.findAll().stream().filter(product ->
-                product.getShop().getId().equals(shop.getId())).toList();
-    }
-    public List<Gift> getGiftList(Shop shop) {
-        return giftRepository.findAll().stream().filter(gift ->
-                gift.getShop().getId().equals(shop.getId())).toList();
-    }
-    public List<Planning> getPlanningList(Shop shop) {
-        return planningRepository.findAll().stream().filter(planning ->
-                planning.getShop().getId().equals(shop.getId())).toList();
+        return shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
     }
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
         if(shop!= null && day!= null ){
-            if( getPlanningList(shop).stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
+            if( shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
                 if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
                     Planning planning =new Planning(day,OpeningHours, ClosingHours);
                     planning.setShop(shop);
+                    shop.addPlanning(planning);
                     planningRepository.save(planning);
                 }
             }
             else{
-                Planning planning = getPlanningList(shop).stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
+                Planning planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
                 if(OpeningHours!=null && ClosingHours!=null){
                     if( OpeningHours.isBefore(ClosingHours)){
                         planning.setOpeningHours(OpeningHours);
@@ -90,8 +78,8 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
             shopRepository.updateName(name, shop.getId());
         }
     }
-
     @Override
+    @Transactional
     public void modifyAddress(Shop shop, String address){
         if(address!=null){
             shop.setAddress(address);
@@ -99,39 +87,24 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         }
     }
     @Override
-    public void addGift(Shop shop, Gift gift){
-        if(gift!=null && !getGiftList(shop).contains(gift)){
-            getGiftList(shop).add(gift);
+    public void addGift(Shop shop, Gift gift)throws AlreadyExistingGiftException{
+        if(gift!=null && giftRepository.findAll().stream().noneMatch(p-> p.equals(gift))) {
+            shop.addGift(gift);
             giftRepository.save(gift);
-        }
+        }else
+            throw new AlreadyExistingGiftException();
     }
-    @Override
-    public void addProduct(Shop shop, Product product){
-        if(product!=null && !getProductList(shop).contains(product)){
-            catalogRepository.save(product);
-            getProductList(shop).add(product);
-        }
-    }
-    @Override
-    public void removeProduct(Shop shop, Product product)throws ProductNotFoundException {
-        if(product!=null && getProductList(shop).contains(product)) {
-            getProductList(shop).remove(product);
-            catalogRepository.delete(product);
-        }
-        else
-            throw new ProductNotFoundException();
-    }
+
     @Override
     public void removeGift(Shop shop, Gift gift) throws GiftNotFoundException {
-        if(gift!=null ){
-            if(getGiftList(shop).contains(gift)) {
-                giftRepository.delete(gift);
-                getGiftList(shop).remove(gift);
-            }else
-                throw new GiftNotFoundException();
-        }
+        if(gift!=null && giftRepository.findAll().stream().anyMatch(p-> p.equals(gift)) ){
+            giftRepository.delete(gift);
+            shop.getGiftList().remove(gift);
+        }else
+            throw new GiftNotFoundException();
 
     }
+
     @Override
     public Optional<Shop> findShopById(Long id){
         return shopRepository.findById(id);

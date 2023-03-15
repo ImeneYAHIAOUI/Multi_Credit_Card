@@ -1,10 +1,12 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.Planning;
-import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.entities.WeekDay;
+import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
+import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
+import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,36 @@ public class ShopManagerTests {
     private ShopManager shopManager;
     @Autowired
     private ShopRegistration shopRegistration;
+    @Autowired
+    GiftRepository giftRepository;
+    @Autowired
+    ShopRepository shopRepository;
     Shop shop;
+    Gift gift;
+    Gift gift1;
+    Gift gift2;
     @BeforeEach
-    public void setUp() throws MissingInformationException  {
-        shop=shopRegistration.addShop("A", "1 rue de la paix", new ArrayList<>(), new ArrayList<>(),new ArrayList<>());
-
+    public void setUp() throws MissingInformationException , AlreadyExistingGiftException {
+        shopRepository.deleteAll();
+        shop=shopRegistration.addShop("A", "1 rue de la paix");
+        gift=new Gift(150,"ring", AccountStatus.VFP);
+        gift1=new Gift(10,"cake", AccountStatus.REGULAR);
+        gift.setShop(shop);
+        gift1.setShop(shop);
+        shopManager.addGift(shop,gift);
+        shopManager.addGift(shop,gift1);
+        gift2=new Gift(10,"cookie", AccountStatus.VFP);
+    }
+    @Test
+    public void Test(){
+    assertFalse(giftRepository.findAll().isEmpty());
+        shopRepository.deleteAll();
+        assertTrue(giftRepository.findAll().isEmpty());
 
     }
 
     @Test
-    @Transactional
+
     public void testModifyAddress() {
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");
@@ -51,12 +73,14 @@ public class ShopManagerTests {
         shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(15,00));
         shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
-        Planning planning =shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
+        Planning planning =shop.getPlanningList()
+                .stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Saturday)).findFirst().get();
         assertEquals(LocalTime.of(10,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(15,00), planning.getClosingHours());
         shopManager.modifyPlanning(shop,WeekDay.Friday,LocalTime.of(11,00),LocalTime.of(16,00));
-         planning =shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
+         planning =shop.getPlanningList()
+                 .stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Friday)).findFirst().get();
         assertEquals(LocalTime.of(11,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(16,00), planning.getClosingHours());
@@ -66,11 +90,13 @@ public class ShopManagerTests {
         shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
         shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
-        assertTrue(shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
+        assertTrue(shop.getPlanningList()
+                .stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Wednesday)).findFirst().isEmpty());
 
         shopManager.modifyPlanning(shop,WeekDay.Wednesday,LocalTime.of(11,00),LocalTime.of(19,00));
-        Planning planning =shopManager.getPlanningList(shop).stream().filter(plan-> plan.getDayWorking()
+        Planning planning =shop.getPlanningList()
+                .stream().filter(plan-> plan.getDayWorking()
                 .equals(WeekDay.Wednesday)).findFirst().get();
         assertEquals(LocalTime.of(11,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());
@@ -113,5 +139,44 @@ public class ShopManagerTests {
         shopManager.modifyPlanning(shop,WeekDay.Monday,null,LocalTime.of(5,00));
         assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
         assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
+    }
+    @Test
+    public  void addGiftTest()throws AlreadyExistingGiftException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertFalse(shop.getGiftList().contains(gift2));
+        assertNull(gift2.getGiftId());
+        gift2.setShop(shop);
+        shopManager.addGift(shop,gift2);
+        assertTrue(giftRepository.findById(gift2.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift2));
+    }
+    @Test
+    public  void addGiftTest2()throws AlreadyExistingGiftException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertThrows(AlreadyExistingGiftException.class,()->shopManager.addGift(shop,gift));
+    }
+    @Test
+    public  void RemoveGiftTest() {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertThrows(GiftNotFoundException.class,()->shopManager.removeGift(shop,gift2));
+    }
+    @Test
+    public  void RemoveGiftTest1()throws GiftNotFoundException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        shopManager.removeGift(shop,gift);
+        assertTrue(giftRepository.findById(gift.getGiftId()).isEmpty());
+        assertFalse(shop.getGiftList().contains(gift));
     }
 }

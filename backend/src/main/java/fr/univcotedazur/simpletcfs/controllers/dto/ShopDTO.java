@@ -12,19 +12,16 @@ import java.util.List;
 public class ShopDTO {
     @NotBlank(message = "name should not be blank")
     private String name;
-    @Pattern(regexp = "^(.+)@(.+)$", message = "address should be valid")
+    @NotBlank(message = "address should not be blank")
     private String address;
     private Long id;
     public Long getId() {
         return id;
     }
-
     public ShopDTO(String name, String address) {
         this.name = name;
         this.address = address;
-
     }
-
     public String getName() {
         return name;
     }

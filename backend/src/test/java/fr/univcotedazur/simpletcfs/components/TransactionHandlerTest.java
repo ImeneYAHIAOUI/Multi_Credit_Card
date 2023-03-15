@@ -89,7 +89,9 @@ public class TransactionHandlerTest {
         product3.setShop(shop);
         gift.setShop(shop);
         shopRepository.save(shop);
+        shop.addProduct(product3);
         catalogRepository.save(product3);
+        shop.addGift(gift);
         giftRepository.save(gift);
         Item item=new Item(product3,2);
         Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));
@@ -122,8 +124,9 @@ public class TransactionHandlerTest {
         gift.setShop(shop);
 
         shopRepository.save(shop);
-
+        shop.addProduct(product3);
         catalogRepository.save(product3);
+        shop.addGift(gift);
         giftRepository.save(gift);
         Item item=new Item(product3,2);
         Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));
@@ -157,7 +160,9 @@ public class TransactionHandlerTest {
         gift.setShop(shop);
 
         shopRepository.save(shop);
+        shop.addProduct(product3);
         catalogRepository.save(product3);
+        shop.addGift(gift);
         giftRepository.save(gift);
         Item item=new Item(product3,2);
         Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));

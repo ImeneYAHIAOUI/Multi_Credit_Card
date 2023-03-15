@@ -5,6 +5,7 @@ import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,15 @@ public class Product {
     }
     public Product() {
 
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(name, product.name) &&
+                Objects.equals(price, product.price)
+                && Objects.equals(points, product.points)
+                 && Objects.equals(shop, product.shop);
     }
     public Shop getShop() {
         return shop;
