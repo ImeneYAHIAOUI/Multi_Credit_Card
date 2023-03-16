@@ -9,10 +9,9 @@ Feature: earns points
     When the client makes a valid purchase
     Then the client earns points
 
-  Scenario: client earn points when he makes a purchase
+  Scenario: client doesn't earn points when he makes a purchase
     When the client makes an invalid purchase
     Then the client doesn't earn points
-
 
 
 

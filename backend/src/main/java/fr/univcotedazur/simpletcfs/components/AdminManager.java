@@ -4,19 +4,23 @@ import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
-import fr.univcotedazur.simpletcfs.interfaces.*;
+import fr.univcotedazur.simpletcfs.interfaces.AdminFinder;
+import fr.univcotedazur.simpletcfs.interfaces.AdminRegistration;
+import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperRegistration;
 import fr.univcotedazur.simpletcfs.repositories.AdminAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 @Component
+@Transactional
 public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder{
 
     private final AdminAccountRepository adminAccountRepository;
@@ -33,14 +37,8 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public AdminAccount findAdminById(UUID id) {
-        while (adminAccountRepository.findAll().iterator().hasNext()) {
-            AdminAccount adminAccount = adminAccountRepository.findAll().iterator().next();
-            if (adminAccount.getId().equals(id)) {
-                return adminAccount;
-            }
-        }
-        return null;
+    public Optional<AdminAccount> findAdminById(Long id) {
+        return adminAccountRepository.findById(id);
     }
 
     @Override
@@ -48,26 +46,25 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();
         }
-        AdminAccount adminAccount = new AdminAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
-        adminAccountRepository.save(adminAccount, adminAccount.getId());
+        AdminAccount adminAccount = new AdminAccount( form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
+         adminAccountRepository.save(adminAccount);
         return adminAccount;
     }
 
     @Override
     public void deleteAdminAccount(AdminAccount account) {
-        if(findAdminById(account.getId()) != null){
+        if(findAdminById(account.getId()).isPresent()){
             adminAccountRepository.deleteById(account.getId());
         }
     }
 
     @Override
-    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning, List<Product> productList,List<Gift> giftList) throws MissingInformationException{
-        if (name == null || address == null || planning == null) {
+    public Shop addShop(String name, String address) throws MissingInformationException{
+        if (name == null || address == null ) {
             throw new MissingInformationException();
         }
-        //TODO mettre le planning correctement
-        Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList,giftList);
-        shopRepository.save(shop,shop.getId());
+        Shop shop = new Shop( name, address);
+        shopRepository.save(shop);
         return shop;
     }
 
@@ -90,15 +87,15 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if(form.getBirthDate().isAfter(LocalDate.now().minusYears(16))){
             throw new UnderAgeException();
         }
-        shopKeeperAccount = new ShopKeeperAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
-        shopKeeperAccountRepository.save(shopKeeperAccount, shopKeeperAccount.getId());
+        shopKeeperAccount = new ShopKeeperAccount( form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
+        shopKeeperAccountRepository.save(shopKeeperAccount);
         return shopKeeperAccount;
     }
 
     @Override
     public void deleteShopKeeperAccount(ShopKeeperAccount account) {
         if(account!=null && shopManager.findShopKeeperAccountById(account.getId()).isPresent()){
-            shopRepository.deleteById(account.getId());
+            shopKeeperAccountRepository.deleteById(account.getId());
         }
     }
     @Override

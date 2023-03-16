@@ -7,7 +7,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @CucumberContextConfiguration
 @SpringBootTest
-public class EarnsPointsCucumberConfig {
+public class TransactionCucumberConfig {
     @MockBean // Spring/Cucumber bug workaround: declare the mock here, and autowire+setup it in the step classes
     private Bank bankMock;
 }

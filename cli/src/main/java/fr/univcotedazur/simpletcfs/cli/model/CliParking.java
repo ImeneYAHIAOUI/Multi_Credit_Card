@@ -8,9 +8,20 @@ public class CliParking {
 
     private String mail;
 
-    public CliParking(String carRegistrationNumber, String mail) {
+    private int parkingSpotNumber;
+
+    public CliParking(String carRegistrationNumber, String mail, int parkingSpotNumber) {
         this.carRegistrationNumber = carRegistrationNumber;
         this.mail = mail;
+        this.parkingSpotNumber = parkingSpotNumber;
+    }
+
+    public int getParkingSpotNumber() {
+        return parkingSpotNumber;
+    }
+
+    public void setParkingSpotNumber(int parkingSpotNumber) {
+        this.parkingSpotNumber = parkingSpotNumber;
     }
 
     public String getCarRegistrationNumber() {

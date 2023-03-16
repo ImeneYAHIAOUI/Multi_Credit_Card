@@ -5,8 +5,8 @@ import java.util.UUID;
 public class DiscountedProduct extends Product{
 
     private Double DiscountPourcentage;
-    public DiscountedProduct(UUID id, String name, double price, int points, Double DiscountPourcentage) {
-        super(id, name, price,points);
+    public DiscountedProduct(Long id, String name, double price, int points, Double DiscountPourcentage) {
+        super( name, price,points);
         this.DiscountPourcentage=DiscountPourcentage;
     }
 

@@ -1,7 +1,5 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.CreditCard;
-import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.entities.Purchase;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 import fr.univcotedazur.simpletcfs.interfaces.Bank;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Component
 public class Cashier implements Payment {
@@ -22,11 +19,11 @@ public class Cashier implements Payment {
     }
 
 
-    public void payment(Purchase purchase, CreditCard creditCard) throws PaymentException {
+    public void payment(Purchase purchase, String creditCard) throws PaymentException {
         if(! bank.pay(creditCard, purchase.getTotalPrice())) throw new PaymentException();
-        if(creditCard.getExpirationDate().isBefore(LocalDate.now())) throw new PaymentException();
+        //if(creditCard.getExpirationDate().isBefore(LocalDate.now())) throw new PaymentException();
         else{
-            purchase.setCreditCard(creditCard);
+            purchase.setCreditCardNumber(creditCard);
             purchase.setDate(LocalDate.now());
         }
 

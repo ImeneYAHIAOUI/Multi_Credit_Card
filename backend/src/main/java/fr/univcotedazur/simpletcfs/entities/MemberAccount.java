@@ -2,33 +2,34 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
+
+@Entity
 public class MemberAccount extends Account {
 
+    @Embedded
     private MembershipCard membershipCard;
 
-    int points = 0;
-
-    double balance = 0;
-
-
+    @OneToMany( targetEntity=Transaction.class, mappedBy="memberAccount" ,cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    List<Transaction> transactions = new ArrayList<>();
+    int points;
+    double balance;
     AccountStatus status;
 
-    List<Transaction> transactions;
-
-    public MemberAccount(UUID id, String name, String mail, String password, LocalDate birthDate, int points, double balance) {
-        super(id, name, mail,password, birthDate);
+    public MemberAccount(String name, String mail, String password, LocalDate birthDate, int points, double balance) {
+        super( name, mail,password, birthDate);
         this.membershipCard =  new MembershipCard(LocalDate.now(), LocalDate.now().plusYears(2));
         this.points = points;
         this.balance = balance;
-        transactions= new ArrayList<Transaction>();
     }
-    public void addTransaction(Transaction transaction){
-        transactions.add(transaction);
+
+    public MemberAccount() {
+
     }
 
     public MembershipCard getMembershipCard() {
@@ -63,11 +64,18 @@ public class MemberAccount extends Account {
         this.status = status;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MemberAccount memberAccount )) return false;
+        return Objects.equals(membershipCard, memberAccount.membershipCard)
+                && Objects.equals(getName(), memberAccount.getName())
+                && Objects.equals(getMail(), memberAccount.getMail())
+                && Objects.equals(getPoints(), memberAccount.getPoints())
+                && Objects.equals(getPassword(), memberAccount.getPassword())
+                && Objects.equals(getBirthDate(), memberAccount.getBirthDate());
+
+
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
 }

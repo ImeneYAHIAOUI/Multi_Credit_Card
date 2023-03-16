@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface TransactionExplorer {
-    public Optional<Transaction> findTransactionById(UUID id);
+     Optional<Transaction> findTransactionById(Long id);
 
 }

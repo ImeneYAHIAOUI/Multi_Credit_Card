@@ -1,6 +1,5 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import fr.univcotedazur.simpletcfs.entities.AdminAccount;
 import fr.univcotedazur.simpletcfs.entities.Form;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
@@ -8,27 +7,20 @@ import fr.univcotedazur.simpletcfs.interfaces.AdminFinder;
 import fr.univcotedazur.simpletcfs.interfaces.AdminRegistration;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperRegistration;
-import fr.univcotedazur.simpletcfs.repositories.AdminAccountRepository;
-import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
-import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AdminManagerTest {
-    @Autowired
-    private ShopRegistration shopRegistration;
 
-    @Autowired
-    private ShopkeeperRegistration shopkeeperRegistration;
+
+
 
     @Autowired
     private AdminRegistration adminRegistration;
