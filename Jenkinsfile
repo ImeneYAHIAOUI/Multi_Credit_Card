@@ -60,6 +60,9 @@ pipeline {
             }
         }
         stage('Package') {
+            when {
+                branch 'main'
+            }
             steps {
                 echo "Packaging Backend:"
                 sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
@@ -69,6 +72,9 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
             steps {
                 echo "Deploying..."
 //                Launch new stable version
