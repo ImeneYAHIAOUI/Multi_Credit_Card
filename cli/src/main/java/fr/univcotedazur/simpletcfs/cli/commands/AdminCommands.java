@@ -22,7 +22,7 @@ public class AdminCommands {
     }
 
     @ShellMethod("Register an admin in the multi-credit backend (register ADMIN_NAME ADMIN_MAIL ADMIN_PASSWORD ADMIN_BIRTHDATE)")
-    public CliAdmin register(String name, String mail, String password, String birthDate) {
+    public CliAdmin registerAdmin(String name, String mail, String password, String birthDate) {
         CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(name,mail,password,birthDate), CliAdmin.class);
         cliContext.getAdminAccounts().put(res.getName(), res);
         return res;
