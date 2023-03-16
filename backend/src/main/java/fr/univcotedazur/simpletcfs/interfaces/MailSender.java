@@ -7,7 +7,6 @@ import java.lang.reflect.Member;
 import java.util.List;
 
 public interface MailSender {
-    void sendPromotions(List<MemberAccount> members, String mailToSend);
-    void sendSurvey(List<MemberAccount> members, Survey survey);
-    void sendVFPReminders(List<MemberAccount> members);
+    boolean sendMail(List<MemberAccount> members, String mailToSend);
+    boolean sendSurvey(List<MemberAccount> members, Survey survey);
 }
