@@ -64,7 +64,12 @@ public class TransactionHandlerTest {
     MemberHandler memberHandler;
      void setUp(String mail,String name)throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-
+         transactionRepository.deleteAll();
+         itemRepository.deleteAll();
+         giftRepository.deleteAll();
+         memberAccoutRepository.deleteAll();
+         shopRepository.deleteAll();
+         catalogRepository.deleteAll();
         try {
             account = memberHandler.createAccount(name, mail, "password", LocalDate.parse("11/04/2001", formatter));
             assertNotNull(memberFinder.findById(account.getId()));
@@ -76,7 +81,7 @@ public class TransactionHandlerTest {
     }
     @Test
     public void processPointsUsageTest() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
-        setUp("John.Doe@mail.com","John");
+         setUp("John.Doe@mail.com","John");
         account.setPoints(100);
         UsePoints transaction=new UsePoints(LocalDate.now(),account);
         Gift gift=new Gift();
@@ -84,7 +89,7 @@ public class TransactionHandlerTest {
         transaction.setGift(gift);
         transaction.setUsedPoints(50);
         account.setStatus(AccountStatus.VFP);
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
@@ -98,18 +103,22 @@ public class TransactionHandlerTest {
         tran.setMemberAccount(account);
         item.setPurchase(tran);
         tran.addItem(item);
+        tran.setShop(shop);
+        account.getTransactions().add(tran);
         purchaseRepository.save(tran);
         itemRepository.save(item);
+        transaction.setShop(shop);
         assertDoesNotThrow(()-> transactionHandler.processPointsUsage(account,transaction));
         assertEquals(50, account.getPoints());
         assertTrue(transactionRepository.existsById(transaction.getId()));
         assertTrue(transactionRepository.findById(transaction.getId()).isPresent());
+        assertTrue(usePointsRepository.existsById(transaction.getId()));
+        assertTrue(usePointsRepository.findById(transaction.getId()).isPresent());
 
     }
     @Test
     public void processPointsUsageTest1()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
-        purchaseRepository.deleteAll();
-        transactionRepository.deleteAll();
+
          setUp("joel.Doe@mail.com","joel");
         account.setPoints(10);
         UsePoints transaction=new UsePoints(LocalDate.now(),account);
@@ -118,7 +127,7 @@ public class TransactionHandlerTest {
         transaction.setGift(gift);
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.VFP);
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
@@ -130,20 +139,18 @@ public class TransactionHandlerTest {
         Item item=new Item(product3,2);
         Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));
         tran.setMemberAccount(account);
+        tran.setShop(shop);
         purchaseRepository.save(tran);
         item.setPurchase(tran);
         tran.addItem(item);
         itemRepository.save(item);
+        account.getTransactions().add(tran);
         assertThrows(InsufficientPointsException.class,()-> transactionHandler.processPointsUsage(account,transaction));
         assertEquals(10, account.getPoints());
         assertNull(transaction.getId());
     }
     @Test
     public void processPointsUsageTest2()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
-        itemRepository.deleteAll();
-         transactionRepository.deleteAll();
-        purchaseRepository.deleteAll();
-        memberAccoutRepository.deleteAll();
 
         setUp("joel.Doe@mail.com","joel");
         account.setPoints(150);
@@ -153,11 +160,10 @@ public class TransactionHandlerTest {
         transaction.setGift(gift);
         transaction.setUsedPoints(100);
         account.setStatus(AccountStatus.REGULAR);
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         gift.setShop(shop);
-
         shopRepository.save(shop);
         shop.addProduct(product3);
         catalogRepository.save(product3);
@@ -168,8 +174,8 @@ public class TransactionHandlerTest {
         tran.setMemberAccount(account);
         tran.addItem(item);
         item.setPurchase(tran);
+        tran.setShop(shop);
         transactionRepository.save(tran);
-
         itemRepository.save(item);
         assertThrows(DeclinedTransactionException.class,()-> transactionHandler.processPointsUsage(account,transaction));
         assertEquals(150, account.getPoints());
@@ -187,9 +193,7 @@ public class TransactionHandlerTest {
     }
     @Test
     public void processPurchaseTest()throws Exception{
-        transactionRepository.deleteAll();
-        memberAccoutRepository.deleteAll();
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
         shopRepository.save(shop);
@@ -203,6 +207,7 @@ public class TransactionHandlerTest {
         purchaseOfJohn.setMemberAccount(john);
         item.setPurchase(purchaseOfJohn);
         purchaseOfJohn.addItem(item);
+        purchaseOfJohn.setShop(shop);
         transactionRepository.save(purchaseOfJohn);
         itemRepository.save(item);
         // Mocking the bank proxy
@@ -210,16 +215,16 @@ public class TransactionHandlerTest {
         transactionHandler.processPurchase(john, purchaseOfJohn,"1234567999123456");
         assertEquals(purchaseOfJohn.getEarnedPoints(), john.getPoints());
         assertTrue(transactionRepository.existsById(purchaseOfJohn.getId()));
+        assertTrue(transactionRepository.findById(purchaseOfJohn.getId()).isPresent());
+        assertTrue(purchaseRepository.existsById(purchaseOfJohn.getId()));
+        assertTrue(purchaseRepository.findById(purchaseOfJohn.getId()).isPresent());
     }
     @Test
     public void processPurchaseTest1()throws Exception{
-        transactionRepository.deleteAll();
-        memberAccoutRepository.deleteAll();
-        Product product=new Product("cake",1.0,10);
+        Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findById(pat.getId()));
-        // Mocking the bank proxy
         when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(false);
         assertThrows(PaymentException.class,()-> transactionHandler.processPurchase(pat, purchaseOfPat,"1234567999123456"));
         assertNull(purchaseOfPat.getId());

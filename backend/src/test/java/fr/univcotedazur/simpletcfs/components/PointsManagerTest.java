@@ -68,7 +68,7 @@ public class PointsManagerTest {
     public void addPointsTest(){
         account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         account.setPoints(100);
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         Purchase transaction=new Purchase(LocalDate.now(),account,List.of(new Item(product3,2)));
         assertDoesNotThrow(()-> pointsManager.addPoints(account,transaction));
         assertEquals(120, account.getPoints());

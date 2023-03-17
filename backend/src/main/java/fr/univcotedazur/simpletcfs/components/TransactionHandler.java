@@ -6,7 +6,9 @@ import fr.univcotedazur.simpletcfs.exceptions.DeclinedTransactionException;
 import fr.univcotedazur.simpletcfs.exceptions.InsufficientPointsException;
 import fr.univcotedazur.simpletcfs.exceptions.PaymentException;
 import fr.univcotedazur.simpletcfs.interfaces.*;
+import fr.univcotedazur.simpletcfs.repositories.PurchaseRepository;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
+import fr.univcotedazur.simpletcfs.repositories.UsePointsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +19,20 @@ import java.util.stream.StreamSupport;
 @Component
 public class TransactionHandler implements TransactionProcessor, TransactionExplorer {
     private final TransactionRepository transactionRepository;
+    private PurchaseRepository purchaseRepository;
+    private UsePointsRepository usePointsRepository;
     private final PointTrader pointTrader;
     private Payment payment;
 
     private final MemberFinder memberFinder;
     @Autowired
-    public TransactionHandler(TransactionRepository transactionRepository, PointTrader pointTrader, Payment payment, MemberFinder memberFinder) {
+    public TransactionHandler(TransactionRepository transactionRepository,
+                              PointTrader pointTrader, Payment payment,
+                              MemberFinder memberFinder,
+                              PurchaseRepository p, UsePointsRepository u) {
         this.transactionRepository = transactionRepository;
+        this.purchaseRepository=p;
+        this.usePointsRepository=u;
         this.payment=payment;
         this.pointTrader=pointTrader;
         this.memberFinder = memberFinder;
@@ -39,21 +48,25 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
             purchase.setMemberAccount(memberAccount);
             purchase.setDate(LocalDate.now());
             pointTrader.addPoints(memberAccount,purchase);
-            transactionRepository.save(purchase);
+            memberAccount.getTransactions().add(purchase);
+            purchaseRepository.save(purchase);
+
         }
     }
     public void processPointsUsage(MemberAccount memberAccount,UsePoints usePoint)throws DeclinedTransactionException, InsufficientPointsException ,AccountNotFoundException{
         if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
             if(memberAccount.getStatus()!=usePoint.getGift().getRequiredStatus()||
-                    transactionRepository.findAll().stream().
-                            filter(transaction -> transaction.getMemberAccount().getId().equals(memberAccount.getId()))
-                            .noneMatch(transaction -> transaction instanceof Purchase))
+                    memberAccount.getTransactions().stream().
+                            noneMatch(transaction -> transaction instanceof Purchase &&
+                                  transaction.getShop().equals(usePoint.getGift().getShop()))
+                            )
                  {
                 throw new DeclinedTransactionException();
             }else{
                 pointTrader.removePoints(memberAccount,usePoint);
-                transactionRepository.save(usePoint);
+                memberAccount.getTransactions().add(usePoint);
+                usePointsRepository.save(usePoint);
             }
 
         }

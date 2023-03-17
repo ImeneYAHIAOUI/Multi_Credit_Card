@@ -61,4 +61,8 @@ public class Planning {
     public void setClosingHours(LocalTime closingHours) {
         this.closingHours = closingHours;
     }
+    @Override
+    public String toString(){
+        return "Day: "+dayWorking+" Opening Hours: "+openingHours+" Closing Hours: "+closingHours;
+    }
 }

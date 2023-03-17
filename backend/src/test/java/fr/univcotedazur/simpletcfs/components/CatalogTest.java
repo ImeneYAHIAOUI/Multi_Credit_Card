@@ -1,12 +1,13 @@
 package fr.univcotedazur.simpletcfs.components;
 
+import fr.univcotedazur.simpletcfs.entities.AccountStatus;
+import fr.univcotedazur.simpletcfs.entities.Gift;
 import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingProductException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.exceptions.ProductNotFoundException;
+import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
+import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ public class CatalogTest {
     @Autowired
     private ShopManager shopManager;
     @Autowired
+    GiftRepository giftRepository;
+    @Autowired
     CatalogRepository catalogRepository;
     private Shop shop;
     private Product product;
@@ -35,14 +38,18 @@ public class CatalogTest {
     private Product product4;
     @Autowired
     ShopRepository  shopRepository;
+    Gift gift;
+    Gift gift1;
+    Gift gift2;
     @BeforeEach
-    public void setUp() throws MissingInformationException, AlreadyExistingProductException {
+    public void setUp() throws MissingInformationException, AlreadyExistingProductException,
+            AlreadyExistingGiftException{
         shopRepository.deleteAll();
-         product=new Product("ring",1.0,0);
-         product1=new Product("Cookie",2.0,0);
-         product2=new Product("Cake",1.0,0);
-         product3=new Product("phone",1.0,0);
-        product4=new Product("chocolat",1.5,0);
+         product=new Product("ring",1.0,0,0.0);
+         product1=new Product("Cookie",2.0,0,0.0);
+         product2=new Product("Cake",1.0,0,0.0);
+         product3=new Product("phone",1.0,0,0.0);
+        product4=new Product("chocolat",1.5,0,0.0);
         shop=shopRegistration.addShop("A", "1 rue de la paix");
         product.setShop(shop);
         product1.setShop(shop);
@@ -50,8 +57,53 @@ public class CatalogTest {
         catalog.addProductToCatalog(shop, product);
         catalog.addProductToCatalog( shop,product1);
         catalog.addProductToCatalog(shop, product2);
+        gift=new Gift(150,"ring", AccountStatus.VFP);
+        gift1=new Gift(10,"cake", AccountStatus.REGULAR);
+        gift.setShop(shop);
+        gift1.setShop(shop);
+        catalog.addGift(shop,gift);
+        catalog.addGift(shop,gift1);
+        gift2=new Gift(10,"cookie", AccountStatus.VFP);
     }
-
+    @Test
+    public  void addGiftTest()throws AlreadyExistingGiftException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertFalse(shop.getGiftList().contains(gift2));
+        assertNull(gift2.getGiftId());
+        catalog.addGift(shop,gift2);
+        assertTrue(giftRepository.findById(gift2.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift2));
+        assertEquals(shop, gift2.getShop());
+    }
+    @Test
+    public  void addGiftTest2()throws AlreadyExistingGiftException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertThrows(AlreadyExistingGiftException.class,()->catalog.addGift(shop,gift));
+    }
+    @Test
+    public  void RemoveGiftTest() {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertThrows(GiftNotFoundException.class,()->catalog.removeGift(shop,gift2));
+    }
+    @Test
+    public  void RemoveGiftTest1()throws GiftNotFoundException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        catalog.removeGift(shop,gift);
+        assertTrue(giftRepository.findById(gift.getGiftId()).isEmpty());
+        assertFalse(shop.getGiftList().contains(gift));
+    }
     @Test
     public void  editTest() throws AlreadyExistingProductException, ProductNotFoundException {
         assertTrue(catalog.findProductById(product.getId()).isPresent());

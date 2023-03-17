@@ -6,6 +6,7 @@ package fr.univcotedazur.simpletcfs.entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -22,9 +23,10 @@ public class Shop {
     @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY ,mappedBy = "shop")
     List<Planning> planningList =new ArrayList<>();
     @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy = "shop")
-    public List<Product> productList=new ArrayList<>();
+    private List<Product> productList=new ArrayList<>();
     @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy = "shop")
-    public List<Gift> giftList=new ArrayList<>();
+    private List<Gift> giftList=new ArrayList<>();
+
 
     public Shop(String name, String address) {
         this.name = name;
@@ -33,6 +35,7 @@ public class Shop {
     public Shop() {
 
     }
+
 
     public List<Gift> getGiftList() {
         return giftList;
@@ -75,12 +78,20 @@ public class Shop {
         return Objects.equals(name, shop.name) &&
                 Objects.equals(address, shop.address);
     }
-    public String ToString(){
-        return "Shop{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+    @Override
+    public String toString(){
+        return "Shop"+"{\n" +
+                "id= " + id +"\n"+
+                "name= " + name + "\n" +
+                "address= " + address + "\n" +
+                "Gifts = "+ giftList.stream().map(n -> n.getGiftId().toString())
+                .collect(Collectors.joining("-", "{", "}"))+"\n"+
+                 "Products ="+ productList.stream().map(n -> n.getId().toString())
+                .collect(Collectors.joining("-", "{", "}"))+"\n"+
+                "Planning ="+ planningList.stream().map(plan -> plan.toString())
+                .collect(Collectors.joining("-", "{", "}"))+"\n"+
+                "}"
+                ;
     }
 
     public void setName(String name) {

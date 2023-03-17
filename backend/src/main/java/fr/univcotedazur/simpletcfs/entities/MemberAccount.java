@@ -16,7 +16,7 @@ public class MemberAccount extends Account {
     private MembershipCard membershipCard;
 
     @OneToMany( targetEntity=Transaction.class, mappedBy="memberAccount" ,cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    List<Transaction> transactions = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
     int points;
     double balance;
     AccountStatus status;
@@ -30,6 +30,12 @@ public class MemberAccount extends Account {
 
     public MemberAccount() {
 
+    }
+
+
+
+    public List<Transaction> getTransactions() {
+        return transactions;
     }
 
     public MembershipCard getMembershipCard() {

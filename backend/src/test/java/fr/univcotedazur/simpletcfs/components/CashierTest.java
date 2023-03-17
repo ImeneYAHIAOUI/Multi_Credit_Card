@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
@@ -59,17 +60,17 @@ Purchase purchaseOfJohn;
     @BeforeEach
     public void setUp() throws Exception {
         memberRepository.deleteAll();
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         purchaseOfJohn=new Purchase(LocalDate.now(),account,List.of(new Item(product3,2)));
 
-        Product product=new Product("cake",1.0,10);
+        Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
         assertNull(memberFinder.findByMail("john.d@gmail.com").orElse(null));
 
         john = memberHandler.createAccount("john", "john.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findById(john.getId()).orElse(null));
+        assertNotNull(Objects.requireNonNull(memberFinder.findById(john.getId()).orElse(null)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        assertNotNull(memberFinder.findById(pat.getId()).orElse(null));
+        assertNotNull(Objects.requireNonNull(memberFinder.findById(pat.getId()).orElse(null)));
 
         // Mocking the bank proxy
         when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(true);

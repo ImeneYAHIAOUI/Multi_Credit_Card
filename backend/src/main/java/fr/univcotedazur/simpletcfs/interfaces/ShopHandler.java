@@ -13,8 +13,7 @@ import java.time.LocalTime;
 public interface ShopHandler {
     void modifyAddress(Shop shop, String address);
     void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours);
-    void addGift(Shop shop, Gift gift)throws AlreadyExistingGiftException;
-    void removeGift(Shop shop, Gift gift) throws GiftNotFoundException;
+
      void modifyName(Shop shop, String name);
 
 }

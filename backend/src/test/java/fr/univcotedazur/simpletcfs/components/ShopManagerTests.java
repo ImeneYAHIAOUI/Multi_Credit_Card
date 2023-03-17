@@ -24,6 +24,8 @@ public class ShopManagerTests {
     @Autowired
     private ShopManager shopManager;
     @Autowired
+    Catalog catalog;
+    @Autowired
     private ShopRegistration shopRegistration;
     @Autowired
     GiftRepository giftRepository;
@@ -41,8 +43,8 @@ public class ShopManagerTests {
         gift1=new Gift(10,"cake", AccountStatus.REGULAR);
         gift.setShop(shop);
         gift1.setShop(shop);
-        shopManager.addGift(shop,gift);
-        shopManager.addGift(shop,gift1);
+        catalog.addGift(shop,gift);
+        catalog.addGift(shop,gift1);
         gift2=new Gift(10,"cookie", AccountStatus.VFP);
     }
     @Test
@@ -140,43 +142,5 @@ public class ShopManagerTests {
         assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
         assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
     }
-    @Test
-    public  void addGiftTest()throws AlreadyExistingGiftException {
-        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
-        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
-        assertTrue(shop.getGiftList().contains(gift1));
-        assertTrue(shop.getGiftList().contains(gift));
-        assertFalse(shop.getGiftList().contains(gift2));
-        assertNull(gift2.getGiftId());
-        gift2.setShop(shop);
-        shopManager.addGift(shop,gift2);
-        assertTrue(giftRepository.findById(gift2.getGiftId()).isPresent());
-        assertTrue(shop.getGiftList().contains(gift2));
-    }
-    @Test
-    public  void addGiftTest2()throws AlreadyExistingGiftException {
-        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
-        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
-        assertTrue(shop.getGiftList().contains(gift1));
-        assertTrue(shop.getGiftList().contains(gift));
-        assertThrows(AlreadyExistingGiftException.class,()->shopManager.addGift(shop,gift));
-    }
-    @Test
-    public  void RemoveGiftTest() {
-        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
-        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
-        assertTrue(shop.getGiftList().contains(gift1));
-        assertTrue(shop.getGiftList().contains(gift));
-        assertThrows(GiftNotFoundException.class,()->shopManager.removeGift(shop,gift2));
-    }
-    @Test
-    public  void RemoveGiftTest1()throws GiftNotFoundException {
-        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
-        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
-        assertTrue(shop.getGiftList().contains(gift1));
-        assertTrue(shop.getGiftList().contains(gift));
-        shopManager.removeGift(shop,gift);
-        assertTrue(giftRepository.findById(gift.getGiftId()).isEmpty());
-        assertFalse(shop.getGiftList().contains(gift));
-    }
+
 }

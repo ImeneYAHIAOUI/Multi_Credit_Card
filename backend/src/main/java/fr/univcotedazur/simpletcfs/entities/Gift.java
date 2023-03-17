@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Gift {
     @Id
     @GeneratedValue
