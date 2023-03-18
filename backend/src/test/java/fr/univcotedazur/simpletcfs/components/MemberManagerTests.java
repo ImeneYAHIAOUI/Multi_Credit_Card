@@ -77,7 +77,6 @@ public class MemberManagerTests {
         assertThrows(MissingInformationException.class, () -> memberHandler.createAccount("John Doe", "John2.Doe@mail.com", "password", null));
         assertThrows(UnderAgeException.class, () -> memberHandler.createAccount("John Doe", "John2.Doe@mail.com", "password", LocalDate.parse("11/04/2010", formatter)));
     }
-
     @Test
     public void testArchiveAccount() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -94,7 +93,6 @@ public class MemberManagerTests {
         assertDoesNotThrow(() -> memberHandler.archiveAccount(finalAccount));
         assertEquals(account2.getStatus(), AccountStatus.EXPIRED);
     }
-
     @Test
     public void testRestoreAccount() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -112,7 +110,6 @@ public class MemberManagerTests {
         assertDoesNotThrow(() -> memberHandler.restoreAccount(finalAccount));
         assertEquals(account2.getStatus(), AccountStatus.REGULAR);
     }
-
     @Test
     public void testDeleteAccount() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException, AccountNotFoundException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -128,7 +125,6 @@ public class MemberManagerTests {
         assertNull(memberFinder.findById(account.getId()).orElse(null));
         memberHandler.deleteAccount(account);
     }
-
     @Test
     public void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, NotVFPException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");

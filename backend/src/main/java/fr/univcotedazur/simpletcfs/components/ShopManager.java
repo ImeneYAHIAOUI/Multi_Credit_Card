@@ -42,6 +42,8 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         if(shop!= null && day!= null ){
             if( shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
                 if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
+                    System.out.println(ClosingHours);
+                    System.out.println(OpeningHours);
                     Planning planning =new Planning(day,OpeningHours, ClosingHours);
                     planning.setShop(shop);
                     shop.addPlanning(planning);
@@ -49,25 +51,23 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
                 }
             }
             else{
+                // update existing planning
                 Planning planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
                 if(OpeningHours!=null && ClosingHours!=null){
                     if( OpeningHours.isBefore(ClosingHours)){
                         planning.setOpeningHours(OpeningHours);
-                        planningRepository.updateOpeningHours(OpeningHours,planning.getId());
                         planning.setClosingHours(ClosingHours);
-                        planningRepository.updateClosingHours(ClosingHours, planning.getId());
                     }
                 }else if(OpeningHours==null && ClosingHours!=null){
                     if(planning.getOpeningHours().isBefore(ClosingHours)) {
                         planning.setClosingHours(ClosingHours);
-                        planningRepository.updateClosingHours(ClosingHours, planning.getId());
                     }
                 }else if( OpeningHours!=null  ){
                     if(OpeningHours.isBefore(planning.getClosingHours())) {
                         planning.setOpeningHours(OpeningHours);
-                        planningRepository.updateOpeningHours(OpeningHours,planning.getId());
                     }
                 }
+                planningRepository.save(planning);
             }
         }
     }

@@ -10,9 +10,7 @@ import javax.validation.constraints.Pattern;
 import java.util.List;
 
 public class ShopDTO {
-    @NotBlank(message = "name should not be blank")
     private String name;
-    @NotBlank(message = "address should not be blank")
     private String address;
     private Long id;
     public Long getId() {

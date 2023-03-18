@@ -11,10 +11,5 @@ import java.time.LocalTime;
 
 @Repository
 public interface PlanningRepository extends JpaRepository<Planning, Long> {
-    @Modifying(clearAutomatically = true)
-    @Query("update Planning p SET p.openingHours = :openingHours WHERE p.id = :id")
-    int updateOpeningHours(@Param("openingHours") LocalTime openingHours, @Param("id") Long id);
-    @Modifying(clearAutomatically = true)
-    @Query("update Planning p SET p.closingHours = :closingHours WHERE p.id = :id")
-    int updateClosingHours(@Param("closingHours") LocalTime closingHours, @Param("id") Long id);
+
 }

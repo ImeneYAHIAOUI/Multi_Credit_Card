@@ -81,7 +81,6 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.CREATED).body(new ParkingDTO(" ","ISWPLS not responding",0));
         }
     }
-
     @DeleteMapping(path = "delete",consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteAccount(@RequestBody @Valid  @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid") String mail) {
         mail  = mail.replaceAll("\"", "");

@@ -9,9 +9,7 @@ public class Planning {
     @GeneratedValue
     @Column(name="Planning_id", nullable=false)
     private Long id;
-    @Column(columnDefinition = "varchar(8)")
     private LocalTime closingHours;
-    @Column(columnDefinition = "varchar(8)")
     private LocalTime openingHours;
     @Enumerated(EnumType.STRING)
     private WeekDay dayWorking;
