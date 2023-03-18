@@ -28,6 +28,7 @@ public class ISWUPLSProxy implements ISWUPLS {
                     new ISWUPLSDTO(carRegistrationNumber,parkingSpotNumber , LocalDateTime.now().toEpochSecond(ZoneOffset.UTC), 1800),
                     ISWUPLSDTO.class
             );
+            System.out.println(result.getBody());
             return (result.getStatusCode().equals(HttpStatus.CREATED));
         }
         catch (HttpClientErrorException errorException)

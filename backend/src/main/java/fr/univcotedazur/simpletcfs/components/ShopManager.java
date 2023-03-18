@@ -23,20 +23,20 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
-    private GiftRepository giftRepository;
+
     private  PlanningRepository planningRepository;
     @Autowired
     public ShopManager(ShopRepository shopRepository,
                        ShopKeeperAccountRepository shopKeeperAccountRepository,
-                       GiftRepository giftRepository,PlanningRepository  planningRepository){
+                  PlanningRepository  planningRepository){
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
-        this.giftRepository = giftRepository;
         this.planningRepository=planningRepository;
     }
     public Optional<Planning> findPlanningByDay(Shop shop, WeekDay day){
         return shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
     }
+
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
         if(shop!= null && day!= null ){
@@ -75,34 +75,15 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     public void modifyName(Shop shop, String name){
         if(name!=null){
             shop.setName(name);
-            shopRepository.updateName(name, shop.getId());
+            shopRepository.save(shop);
         }
     }
     @Override
-    @Transactional
     public void modifyAddress(Shop shop, String address){
         if(address!=null){
             shop.setAddress(address);
-            shopRepository.updateAddress(address, shop.getId());
+            shopRepository.save(shop);
         }
-    }
-    @Override
-    public void addGift(Shop shop, Gift gift)throws AlreadyExistingGiftException{
-        if(gift!=null && giftRepository.findAll().stream().noneMatch(p-> p.equals(gift))) {
-            shop.addGift(gift);
-            giftRepository.save(gift);
-        }else
-            throw new AlreadyExistingGiftException();
-    }
-
-    @Override
-    public void removeGift(Shop shop, Gift gift) throws GiftNotFoundException {
-        if(gift!=null && giftRepository.findAll().stream().anyMatch(p-> p.equals(gift)) ){
-            giftRepository.delete(gift);
-            shop.getGiftList().remove(gift);
-        }else
-            throw new GiftNotFoundException();
-
     }
 
     @Override

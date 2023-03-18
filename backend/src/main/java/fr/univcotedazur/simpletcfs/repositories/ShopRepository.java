@@ -13,10 +13,5 @@ import java.util.UUID;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long> {
-    @Modifying(clearAutomatically = true)
-    @Query("update Shop p SET p.address = :address WHERE p.id = :id")
-    int updateAddress(@Param("address") String address, @Param("id") Long id);
-    @Modifying(clearAutomatically = true)
-    @Query("update Shop p SET p.name = :name WHERE p.id = :id")
-    int updateName(@Param("name") String name, @Param("id") Long id);
+
 }

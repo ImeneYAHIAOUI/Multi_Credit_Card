@@ -14,12 +14,14 @@ import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 public class CreateMemberAccountStepDefs {
     MemberAccount memberAccount;
     String name;
@@ -46,10 +48,7 @@ public class CreateMemberAccountStepDefs {
 
     @And("the mail {string}")
     public void with_mail(String mail) {
-        try {
-            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com").orElse(null));
-        } catch (AccountNotFoundException ignored) {
-        }
+
         this.mail = mail;
     }
 

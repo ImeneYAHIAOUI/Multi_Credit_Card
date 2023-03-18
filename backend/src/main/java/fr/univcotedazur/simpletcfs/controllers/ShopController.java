@@ -59,14 +59,14 @@ public class ShopController {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");
-        return ResponseEntity.ok().body(shop.toString());
+        return ResponseEntity.ok().body(shop.get().toString());
     }
     @PostMapping(path = "/{shopId}/address", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateAddress(@PathVariable("shopId") Long shopId, @RequestBody String address) {
+    public ResponseEntity<String> updateAddress( @PathVariable(value="shopId") Long shopId, @RequestBody String address) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
             return ResponseEntity.status(
-                    HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");
+                    HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown\n");
         else
             shopManager.modifyAddress(shop.get(),address);
         return ResponseEntity.ok("address of shop with id "+shopId+" is successfully updated");

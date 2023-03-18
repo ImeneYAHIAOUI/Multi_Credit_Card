@@ -14,10 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
+
 
 @Component
 @Transactional
@@ -25,7 +24,6 @@ public class MemberManager implements MemberHandler, MemberFinder {
     private final MemberRepository memberRepository;
     private final ParkingHandler parkingHandler;
     private final TransactionRepository transactionRepository;
-
     private final Environment env;
 
 
@@ -55,10 +53,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
         memberAccount = new MemberAccount(name,mail, password, birthDate, 0, 0);
         memberAccount.setStatus(AccountStatus.REGULAR);
         return memberRepository.save(memberAccount);
-
     }
-
-
 
     @Override
     public void archiveAccount(MemberAccount memberAccount) throws AccountNotFoundException {
@@ -75,12 +70,14 @@ public class MemberManager implements MemberHandler, MemberFinder {
     @Override
     public void deleteAccount(MemberAccount memberAccount) throws AccountNotFoundException {
         try {
-            memberRepository.deleteById(memberAccount.getId());
+            memberRepository.delete(memberAccount);
         }
         catch (Exception e){
             throw new AccountNotFoundException();
         }
     }
+
+
 
     @Override
     public void updateAccount(MemberAccount memberAccount, Form form) throws AccountNotFoundException {
@@ -99,9 +96,17 @@ public class MemberManager implements MemberHandler, MemberFinder {
     @Override
     public void updateAccountsStatus() {
         for (MemberAccount  memberAccount : memberRepository.findAll()) {
-            if(StreamSupport.stream(transactionRepository.findAll().spliterator(), false).filter(t2 -> ((Transaction)t2).getDate().isAfter(LocalDate.now().minusWeeks(1))).filter(t -> ((Transaction)t).getMemberAccount().getId().equals(memberAccount.getId())).count() >= Integer.parseInt(Objects.requireNonNull(env.getProperty("VFP.MinPurchasesNumber"))))
-                memberAccount.setStatus(AccountStatus.VFP);
-            else
+
+            System.out.println(memberAccount
+                    .getTransactions().stream()
+                    .filter(t -> t instanceof Purchase)
+                    .filter(t2 -> t2.getDate().isAfter(LocalDate.now().minusWeeks(1)))
+                    .count() );
+            if(memberAccount
+                    .getTransactions().stream()
+                    .filter(t -> t instanceof Purchase)
+                    .filter(t2 -> t2.getDate().isAfter(LocalDate.now().minusWeeks(1)))
+                    .count() < Integer.parseInt(Objects.requireNonNull(env.getProperty("VFP.MinPurchasesNumber"))))
                 memberAccount.setStatus(AccountStatus.REGULAR);
         }
     }
@@ -120,6 +125,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
     @Override
     public Optional<MemberAccount> findByMail(String mail) {
         for (MemberAccount  memberAccount : memberRepository.findAll()) {
+
             if (memberAccount.getMail().equals(mail)) {
                 return Optional.of(memberAccount);
             }
@@ -133,6 +139,29 @@ public class MemberManager implements MemberHandler, MemberFinder {
         if(! memberAccount.getStatus().equals(AccountStatus.VFP))
             throw new NotVFPException();
         parkingHandler.registerParking(carRegistrationNumber, parkingSpot);
+
+    }
+
+    @Override
+    public void renewMembership(MemberAccount memberAccount) throws AccountNotFoundException, TooEarlyForRenewalException {
+        if(findById(memberAccount.getId()).isEmpty())
+            throw  new  AccountNotFoundException();
+        if(memberAccount.getMembershipCard().getExpirationDate().isAfter(LocalDate.now().plusMonths(3)))
+            throw new TooEarlyForRenewalException();
+        memberAccount.getMembershipCard().setExpirationDate(memberAccount.getMembershipCard().getExpirationDate().plusMonths(18));
+        if(memberAccount.getStatus().equals(AccountStatus.EXPIRED))
+            updateAccountStatus(memberAccount,AccountStatus.REGULAR);
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * *")
+    public void archiveOrDeleteExpiredAccounts() throws AccountNotFoundException {
+        for (MemberAccount  memberAccount : memberRepository.findAll()) {
+            if(memberAccount.getMembershipCard().getExpirationDate().isBefore(LocalDate.now().minusYears(2)))
+                deleteAccount(memberAccount);
+            if(memberAccount.getMembershipCard().getExpirationDate().isBefore(LocalDate.now()))
+                archiveAccount(memberAccount);
+        }
 
     }
 

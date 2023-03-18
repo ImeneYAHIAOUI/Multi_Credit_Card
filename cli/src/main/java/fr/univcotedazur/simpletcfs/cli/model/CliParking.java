@@ -39,4 +39,10 @@ public class CliParking {
     public void setMail(String mail) {
         this.mail = mail;
     }
+
+    @Override
+    public String toString()
+    {
+        return carRegistrationNumber + ", " + mail +", "+ parkingSpotNumber;
+    }
 }

@@ -82,11 +82,13 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping(consumes = APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "delete",consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteAccount(@RequestBody @Valid  @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid") String mail) {
+        mail  = mail.replaceAll("\"", "");
         MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
         if(memberAccount == null)
         {
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
         }
         try {
@@ -121,6 +123,37 @@ public class MemberController {
         }
     }
 
+    @PutMapping(path="archive",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> archiveMember(@RequestBody @Valid String mail){
+        mail  = mail.replaceAll("\"", "");
+        MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+        try {
+            memberManager.archiveAccount(memberAccount);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account archived");
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+    }
+
+    @PutMapping(path="restore",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> restoreMember(@RequestBody @Valid String mail){
+        mail  = mail.replaceAll("\"", "");
+        MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+        try {
+            memberManager.restoreAccount(memberAccount);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account restored");
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+    }
 
     private MemberDTO convertMemberAccountToDto(MemberAccount member) { // In more complex cases, we could use ModelMapper
         return new MemberDTO( member.getName(), member.getMail(), member.getPassword(), member.getBirthDate().toString());

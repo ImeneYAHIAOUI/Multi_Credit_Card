@@ -26,8 +26,8 @@ public class MemberCommands {
         this.cliContext = cliContext;
     }
 
-    @ShellMethod("Register a member in the multi-credit backend (register MEMBER_NAME MEMBER_MAIL MEMBER_PASSWORD MEMBER_BIRTHDATE)")
-    public CliMember register( String name, String mail, String password, String birthDate) {
+    @ShellMethod("Register a member in the multi-credit backend (register-member MEMBER_NAME MEMBER_MAIL MEMBER_PASSWORD MEMBER_BIRTHDATE)")
+    public CliMember registerMember( String name, String mail, String password, String birthDate) {
         CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(name,mail,password,birthDate), CliMember.class);
         cliContext.getMemberAccounts().put(res.getName(), res);
         return res;
@@ -38,13 +38,25 @@ public class MemberCommands {
         return cliContext.getMemberAccounts().toString();
     }
 
-    @ShellMethod("delete a member (delete MEMBER_MAIL)")
-    public String delete(String mail) {
-    	restTemplate.delete(BASE_URI + mail);
+    @ShellMethod("delete a member (delete-member MEMBER_MAIL)")
+    public String deleteMember(String mail) {
+    	restTemplate.delete(BASE_URI + "/delete",mail);
     	return "Member deleted";
     }
 
-    @ShellMethod("update a member (update MEMBER_MAIL NEW_STATUS)")
+    @ShellMethod("archive a member(archive-member MEMBER_MAIL)")
+    public String archiveMember(String mail){
+        restTemplate.put(BASE_URI + "/archive",mail);
+        return "Member archived";
+    }
+
+    @ShellMethod("archive a member(archive-member MEMBER_MAIL)")
+    public String restoreMember(String mail){
+        restTemplate.put(BASE_URI + "/restore",mail);
+        return "Member restored";
+    }
+
+    @ShellMethod("update a member (update-status MEMBER_MAIL NEW_STATUS)")
     public CliUpdateStatus updateStatus(String mail, String status) {
          restTemplate.put(BASE_URI + "/status", new CliUpdateStatus(mail, status), CliUpdateStatus.class);
          return new CliUpdateStatus(mail, status);
@@ -54,7 +66,7 @@ public class MemberCommands {
 
 
     @ShellMethod("use parking time (parking CAR_REGISTRATION_NUMBER MAIL PARKING_SPOT)")
-    public CliParking parking(String carRegistrationNumber, String mail, int parkingSpotNumber)
+    public CliParking startParking(String carRegistrationNumber, String mail, int parkingSpotNumber)
     {
         CliParking res = restTemplate.postForObject(BASE_URI + "/parking",new CliParking(carRegistrationNumber,mail,parkingSpotNumber), CliParking.class);
         return res;

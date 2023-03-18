@@ -1,16 +1,15 @@
 package fr.univcotedazur.simpletcfs.cucumber.member;
 
-import fr.univcotedazur.simpletcfs.entities.AccountStatus;
-import fr.univcotedazur.simpletcfs.entities.MemberAccount;
-import fr.univcotedazur.simpletcfs.entities.Purchase;
-import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
+import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.*;
+import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
+import fr.univcotedazur.simpletcfs.interfaces.TransactionProcessor;
+import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
+import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -18,18 +17,19 @@ import io.cucumber.java.en.When;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.TestPropertySource;
 
+import javax.transaction.Transactional;
+
 import static org.awaitility.Awaitility.await;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest
 @TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *","VFP.MinPurchasesNumber=5"})
 @Commit
+@Transactional
 public class BecomeVFPStepDefs {
     MemberAccount memberAccount;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -46,12 +47,23 @@ public class BecomeVFPStepDefs {
     MemberHandler memberHandler;
     @Autowired
     MemberFinder memberFinder;
-    @Autowired
-    TransactionRepository transactionRepository;
 
+    @Autowired
+    Bank bank;
+    @Autowired
+    ShopRepository shopRepository;
+    @Autowired
+    CatalogRepository catalogRepository;
+    @Autowired
+    TransactionProcessor transactionProcessor;
+
+    @Before
+    public void setUp() {
+        when(bank.pay(anyString(),anyDouble())).thenReturn(true);
+    }
 
     @Given("a member with name {string}, mail {string}, password {string} and birthdate {string}")
-    public void aMemberWithNameMailPasswordAndBirthdate(String name, String mail, String password, String birthDate) throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+    public void aMemberWithNameMailPasswordAndBirthdate(String name, String mail, String password, String birthDate) throws UnderAgeException, MissingInformationException {
         try {
             memberAccount = memberHandler.createAccount(name, mail, password, LocalDate.parse(birthDate, formatter));
         }
@@ -71,30 +83,40 @@ public class BecomeVFPStepDefs {
     }
 
     @And("the member makes {int} purchases")
-    public void theMemberMakesPurchases(int nbPurchases) {
+    public void theMemberMakesPurchases(int nbPurchases) throws PaymentException, AccountNotFoundException {
+        memberAccount.getTransactions().clear();
+        Product product=new Product("ring",1.0,10,0.0);
+        Shop shop=new Shop("A", "1 rue de la paix");
+        product.setShop(shop);
+        shopRepository.save(shop);
+        catalogRepository.save(product);
+        Item item=new Item(product,2);
+        Purchase purchase =new Purchase(LocalDate.now(),memberAccount, List.of(item));
+        purchase.setMemberAccount(memberAccount);
+        item.setPurchase(purchase);
+        purchase.addItem(item);
+        purchase.setShop(shop);
         for (int i = 0; i < nbPurchases; i++) {
-            transactionRepository.save(new Purchase(LocalDate.now(), memberFinder.findById(memberAccount.getId()).orElse(null),new ArrayList<>()));
+            transactionProcessor.processPurchase(memberAccount,purchase,"123456456789");
         }
     }
 
     @When("the member account status gets updated")
     public void theMemberAccountStatusGetsUpdated() {
-        await().atMost(6, TimeUnit.SECONDS).untilAsserted(() ->
-                verify(memberHandler, Mockito.atLeast(5)).updateAccountsStatus());
+
+
+        memberHandler.updateAccountsStatus();
     }
 
     @Then("the member statue becomes VFP")
-    public void theMemberStatueIsVFP2() throws AccountNotFoundException {
-        assertEquals(Objects.requireNonNull(memberFinder.findById(memberAccount.getId()).orElse(null)).getStatus(),AccountStatus.VFP);
-        transactionRepository.deleteAll();
-        memberHandler.deleteAccount(memberAccount);
+    public void theMemberStatueIsVFP2() {
+
+        assertEquals(memberFinder.findById(memberAccount.getId()).orElse(null).getStatus(),AccountStatus.VFP);
     }
 
     @Then("the member statue becomes regular")
-    public void theMemberStatueIsNotVFP() throws AccountNotFoundException {
-        assertEquals(Objects.requireNonNull(memberFinder.findById(memberAccount.getId()).orElse(null)).getStatus(),AccountStatus.REGULAR);
-        transactionRepository.deleteAll();
-        memberHandler.deleteAccount(memberAccount);
+    public void theMemberStatueIsNotVFP()  {
+        assertEquals(memberFinder.findById(memberAccount.getId()).orElse(null).getStatus(),AccountStatus.REGULAR);
     }
 
 }

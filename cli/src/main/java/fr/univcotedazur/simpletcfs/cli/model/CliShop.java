@@ -1,8 +1,6 @@
 package fr.univcotedazur.simpletcfs.cli.model;
 
 public class CliShop {
-
-
     public  CliShop(String name, String address) {
         this.name = name;
         this.address = address;
@@ -34,7 +32,7 @@ public void setId(Long id) {
 
     @Override
     public String toString() {
-        return "Shop id : "+id +"Shop name : "+name+" address : "+address;
+        return "Shop id : "+id +", name : "+name+", address : "+address;
 
     }
 }

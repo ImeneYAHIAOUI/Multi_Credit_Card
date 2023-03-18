@@ -20,4 +20,8 @@ public interface MemberHandler {
             AccountNotFoundException;
 
     void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber,int parkingSpotNumber) throws NotVFPException;
+
+    void renewMembership(MemberAccount memberAccount) throws AccountNotFoundException, TooEarlyForRenewalException;
+
+    void archiveOrDeleteExpiredAccounts() throws AccountNotFoundException;
 }

@@ -35,9 +35,6 @@ public class MembershipCard {
         this.number = number;
     }
 
-    public boolean isValide() {
-        return LocalDate.now().isBefore(expirationDate);
-    }
 
 
     public LocalDate getCreationDate() {

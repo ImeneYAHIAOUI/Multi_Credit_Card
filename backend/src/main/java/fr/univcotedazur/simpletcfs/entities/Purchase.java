@@ -14,7 +14,7 @@ public class Purchase extends Transaction{
     public double totalPrice;
     private String creditCardNumber;
     @OneToMany( targetEntity=Item.class, mappedBy="purchase" ,fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.REMOVE)
     public List<Item> item=new ArrayList<>();
     public Purchase() {
         super();

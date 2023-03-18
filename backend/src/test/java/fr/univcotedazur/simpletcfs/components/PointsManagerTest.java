@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@Transactional
 public class PointsManagerTest {
     @Autowired
     MemberFinder memberFinder;
@@ -65,10 +67,11 @@ public class PointsManagerTest {
     }
 
     @Test
-    public void addPointsTest(){
+    public void addPointsTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
         account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         account.setPoints(100);
-        Product product3=new Product("ring",1.0,10);
+        Product product3=new Product("ring",1.0,10,0.0);
         Purchase transaction=new Purchase(LocalDate.now(),account,List.of(new Item(product3,2)));
         assertDoesNotThrow(()-> pointsManager.addPoints(account,transaction));
         assertEquals(120, account.getPoints());
