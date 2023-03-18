@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-
+@Transactional
 public class ShopManagerTests {
     @Autowired
     private ShopManager shopManager;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 
+
 @Entity
 public class MemberAccount extends Account {
 
@@ -17,13 +18,15 @@ public class MemberAccount extends Account {
 
     @OneToMany( targetEntity=Transaction.class, mappedBy="memberAccount" ,cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Transaction> transactions = new ArrayList<>();
+
+
     int points;
     double balance;
     AccountStatus status;
 
     public MemberAccount(String name, String mail, String password, LocalDate birthDate, int points, double balance) {
         super( name, mail,password, birthDate);
-        this.membershipCard =  new MembershipCard(LocalDate.now(), LocalDate.now().plusYears(2));
+        this.membershipCard =  new MembershipCard(LocalDate.now(), LocalDate.now().plusMonths(18));
         this.points = points;
         this.balance = balance;
     }
@@ -37,6 +40,7 @@ public class MemberAccount extends Account {
     public List<Transaction> getTransactions() {
         return transactions;
     }
+
 
     public MembershipCard getMembershipCard() {
         return membershipCard;
@@ -83,5 +87,7 @@ public class MemberAccount extends Account {
 
 
     }
+
+
 
 }

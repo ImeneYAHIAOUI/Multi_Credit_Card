@@ -10,23 +10,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@TestPropertySource(properties = {"VFP.MinPurchasesNumber=5"})
+@Transactional
 public class TransactionHandlerTest {
     @Autowired
     MemberFinder memberFinder;
@@ -218,6 +216,42 @@ public class TransactionHandlerTest {
         assertTrue(transactionRepository.findById(purchaseOfJohn.getId()).isPresent());
         assertTrue(purchaseRepository.existsById(purchaseOfJohn.getId()));
         assertTrue(purchaseRepository.findById(purchaseOfJohn.getId()).isPresent());
+    }
+
+    @Test
+    public void attributeVFPStatus() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, PaymentException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        MemberAccount account =  memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+
+        when(bankMock.pay(anyString(),anyDouble())).thenReturn(true);
+
+        Product product=new Product("ring",1.0,10,0.0);
+        Shop shop=new Shop("A", "1 rue de la paix");
+        product.setShop(shop);
+        shopRepository.save(shop);
+        catalogRepository.save(product);
+        Item item=new Item(product,2);
+        Purchase purchase =new Purchase(LocalDate.now(),account, List.of(item));
+        purchase.setMemberAccount(account);
+        item.setPurchase(purchase);
+        purchase.addItem(item);
+        purchase.setShop(shop);
+
+
+        assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
+        transactionHandler.processPurchase(account,purchase,"123456456789");
+        assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
+        transactionHandler.processPurchase(account, purchase,"123456456789");
+        assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
+        transactionHandler.processPurchase(account, purchase,"123456456789");
+        assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
+        transactionHandler.processPurchase(account,purchase,"123456456789");
+        assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
+        transactionHandler.processPurchase(account,purchase,"123456456789");
+        assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.VFP);
+        memberHandler.deleteAccount(account);
+
+
     }
     @Test
     public void processPurchaseTest1()throws Exception{
