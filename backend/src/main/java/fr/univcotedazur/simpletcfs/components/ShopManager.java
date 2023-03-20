@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 
@@ -89,6 +90,9 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     @Override
     public Optional<Shop> findShopById(Long id){
         return shopRepository.findById(id);
+    }
+    public List<Shop> findShopByAddress(String address){
+        return shopRepository.findAll().stream().filter(shop-> shop.getAddress().equals(address)).collect(Collectors.toList());
     }
 
     @Override

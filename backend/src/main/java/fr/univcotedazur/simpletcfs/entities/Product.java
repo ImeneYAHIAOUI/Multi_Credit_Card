@@ -80,4 +80,8 @@ public class Product {
     public void setPoints(int points) {
         this.points = points;
     }
+    @Override
+    public String toString(){
+        return "id : "+id+" Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.shell.standard.ShellOption;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,13 +30,15 @@ public class ShopCommands {
     @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
     public String save(String name, String address) {
         CliShop res = restTemplate.postForObject(BASE_URI + "/save", new CliShop(name,address), CliShop.class);
-
         cliContext.getShops().put(res.getName(), res);
         return res.toString();
 
     }
     @ShellMethod("update shop address (update SHOP_id SHOP_ADDRESS )")
     public String updateShopAddress( Long id, String address) {
+        if (id < 0) {
+            return "Invalid shop ID";
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(address, headers);
@@ -56,6 +59,9 @@ public class ShopCommands {
     }
     @ShellMethod("delete a shop (delete SHOP_ID)")
     public String deleteShop(@ShellOption(value = {"-i", "--id"}) Long id) {
+        if (id < 0) {
+            return "Invalid shop ID";
+        }
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(BASE_URI +"/"+id, HttpMethod.DELETE, null, String.class);
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -64,11 +70,21 @@ public class ShopCommands {
             return "Failed to delete shop";
         }
     }
-    @ShellMethod(value = "Modify the opening and closing hours of a specific day for a shop")
+    @ShellMethod(value = "Modify the opening and closing hours of a specific day for a shop(modify-planning SHOP_ID DAY_OF_WEEK OPENING_TIME CLOSING_TIME)")
     public String modifyPlanning(@ShellOption(help = "ID du shop") long shopId,
                                @ShellOption(help = "Jour de la semaine") String dayOfWeek,
                                @ShellOption(help = "Heure d'ouverture (HH:mm)") String openingTime,
                                @ShellOption(help = "Heure de fermeture (HH:mm)") String closingTime) {
+        // Vérification des paramètres
+        if (shopId < 0) {
+            return "Invalid shop ID";
+        }
+        if (!isValidDayOfWeek(dayOfWeek)) {
+            return "Invalid day of week";
+        }
+        if (!isValidTime(openingTime) || !isValidTime(closingTime)) {
+            return "Invalid time format (must be HH:mm)";
+        }
         // Conversion des paramètres
         CliPlanning planning = new CliPlanning(dayOfWeek, openingTime, closingTime);
         // Création de l'URL
@@ -83,6 +99,17 @@ public class ShopCommands {
         } else {
            return "Failed to modify planning.";
         }
+    }
+    // Vérification de la validité du jour de la semaine
+    private boolean isValidDayOfWeek(String dayOfWeek) {
+        String[] daysOfWeek = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"};
+        return Arrays.asList(daysOfWeek).contains(dayOfWeek.toUpperCase());
+    }
+
+    // Vérification de la validité du format de l'heure
+    private boolean isValidTime(String time) {
+        String regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+        return time.matches(regex);
     }
 
 
