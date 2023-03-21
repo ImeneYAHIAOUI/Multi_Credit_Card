@@ -84,7 +84,7 @@ public class Shop {
                 "id= " + id +"\n"+
                 "name= " + name + "\n" +
                 "address= " + address + "\n" +
-                "Gifts = "+ giftList.stream().map(n -> n.getGiftId().toString())
+                "Gifts = "+ giftList.stream().map(Gift::toString)
                 .collect(Collectors.joining("-", "{", "}"))+"\n"+
                  "Products ="+ productList.stream().map(Product::toString)
                 .collect(Collectors.joining("-", "{", "}"))+"\n"+

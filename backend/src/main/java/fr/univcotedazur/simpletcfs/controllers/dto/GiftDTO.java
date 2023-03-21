@@ -1,0 +1,52 @@
+package fr.univcotedazur.simpletcfs.controllers.dto;
+
+import fr.univcotedazur.simpletcfs.entities.Shop;
+import fr.univcotedazur.simpletcfs.entities.UsePoints;
+
+import javax.persistence.*;
+
+public class GiftDTO {
+
+    private Long giftId;
+
+    private ShopDTO shop;
+
+    private int pointsNeeded;
+    private String status;
+
+    private String description;
+
+    public GiftDTO(Long giftId,int pointsNeeded, String description, String status) {
+        this.giftId = giftId;
+        this.status=status;
+        this.pointsNeeded = pointsNeeded;
+        this.description = description;
+    }
+
+    public Long getGiftId() {
+        return giftId;
+    }
+
+    public int getPointsNeeded() {
+        return pointsNeeded;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setShop(ShopDTO shop) {
+        this.shop = shop;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public ShopDTO getShop() {
+        return shop;
+    }
+    public String toString(){
+        return "GiftId : "+giftId+" PointsNeeded : "+pointsNeeded+" Description : "+description+" Status : "+status;
+    }
+
+}

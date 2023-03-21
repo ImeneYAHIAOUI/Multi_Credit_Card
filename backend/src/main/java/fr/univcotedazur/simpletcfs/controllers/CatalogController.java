@@ -3,10 +3,14 @@ package fr.univcotedazur.simpletcfs.controllers;
 import fr.univcotedazur.simpletcfs.components.Catalog;
 import fr.univcotedazur.simpletcfs.components.ShopManager;
 import fr.univcotedazur.simpletcfs.controllers.dto.ErrorDTO;
+import fr.univcotedazur.simpletcfs.controllers.dto.GiftDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ProductDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ShopDTO;
+import fr.univcotedazur.simpletcfs.entities.AccountStatus;
+import fr.univcotedazur.simpletcfs.entities.Gift;
 import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.entities.Shop;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingProductException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +52,9 @@ public class CatalogController {
         // from the request body. This is because the @Valid annotation
         Optional<Shop> shop=shopManager.findShopById(shopId);
         if(shop.isEmpty()){
-            System.out.println("not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         else{
-            System.out.println(" found");
             Product p=new Product(product.getName(),product.getPrice(),product.getPoints(),product.getDiscountPercentage());
             try{
                 catalog.addProductToCatalog(shop.get(),p);
@@ -63,6 +65,33 @@ public class CatalogController {
             }
         }
 
+    }
+    @PostMapping(path = "/{shopId}/Gifts/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    public ResponseEntity<GiftDTO> addGift(@PathVariable("shopId") Long shopId,@RequestBody  GiftDTO gift) {
+        // Note that there is no validation at all on the shop mapped
+        // from the request body. This is because the @Valid annotation
+        Optional<Shop> shop=shopManager.findShopById(shopId);
+        if(shop.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        else{
+            System.out.println(gift.toString());
+            Gift p=new Gift(gift.getPointsNeeded(),gift.getDescription(), AccountStatus.valueOf(gift.getStatus().toUpperCase()));
+            try{
+                catalog.addGift(shop.get(),p);
+                return ResponseEntity.status(HttpStatus.CREATED).body(convertGiftToDto( p));
+            }catch (AlreadyExistingGiftException e){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            }
+        }
+
+    }
+    @GetMapping("Gifts/{giftId}")
+    public ResponseEntity<String> getGiftById(@PathVariable("giftId") Long giftId) {
+        Optional<Gift> g = catalog.findGiftById(giftId);
+        if(g.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gift id " + g + " unknown");
+        return ResponseEntity.ok().body(g.get().toString());
     }
     @GetMapping("Products/{ProductId}")
     public ResponseEntity<String> getProductById(@PathVariable("ProductId") Long ProductId) {
@@ -76,5 +105,8 @@ public class CatalogController {
                 new ShopDTO(p.getShop().getId(),p.getShop().getName(),p.getShop().getAddress()),p.getName()
                 ,p.getPoints(),p.getPrice(),p.getDiscountPercentage());
     }
-
+    private GiftDTO convertGiftToDto(Gift p) { // In more complex cases, we could use ModelMapper
+        return new GiftDTO( p.getGiftId(),
+               p.getPointsNeeded(),p.getDescription(),p.getRequiredStatus().getAccountStatusName());
+    }
 }

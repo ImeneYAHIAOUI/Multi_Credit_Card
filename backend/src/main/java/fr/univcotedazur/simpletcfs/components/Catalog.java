@@ -32,6 +32,10 @@ public class Catalog implements CatalogEditor, CatalogFinder {
         return catalogRepository.findById(id);
     }
     @Override
+    public Optional<Gift> findGiftById(Long id){
+        return giftRepository.findById(id);
+    }
+    @Override
     public void editShopCatalog(Shop shop, List<Product> addedProducts, List<Product> removedProducts)throws AlreadyExistingProductException , ProductNotFoundException {
         if(addedProducts!=null)
             for (Product product : addedProducts) {

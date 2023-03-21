@@ -1,13 +1,14 @@
 package fr.univcotedazur.simpletcfs.cli.model;
 
 public class CliShop {
+
+    public Long id;
+    public String name;
+    public String address;
     public  CliShop(String name, String address) {
         this.name = name;
         this.address = address;
     }
-    public Long id;
-    public String name;
-    public String address;
     public Long getId() {
         return id;
     }

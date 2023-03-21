@@ -79,5 +79,12 @@ public class Gift {
     public void setRequiredStatus(AccountStatus requiredStatus) {
         this.requiredStatus = requiredStatus;
     }
+    @Override
+    public String toString(){
+        return "gift id= " + giftId +
+                ", pointsNeeded= " + pointsNeeded +
+                ", description= " + description + '\'' +
+                ", requiredStatus= " + requiredStatus.getAccountStatusName();
+    }
 }
 
