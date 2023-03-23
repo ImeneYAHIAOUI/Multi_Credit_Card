@@ -21,4 +21,16 @@ public class PlanningDTO {
     public String getDayWorking() {
         return dayWorking;
     }
+
+    public void setClosingHours(String closingHours) {
+        this.closingHours = closingHours;
+    }
+
+    public void setDayWorking(String dayWorking) {
+        this.dayWorking = dayWorking;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
+    }
 }

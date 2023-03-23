@@ -21,6 +21,8 @@ public class ShopDTO {
         this.name = name;
         this.address = address;
     }
+    public ShopDTO() {
+    }
     public String getName() {
         return name;
     }

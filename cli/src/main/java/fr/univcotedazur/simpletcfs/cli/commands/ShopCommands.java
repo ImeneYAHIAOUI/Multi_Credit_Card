@@ -51,7 +51,11 @@ public class ShopCommands {
     }
     @ShellMethod(" get shop (get SHOP_id )")
     public String getShop( Long id) {
-        return restTemplate.getForObject(BASE_URI + "/"+id.toString(),String.class);
+
+        CliShop p= restTemplate.getForObject(BASE_URI + "/"+id.toString(),CliShop.class);
+        if(p==null)
+            return "invalid shop id";
+        return p.toString();
     }
     @ShellMethod("List all shops")
     public String shops() {

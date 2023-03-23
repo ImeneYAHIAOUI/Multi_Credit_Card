@@ -43,13 +43,18 @@ public class ShopController {
         return errorDTO;
     }
     @PostMapping(path = "/save", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
-    public ResponseEntity<ShopDTO> save(@RequestBody @Valid ShopDTO shopDTO) {
+    public ResponseEntity<ShopDTO> registerShop(@RequestBody @Valid ShopDTO shopDTO) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
         try {
-            Shop shop = shopRegistration.addShop(shopDTO.getName(), shopDTO.getAddress());
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(convertShopToDto(shop));
+            if (shopManager.findShopByAddress(shopDTO.getAddress()).isEmpty()) {
+                Shop shop = shopRegistration.addShop(shopDTO.getName(), shopDTO.getAddress());
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(convertShopToDto(shop));
+            }else{
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            }
+
         }catch (MissingInformationException e){
 
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -58,11 +63,12 @@ public class ShopController {
     }
 
     @GetMapping("/{shopId}")
-    public ResponseEntity<String> getShopById(@PathVariable("shopId") Long shopId) {
+    public ResponseEntity<ShopDTO> getShopById(@PathVariable("shopId") Long shopId) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShopId " + shopId + " unknown");
-        return ResponseEntity.ok().body(shop.get().toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok()
+                .body(convertShopToDto(shop.get()));
     }
     // method to update the address of the shop
     @PutMapping("/{id}/address")
@@ -93,7 +99,6 @@ public class ShopController {
         }
         shopManager.modifyPlanning(shop.get(), WeekDay.valueOf(planning.getDayWorking()), openingHours, closingHours);
         return ResponseEntity.ok("Shop planning for " + planning.getDayWorking() + " updated successfully");
-
     }
 
     // method to delete a shop by id
