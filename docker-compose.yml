@@ -1,3 +1,4 @@
+
 version: "3"
 
 services:
@@ -13,7 +14,8 @@ services:
       - bank-system
       - postgres
       - iswupls
-
+    ports:
+      - "8080:8080"
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
     image: postgres:15.2

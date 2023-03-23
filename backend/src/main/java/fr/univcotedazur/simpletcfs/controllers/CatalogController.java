@@ -10,9 +10,7 @@ import fr.univcotedazur.simpletcfs.entities.AccountStatus;
 import fr.univcotedazur.simpletcfs.entities.Gift;
 import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingProductException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,7 +44,7 @@ public class CatalogController {
         errorDTO.setDetails(e.getMessage());
         return errorDTO;
     }
-    @PostMapping(path = "/{shopId}/Products/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    @PostMapping(path = "/add/{shopId}/Products/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<ProductDTO> addProduct(@PathVariable("shopId") Long shopId,@RequestBody @Valid ProductDTO product) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
@@ -66,7 +64,7 @@ public class CatalogController {
         }
 
     }
-    @PostMapping(path = "/{shopId}/Gifts/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    @PostMapping(path = "/add/{shopId}/Gifts/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<GiftDTO> addGift(@PathVariable("shopId") Long shopId,@RequestBody  GiftDTO gift) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
@@ -86,14 +84,40 @@ public class CatalogController {
         }
 
     }
-    @GetMapping("Gifts/{giftId}")
+    @GetMapping(path="/get/Gifts/{giftId}")
     public ResponseEntity<String> getGiftById(@PathVariable("giftId") Long giftId) {
         Optional<Gift> g = catalog.findGiftById(giftId);
         if(g.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gift id " + g + " unknown");
         return ResponseEntity.ok().body(g.get().toString());
     }
-    @GetMapping("Products/{ProductId}")
+    @DeleteMapping(path="/Gifts/{id}")
+    public ResponseEntity<String> deleteGiftById(@PathVariable("id") Long id) {
+        Optional<Gift> gift=catalog.findGiftById(id);
+        if(gift.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gift id " + id + " unknown");
+        else
+            try{
+                catalog.removeGift(gift.get().getShop(),gift.get());
+                return ResponseEntity.ok("Gift deleted successfully");
+            }catch (GiftNotFoundException e){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Gift id " + id + " unknown");
+            }
+    }
+    @DeleteMapping("/Products/{id}")
+    public ResponseEntity<String> deleteProductById(@PathVariable("id") Long id) {
+        Optional<Product> p=catalog.findProductById(id);
+        if(p.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product id " + id + " unknown");
+        else
+            try{
+                catalog.removeProductFromCatalog(p.get().getShop(),p.get());
+                return ResponseEntity.ok("Product deleted successfully");
+            }catch (ProductNotFoundException e){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Product  id " + id + " unknown");
+            }
+    }
+    @GetMapping("/get/Products/{ProductId}")
     public ResponseEntity<String> getProductById(@PathVariable("ProductId") Long ProductId) {
         Optional<Product> product = catalog.findProductById(ProductId);
         if(product.isEmpty())

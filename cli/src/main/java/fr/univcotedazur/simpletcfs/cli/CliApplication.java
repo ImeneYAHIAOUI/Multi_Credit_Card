@@ -24,7 +24,7 @@ public class CliApplication {
    async and streaming scenarios. RestTemplate will be deprecated in the future versions. -> still, MVP mode here
  */
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    public RestTemplate restTemplate(RestTemplateBuilder builder) throws InterruptedException {
         return builder
                 .rootUri(serverHostandPort)
                 .setConnectTimeout(Duration.ofMillis(3000))

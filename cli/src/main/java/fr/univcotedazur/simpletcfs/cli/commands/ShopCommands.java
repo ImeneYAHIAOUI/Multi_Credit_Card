@@ -62,7 +62,6 @@ public class ShopCommands {
         if (id < 0) {
             return "Invalid shop ID";
         }
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(BASE_URI +"/"+id, HttpMethod.DELETE, null, String.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return "Shop deleted successfully";

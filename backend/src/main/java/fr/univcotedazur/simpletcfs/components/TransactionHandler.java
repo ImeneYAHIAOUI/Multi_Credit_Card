@@ -25,12 +25,9 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
     private UsePointsRepository usePointsRepository;
     private final PointTrader pointTrader;
     private Payment payment;
-
     private final Environment env;
     private final MemberHandler memberHandler;
-
     private final MemberFinder memberFinder;
-
     @Autowired
     public TransactionHandler(TransactionRepository transactionRepository,
                               PointTrader pointTrader, Payment payment,
