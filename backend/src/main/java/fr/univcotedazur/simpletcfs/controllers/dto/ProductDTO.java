@@ -17,7 +17,22 @@ public class ProductDTO {
         this.shop=shop;
         this.id=id;
     }
+    public ProductDTO() {
+    }
+    public ProductDTO (String name,int points, double price, double discountPercentage) {
+        this.points = points;
+        this.price = price;
+        this.name=name;
+        this.discountPercentage = discountPercentage;
+    }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getPoints() {
         return points;

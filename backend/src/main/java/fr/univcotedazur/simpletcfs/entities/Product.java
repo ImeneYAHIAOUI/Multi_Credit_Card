@@ -35,7 +35,7 @@ public class Product {
         return Objects.equals(name, product.name) &&
                 Objects.equals(price, product.price)
                 && Objects.equals(points, product.points)
-                 && Objects.equals(shop, product.shop);
+                && Objects.equals(discountPercentage, product.discountPercentage);
     }
     public Shop getShop() {
         return shop;
@@ -80,6 +80,7 @@ public class Product {
     public void setPoints(int points) {
         this.points = points;
     }
+
     @Override
     public String toString(){
         return " Product id : "+id+" Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;

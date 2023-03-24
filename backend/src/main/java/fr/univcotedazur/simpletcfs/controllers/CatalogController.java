@@ -44,7 +44,7 @@ public class CatalogController {
         errorDTO.setDetails(e.getMessage());
         return errorDTO;
     }
-    @PostMapping(path = "/add/{shopId}/Products/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    @PostMapping(path = "/add/{shopId}/Products", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<ProductDTO> addProduct(@PathVariable("shopId") Long shopId,@RequestBody @Valid ProductDTO product) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
@@ -56,7 +56,6 @@ public class CatalogController {
             Product p=new Product(product.getName(),product.getPrice(),product.getPoints(),product.getDiscountPercentage());
             try{
                 catalog.addProductToCatalog(shop.get(),p);
-
                 return ResponseEntity.status(HttpStatus.CREATED).body(convertProductToDto(p));
             }catch (AlreadyExistingProductException e){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -64,7 +63,7 @@ public class CatalogController {
         }
 
     }
-    @PostMapping(path = "/add/{shopId}/Gifts/add", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    @PostMapping(path = "/add/{shopId}/Gifts", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<GiftDTO> addGift(@PathVariable("shopId") Long shopId,@RequestBody  GiftDTO gift) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
@@ -73,7 +72,6 @@ public class CatalogController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         else{
-            System.out.println(gift.toString());
             Gift p=new Gift(gift.getPointsNeeded(),gift.getDescription(), AccountStatus.valueOf(gift.getStatus().toUpperCase()));
             try{
                 catalog.addGift(shop.get(),p);
@@ -85,11 +83,11 @@ public class CatalogController {
 
     }
     @GetMapping(path="/get/Gifts/{giftId}")
-    public ResponseEntity<String> getGiftById(@PathVariable("giftId") Long giftId) {
+    public ResponseEntity<GiftDTO> getGiftById(@PathVariable("giftId") Long giftId) {
         Optional<Gift> g = catalog.findGiftById(giftId);
         if(g.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Gift id " + g + " unknown");
-        return ResponseEntity.ok().body(g.get().toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok().body(convertGiftToDto(g.get()));
     }
     @DeleteMapping(path="/Gifts/{id}")
     public ResponseEntity<String> deleteGiftById(@PathVariable("id") Long id) {
@@ -118,11 +116,11 @@ public class CatalogController {
             }
     }
     @GetMapping("/get/Products/{ProductId}")
-    public ResponseEntity<String> getProductById(@PathVariable("ProductId") Long ProductId) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable("ProductId") Long ProductId) {
         Optional<Product> product = catalog.findProductById(ProductId);
         if(product.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product id " + ProductId + " unknown");
-        return ResponseEntity.ok().body(product.get().toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok().body(convertProductToDto(product.get()));
     }
     private ProductDTO convertProductToDto(Product p) { // In more complex cases, we could use ModelMapper
         return new ProductDTO( p.getId(),
@@ -130,7 +128,7 @@ public class CatalogController {
                 ,p.getPoints(),p.getPrice(),p.getDiscountPercentage());
     }
     private GiftDTO convertGiftToDto(Gift p) { // In more complex cases, we could use ModelMapper
-        return new GiftDTO( p.getGiftId(),
+        return new GiftDTO( p.getGiftId(), new ShopDTO(p.getShop().getId(),p.getShop().getName(),p.getShop().getAddress()),
                p.getPointsNeeded(),p.getDescription(),p.getRequiredStatus().getAccountStatusName());
     }
 }

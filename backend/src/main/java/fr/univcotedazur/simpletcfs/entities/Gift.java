@@ -35,8 +35,7 @@ public class Gift {
         if (!(o instanceof Gift gift)) return false;
         return Objects.equals(pointsNeeded, gift.pointsNeeded) &&
                 Objects.equals(requiredStatus, gift.requiredStatus)
-                && Objects.equals(description, gift.description)
-                && Objects.equals(shop, gift.shop);
+                && Objects.equals(description, gift.description);
     }
 
     public int getPointsNeeded() {

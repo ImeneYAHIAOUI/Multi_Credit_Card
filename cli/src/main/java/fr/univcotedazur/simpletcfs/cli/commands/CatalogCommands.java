@@ -29,7 +29,7 @@ public class CatalogCommands {
 
     @ShellMethod("add product (add-product SHOP_ID PRODUCT_NAME PRODUCT_PRICE PRODUCT_POINTS PRODUCT_DISCOUNT) )")
     public String addProduct(Long id,String name, Double price,int points,Double discount) {
-        CliProduct p= restTemplate.postForObject(BASE_URI +"/add/"+id+"/"+"Products/add", new CliProduct(name,points,price,discount), CliProduct.class);
+        CliProduct p= restTemplate.postForObject(BASE_URI +"/add/"+id+"/"+"Products", new CliProduct(name,points,price,discount), CliProduct.class);
         if(p!=null)
             return "Product added successfully : "+p.toString();
         else
@@ -78,10 +78,18 @@ public class CatalogCommands {
     }
     @ShellMethod("get gift (get-gift GIFT_ID ) )")
     public String getGift(Long id) {
-        return restTemplate.getForObject(BASE_URI + "/get/Gifts/"+id.toString(),String.class);
+        CliGift p= restTemplate.getForObject(BASE_URI + "/get/Gifts/"+id.toString(),CliGift.class);
+        if(p==null)
+            return "Gift id " + id + " unknown";
+        else
+            return p.toString();
     }
     @ShellMethod("get product (get-product PRODUCT_ID ) )")
     public String getProduct(Long id) {
-        return restTemplate.getForObject(BASE_URI + "/get/Products/"+id.toString(),String.class);
+        CliProduct p= restTemplate.getForObject(BASE_URI + "/get/Products/"+id.toString(),CliProduct.class);
+        if(p==null)
+            return "Product id " + id + " unknown";
+        else
+            return p.toString();
     }
 }

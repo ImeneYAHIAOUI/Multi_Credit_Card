@@ -16,13 +16,21 @@ public class GiftDTO {
 
     private String description;
 
-    public GiftDTO(Long giftId,int pointsNeeded, String description, String status) {
+    public GiftDTO(Long giftId,ShopDTO shop,int pointsNeeded, String description, String status) {
         this.giftId = giftId;
+        this.status=status;
+        this.shop=shop;
+        this.pointsNeeded = pointsNeeded;
+        this.description = description;
+    }
+    public GiftDTO(int pointsNeeded, String description, String status) {
         this.status=status;
         this.pointsNeeded = pointsNeeded;
         this.description = description;
     }
+    public GiftDTO(){
 
+    }
     public Long getGiftId() {
         return giftId;
     }
