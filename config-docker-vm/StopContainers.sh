@@ -1,0 +1,1 @@
+dcdown && cd Artifactory && dcdown && cd ..

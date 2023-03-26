@@ -1,0 +1,1 @@
+dcup && cd Artifactory && dcup && cd ..
