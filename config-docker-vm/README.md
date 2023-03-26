@@ -154,15 +154,14 @@ docker-compose up -d
          - JFrog Platform URL: **http://artifactory:8002/artifactory**
          - Artifactory Credentials: **Artifactory**
     3. **Save** the configuration
-10. Setup **Cloud Agent**: *Manage Jenkins > Manage Nodes and Clouds > Configure Clouds* | @TODO
-    1. **Docker**
-        - Name: **Docker**
-        - Docker Host URI: **unix:///var/run/docker.sock**
-        - Docker Image: **jenkins/jnlp-slave:3.35-5-alpine**
-        - Remote File System Root: **/home/jenkins**
-        - Labels: **docker**
-        - Usage: **Only build jobs with label expressions matching this node**
-        - **Save** the configuration
+10. Setup **Agent**: *Manage Jenkins > Manage Nodes and Clouds > New Node*
+     - Name: **Docker Agent**
+     - Remote File System Root: **/home/jenkins/agent**
+     - Launch Method: **Launch agents via SSH**
+     - Host: **jenkins-agent**
+     - Credentials: **add private ssh key**
+     - **Save** the configuration
+     - Add .ssh/know_hosts to the **Jenkins** container's home directory
 
 ### SonarQube
 

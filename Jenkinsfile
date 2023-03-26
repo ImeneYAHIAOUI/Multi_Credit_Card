@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.9.0'
+        maven 'Maven3.9'
         jdk 'JDK17'
         nodejs 'NodeJS18'
     }
@@ -77,20 +77,13 @@ pipeline {
             }
             steps {
                 echo "Deploying..."
+                sh "ls"
+                sh "ls project"
+//                sh 'docker tag backend/tcf-spring-backend sswaz/multicard-tcf-spring-backend:latest'
+//                sh 'docker push sswaz/tcf-spring-backend:latest'
 
-//                echo 'Building Docker image...'
-//                sh 'docker build -t <docker_hub_username>/<image_name>:<image_tag> .'
-//
-//                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
-//                    echo 'Pushing Docker image...'
-//                    sh 'docker push <docker_hub_username>/<image_name>:<image_tag>'
-//                }
-//
-//                sshagent(['remote-ssh-credentials']) {
-//                    echo 'Pulling and running Docker image...'
-//                    sh "ssh <remote_username>@<remote_ip_address> 'docker pull <docker_hub_username>/<image_name>:<image_tag>'"
-//                    sh "ssh <remote_username>@<remote_ip_address> 'docker run -d --name <container_name> -p <host_port>:<container_port> <docker_hub_username>/<image_name>:<image_tag>'"
-//                }
+
+//                sh 'docker push sswaz/multicard:latest'
             }
         }
     }
