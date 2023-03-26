@@ -5,7 +5,7 @@ pipeline {
         maven 'Maven3.9'
         jdk 'JDK17'
         nodejs 'NodeJS18'
-        docker 'Docker'
+        dockerTool 'Docker'
     }
 
     stages {
