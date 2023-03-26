@@ -1,1 +1,1 @@
-dcdown && cd Artifactory && dcdown && cd ..
+docker-compose down && cd Artifactory && docker-compose down && cd ..

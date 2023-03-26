@@ -1,1 +1,1 @@
-dcup && cd Artifactory && dcup && cd ..
+docker-compose up -d && cd Artifactory && docker-compose up -d && cd ..
