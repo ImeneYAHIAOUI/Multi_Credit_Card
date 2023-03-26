@@ -10,51 +10,51 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                echo "Cloning..."
+                echo 'Cloning...'
             }
         }
         stage('Build') {
             steps {
                 echo "${BUILD_URL}: Building ${BUILD_ID}..."
 
-                echo "--- Java and Maven versions ---"
+                echo '--- Java and Maven versions ---'
                 sh 'java -version'
                 sh 'mvn -version'
 
-                echo "Building Backend:"
+                echo 'Building Backend:'
                 sh 'mvn -f backend/pom.xml clean install -DskipTests=true'
 
-                echo "Building CLI:"
+                echo 'Building CLI:'
                 sh 'mvn -f cli/pom.xml clean install -DskipTests=true'
 
-                echo "--- Node and NPM versions ---"
+                echo '--- Node and NPM versions ---'
                 sh 'node -v'
                 sh 'npm -v'
 
-                echo "Building Bank:"
+                echo 'Building Bank:'
                 sh 'npm --prefix bank install'
                 sh 'npm --prefix bank run build'
             }
         }
         stage('Test') {
             steps {
-                echo "Testing Backend:"
+                echo 'Testing Backend:'
                 sh 'mvn -f backend/pom.xml test'
 
-                echo "Testing CLI:"
+                echo 'Testing CLI:'
                 sh 'mvn -f cli/pom.xml test'
 
-                echo "Testing Bank:"
+                echo 'Testing Bank:'
                 sh 'npm --prefix bank test'
             }
         }
         stage('Code Analysis') {
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
-                    echo "Analyzing Backend:"
+                    echo 'Analyzing Backend:'
                     sh 'mvn -f backend/pom.xml clean verify sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
 
-                    echo "Analyzing CLI:"
+                    echo 'Analyzing CLI:'
                     sh 'mvn -f cli/pom.xml clean verify sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
                 }
             }
@@ -64,10 +64,10 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "Packaging Backend:"
+                echo 'Packaging Backend:'
                 sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
 
-                echo "Packaging CLI:"
+                echo 'Packaging CLI:'
                 sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
             }
         }
@@ -76,14 +76,25 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "Deploying..."
-                sh "ls"
-                sh "ls project"
-//                sh 'docker tag backend/tcf-spring-backend sswaz/multicard-tcf-spring-backend:latest'
-//                sh 'docker push sswaz/tcf-spring-backend:latest'
+                echo 'Deploying...'
 
+                withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
 
-//                sh 'docker push sswaz/multicard:latest'
+                    echo '{$DOCKER_USERNAME} logged in to DockerHub'
+
+                    echo 'Building Backend Container'
+                    sh 'docker build -t sswaz/multicard-backend:latest -f project/backend/Dockerfile backend'
+
+                    echo 'Pushing Backend Container'
+                    sh 'docker push sswaz/multicard-backend:latest'
+
+                    echo 'Building CLI Container'
+                    sh 'docker build -t sswaz/multicard-cli:latest -f project/cli/Dockerfile cli'
+
+                    echo 'Pushing CLI Container'
+                    sh 'docker push sswaz/multicard-cli:latest'
+                }
             }
         }
     }
