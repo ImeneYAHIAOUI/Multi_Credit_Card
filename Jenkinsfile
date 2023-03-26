@@ -77,13 +77,20 @@ pipeline {
             }
             steps {
                 echo "Deploying..."
-//                Launch new stable version
-                // Récupérer l'image à partir d'Artifactory
-//                 sh 'docker pull <artifactory_url>/<image_name>:<image_tag>'
-//
-//                 // Lancer un conteneur à partir de l'image
-//                 sh 'docker run -d --name <container_name> -p <host_port>:<container_port> <artifactory_url>/<image_name>:<image_tag>'
 
+//                echo 'Building Docker image...'
+//                sh 'docker build -t <docker_hub_username>/<image_name>:<image_tag> .'
+//
+//                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
+//                    echo 'Pushing Docker image...'
+//                    sh 'docker push <docker_hub_username>/<image_name>:<image_tag>'
+//                }
+//
+//                sshagent(['remote-ssh-credentials']) {
+//                    echo 'Pulling and running Docker image...'
+//                    sh "ssh <remote_username>@<remote_ip_address> 'docker pull <docker_hub_username>/<image_name>:<image_tag>'"
+//                    sh "ssh <remote_username>@<remote_ip_address> 'docker run -d --name <container_name> -p <host_port>:<container_port> <docker_hub_username>/<image_name>:<image_tag>'"
+//                }
             }
         }
     }
