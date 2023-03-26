@@ -26,4 +26,4 @@ services:
 networks:
   default:
     external:
-      name: teamf_default
+      name: config-docker-vm_DevOpsNetwork
