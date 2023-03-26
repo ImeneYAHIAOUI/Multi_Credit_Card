@@ -164,13 +164,13 @@
     <distributionManagement>
         <repository>
             <id>central</id>
-            <name>f63901626607-releases</name>
-            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release</url>
+            <name>8ead0d7e91d8-releases</name>
+            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release-local</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <name>f63901626607-snapshots</name>
-            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot</url>
+            <name>8ead0d7e91d8-snapshots</name>
+            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot-local</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
