@@ -162,6 +162,7 @@ docker-compose up -d
      - Credentials: **add private ssh key**
      - **Save** the configuration
      - Add .ssh/know_hosts to the **Jenkins** container's home directory
+     - Run **ssh-keyscan github.com > /etc/ssh/ssh_known_hosts** in the **Jenkins-agent** container
 
 ### SonarQube
 
