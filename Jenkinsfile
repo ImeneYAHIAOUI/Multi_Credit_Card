@@ -85,7 +85,7 @@ pipeline {
                 echo 'Deploying...'
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'export DOCKER_HOST=unix:///var/run/docker.sock'
+                    sh 'sudo systemctl start docker'
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     echo '{$DOCKER_USERNAME} logged in to DockerHub'
 
