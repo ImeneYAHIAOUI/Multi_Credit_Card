@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 @Component
 public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder{
@@ -34,11 +32,11 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public AdminAccount findAdminById(UUID id) {
+    public Optional<AdminAccount> findAdminById(Long id) {
         while (adminAccountRepository.findAll().iterator().hasNext()) {
             AdminAccount adminAccount = adminAccountRepository.findAll().iterator().next();
             if (adminAccount.getId().equals(id)) {
-                return adminAccount;
+                return Optional.of(adminAccount);
             }
         }
         return null;
@@ -62,8 +60,8 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if(this.findAdminByMail(form.getMail()) != null){
             throw new AlreadyExistingAdminException();
         }
-        AdminAccount adminAccount = new AdminAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
-        adminAccountRepository.save(adminAccount, adminAccount.getId());
+        AdminAccount adminAccount = new AdminAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
+        adminAccountRepository.save(adminAccount);
         return adminAccount;
     }
 
@@ -75,12 +73,12 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public Shop addShop(String name, String address, Map<WeekDay, Planning> planning, List<Product> productList,List<Gift> giftList) throws MissingInformationException{
-        if (name == null || address == null || planning == null) {
+    public Shop addShop(String name, String address) throws MissingInformationException{
+        if (name == null || address == null) {
             throw new MissingInformationException();
         }
-        Shop shop = new Shop(UUID.randomUUID(), name, address, planning,productList,giftList);
-        shopRepository.save(shop,shop.getId());
+        Shop shop = new Shop(name, address);
+        shopRepository.save(shop);
         return shop;
     }
 
@@ -103,8 +101,8 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if(form.getBirthDate().isAfter(LocalDate.now().minusYears(16))){
             throw new UnderAgeException();
         }
-        shopKeeperAccount = new ShopKeeperAccount(UUID.randomUUID(), form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
-        shopKeeperAccountRepository.save(shopKeeperAccount, shopKeeperAccount.getId());
+        shopKeeperAccount = new ShopKeeperAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
+        shopKeeperAccountRepository.save(shopKeeperAccount);
         return shopKeeperAccount;
     }
 
