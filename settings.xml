@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <servers>
+    <server>
+      <username>admin</username>
+            <password>eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiJJVFdmWEppbzRtd3dUM1dSbW9Bclo2LVVXVm9KQ3hmZWdhR00wazEtaDdjIn0.eyJleHQiOiJ7XCJyZXZvY2FibGVcIjpcInRydWVcIn0iLCJzdWIiOiJqZmFjQDAxZ3NmY2RhY25jcTkxMXlodHR0YjUweTNzXC91c2Vyc1wvamVua2lucyIsInNjcCI6ImFwcGxpZWQtcGVybWlzc2lvbnNcL2FkbWluIiwiYXVkIjoiKkAqIiwiaXNzIjoiamZmZUAwMDAiLCJpYXQiOjE2Nzc3NzU1OTQsImp0aSI6ImVhMWRmNDFlLTIyMWMtNDJiMy1hYWM2LWRmYTY5ZTdlNzMxMSJ9.oO_z3bCli61Bj36XGTL_xx2Zf3mmuYk4CuvirPCoExF6PlENUOi3KP-R-srM6FEURbC1r_JaikRV5R6mWvoRZZ56_7XpMChadSNtn-b1VKhV9fq0cHxdNikD0tcOX3ygDcebmhi3WfHUu-aqzPKG22Q0LK81bzw2c2sd2i1ruQUtU-TxylL5v4g9i1gi9Tag1DCKTUcbQo8GXUdjNKAM6vBAYp09loVr3_TsuzxO2QRGn5VaimoLA1GGtU68EorDnfWIMjdLuxPgGbazX5vJKEsuNRkbno6GE8AUDGStNtQnnpaSVkRPhFmE6UXA-kQsgCjmiQCkPGmPr9bit0cOkA</password>
+      <id>central</id>
+    </server>
+    <server>
+      <username>admin</username>
+            <password>eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiJJVFdmWEppbzRtd3dUM1dSbW9Bclo2LVVXVm9KQ3hmZWdhR00wazEtaDdjIn0.eyJleHQiOiJ7XCJyZXZvY2FibGVcIjpcInRydWVcIn0iLCJzdWIiOiJqZmFjQDAxZ3NmY2RhY25jcTkxMXlodHR0YjUweTNzXC91c2Vyc1wvamVua2lucyIsInNjcCI6ImFwcGxpZWQtcGVybWlzc2lvbnNcL2FkbWluIiwiYXVkIjoiKkAqIiwiaXNzIjoiamZmZUAwMDAiLCJpYXQiOjE2Nzc3NzU1OTQsImp0aSI6ImVhMWRmNDFlLTIyMWMtNDJiMy1hYWM2LWRmYTY5ZTdlNzMxMSJ9.oO_z3bCli61Bj36XGTL_xx2Zf3mmuYk4CuvirPCoExF6PlENUOi3KP-R-srM6FEURbC1r_JaikRV5R6mWvoRZZ56_7XpMChadSNtn-b1VKhV9fq0cHxdNikD0tcOX3ygDcebmhi3WfHUu-aqzPKG22Q0LK81bzw2c2sd2i1ruQUtU-TxylL5v4g9i1gi9Tag1DCKTUcbQo8GXUdjNKAM6vBAYp09loVr3_TsuzxO2QRGn5VaimoLA1GGtU68EorDnfWIMjdLuxPgGbazX5vJKEsuNRkbno6GE8AUDGStNtQnnpaSVkRPhFmE6UXA-kQsgCjmiQCkPGmPr9bit0cOkA</password>
+      <id>snapshots</id>
+    </server>
+  </servers>
+  <profiles>
+    <profile>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release</url>
+        </repository>
+        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <id>artifactory</id>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>artifactory</activeProfile>
+  </activeProfiles>
+</settings>

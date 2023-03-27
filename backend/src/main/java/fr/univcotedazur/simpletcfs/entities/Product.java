@@ -1,34 +1,68 @@
 package fr.univcotedazur.simpletcfs.entities;
 
 
-import java.util.UUID;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
+@Entity
 public class Product {
-
-
+    @NotBlank
     private String name;
-    private UUID id;
-
+    @Id
+    @GeneratedValue
+    @Column(name="Product_id", nullable=false)
+    private Long id;
     private double price;
-
+    @ManyToOne
+    @JoinColumn(name="Shop_id", nullable=false)
+    private Shop shop;
     private int points;
-    public Product(UUID id, String name, double price, int points) {
-        this.id = id;
+    private double discountPercentage;
+    public Product( String name, double price, int points, double percentage) {
         this.name = name;
         this.price = price;
         this.points = points;
+        this.discountPercentage =percentage;
+    }
+    public Product() {
+
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
+        return Objects.equals(name, product.name) &&
+                Objects.equals(price, product.price)
+                && Objects.equals(points, product.points)
+                && Objects.equals(discountPercentage, product.discountPercentage);
+    }
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public double getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public String getName() {
         return name;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
     public double getPrice() {
-        return price;
+        return price-(price*discountPercentage);
     }
 
     public int getPoints() {
@@ -45,5 +79,10 @@ public class Product {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    @Override
+    public String toString(){
+        return " Product id : "+id+" Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
     }
 }

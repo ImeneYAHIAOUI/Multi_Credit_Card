@@ -1,0 +1,25 @@
+version: '3'
+services:
+  postgres:
+    image: ${DOCKER_REGISTRY}/postgres:12.5-alpine
+    container_name: postgresql
+    environment:
+      - POSTGRES_DB=artifactory
+      - POSTGRES_USER=artifactory
+      - POSTGRES_PASSWORD=__REPLACE_POSTGRES_PASSWORD__
+    ports:
+      - 5432:5432
+    volumes:
+      - ${ROOT_DATA_DIR}/var/data/postgres/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000

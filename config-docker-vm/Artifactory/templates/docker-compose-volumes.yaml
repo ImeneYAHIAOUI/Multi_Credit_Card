@@ -1,0 +1,64 @@
+version: '3'
+services:
+  postgres:
+    image: ${DOCKER_REGISTRY}/postgres:13.9-alpine
+    container_name: postgresql
+    environment:
+      - POSTGRES_DB=artifactory
+      - POSTGRES_USER=artifactory
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+  artifactory:
+    image: ${DOCKER_REGISTRY}/jfrog/artifactory-oss:${ARTIFACTORY_VERSION}
+    container_name: artifactory
+    volumes:
+      - artifactory_data:/var/opt/jfrog/artifactory
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    depends_on:
+      - postgres
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+    environment:
+      - ENABLE_MIGRATION=y
+      - JF_SHARED_DATABASE_TYPE=postgresql
+      # The following must match the POSTGRES_USER and POSTGRES_PASSWORD values passed to PostgreSQL
+      - JF_SHARED_DATABASE_USERNAME=artifactory
+      - JF_SHARED_DATABASE_PASSWORD=password
+      - JF_SHARED_DATABASE_URL=jdbc:postgresql://postgresql:5432/artifactory
+      - JF_SHARED_DATABASE_DRIVER=org.postgresql.Driver
+      - JF_SHARED_NODE_IP=${JF_SHARED_NODE_IP}
+      - JF_SHARED_NODE_ID=${JF_SHARED_NODE_ID}
+      - JF_SHARED_NODE_NAME=${JF_SHARED_NODE_NAME}
+      - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=${JF_ROUTER_ENTRYPOINTS_EXTERNALPORT}
+    ports:
+      - ${JF_ROUTER_ENTRYPOINTS_EXTERNALPORT}:${JF_ROUTER_ENTRYPOINTS_EXTERNALPORT} # for router communication
+      - 8081:8081 # for artifactory communication
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+volumes:
+  artifactory_data:
+    external: true
+  postgres_data:
+    external: true

@@ -2,34 +2,39 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDate;
-import java.util.UUID;
 
+@Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
  public class Account {
-
-    private UUID id;
-
+    @Id
+    @GeneratedValue
+    @Column(name="Account_id", nullable=false)
+    private Long id;
+    @NotBlank
     private String name;
-
     private String mail;
-
     private String password;
-
     private LocalDate birthDate;
-
-     public Account(UUID id, String name, String mail, String password, LocalDate birthDate) {
-         this.id = id;
+     public Account( String name, String mail, String password, LocalDate birthDate) {
          this.name = name;
          this.mail = mail;
          this.password = password;
          this.birthDate = birthDate;
      }
 
-     public UUID getId() {
+    public Account() {
+
+    }
+
+    public Long getId() {
          return id;
      }
 
-     public void setId(UUID id) {
+     public void setId(Long id) {
          this.id = id;
      }
 

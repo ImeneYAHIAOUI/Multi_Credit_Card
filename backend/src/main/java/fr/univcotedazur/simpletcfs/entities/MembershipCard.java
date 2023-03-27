@@ -2,21 +2,27 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
+import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Embeddable
 public class MembershipCard {
     private String number;
-
-    private boolean isValide;
-
     private LocalDate creationDate;
-
     private LocalDate expirationDate;
+
+    public MembershipCard() {
+
+    }
+
+
 
     public MembershipCard( LocalDate creationDate, LocalDate expirationDate) {
         this.number = String.valueOf(ThreadLocalRandom.current().nextInt(100000000, 1000000000));
-        this.isValide = true;
         this.creationDate = creationDate;
         this.expirationDate = expirationDate;
     }
@@ -29,13 +35,7 @@ public class MembershipCard {
         this.number = number;
     }
 
-    public boolean isValide() {
-        return isValide;
-    }
 
-    public void setValide(boolean valide) {
-        isValide = valide;
-    }
 
     public LocalDate getCreationDate() {
         return creationDate;

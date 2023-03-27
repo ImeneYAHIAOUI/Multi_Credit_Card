@@ -9,25 +9,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Component
 public class ISWUPLSProxy implements ISWUPLS {
-    @Value("http://localhost:8080")
+    @Value("${iswupls.host.baseurl}")
     private String iswuplsHostandPort;
 
     private RestTemplate restTemplate = new RestTemplate();
 
 
     @Override
-    public boolean startParkingTimer(String carRegistrationNumber) {
+    public boolean startParkingTimer(String carRegistrationNumber,int parkingSpotNumber) {
         try {
             ResponseEntity<ISWUPLSDTO> result = restTemplate.postForEntity(
-                    iswuplsHostandPort + "/cciswupls",
-                    new ISWUPLSDTO(carRegistrationNumber, LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),LocalTime.now().plusMinutes(30).format(DateTimeFormatter.ofPattern("HH:mm"))),
+                    iswuplsHostandPort + "/parking",
+                    new ISWUPLSDTO(carRegistrationNumber,parkingSpotNumber , LocalDateTime.now().toEpochSecond(ZoneOffset.UTC), 1800),
                     ISWUPLSDTO.class
             );
+            System.out.println(result.getBody());
             return (result.getStatusCode().equals(HttpStatus.CREATED));
         }
         catch (HttpClientErrorException errorException)

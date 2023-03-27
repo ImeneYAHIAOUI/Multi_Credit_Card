@@ -2,30 +2,43 @@ package fr.univcotedazur.simpletcfs.entities;
 
 
 
-import java.util.*;
-import java.util.Map;
-import java.util.UUID;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.util.*;
+import java.util.stream.Collectors;
+
+
+@Entity
 public class Shop {
 
-    private UUID id;
-
+    @Id
+    @GeneratedValue
+    @Column(name = "Shop_id", nullable = false)
+    private Long id;
+    @NotBlank
     private String name;
-
+    @NotBlank
     private String address;
+    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY ,mappedBy = "shop")
+    List<Planning> planningList =new ArrayList<>();
+    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy = "shop")
+    private List<Product> productList=new ArrayList<>();
+    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy = "shop")
+    private List<Gift> giftList=new ArrayList<>();
 
-    private Map<WeekDay, Planning> planning;
 
-    public List<Product> productList;
-
-    public List<Gift> giftList;
-    public Shop(UUID id, String name, String address, Map<WeekDay, Planning> planning, List<Product> products, List<Gift> gifts) {
-        this.id = id;
+    public Shop(String name, String address) {
         this.name = name;
         this.address = address;
-        this.planning = planning;
-        productList=products;
-        giftList=gifts;
+    }
+    public Shop() {
+
+    }
+
+
+    public List<Gift> getGiftList() {
+        return giftList;
     }
     public void addProduct(Product product){
         productList.add(product);
@@ -33,11 +46,23 @@ public class Shop {
     public void removeProduct(Product product){
         productList.remove(product);
     }
-
-    public UUID getId() {
-        return id;
+    public void addGift(Gift gift){
+        giftList.add(gift);
+    }
+    public void addPlanning(Planning planning){
+        planningList.add(planning);
+    }
+    public List<Planning> getPlanningList() {
+        return planningList;
     }
 
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -46,17 +71,27 @@ public class Shop {
     public String getAddress() {
         return address;
     }
-
-    public Map<WeekDay, Planning> getPlanning() {
-        return planning;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Shop shop)) return false;
+        return Objects.equals(name, shop.name) &&
+                Objects.equals(address, shop.address);
     }
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public List<Gift> getGiftList() {
-        return giftList;
+    @Override
+    public String toString(){
+        return "Shop"+"{\n" +
+                "id= " + id +"\n"+
+                "name= " + name + "\n" +
+                "address= " + address + "\n" +
+                "Gifts = "+ giftList.stream().map(Gift::toString)
+                .collect(Collectors.joining("-", "{", "}"))+"\n"+
+                 "Products ="+ productList.stream().map(Product::toString)
+                .collect(Collectors.joining("-", "{", "}"))+"\n"+
+                "Planning ="+ planningList.stream().map(Planning::toString)
+                .collect(Collectors.joining("-", "{", "}"))+"\n"+
+                "}"
+                ;
     }
 
     public void setName(String name) {
@@ -67,16 +102,5 @@ public class Shop {
         this.address = address;
     }
 
-    public void setPlanning(Map<WeekDay, Planning> planning) {
-        this.planning = planning;
-    }
-
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
-
-    public void setGiftList(List<Gift> giftList) {
-        this.giftList = giftList;
-    }
 }
 

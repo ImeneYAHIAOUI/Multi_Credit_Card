@@ -1,6 +1,5 @@
 package fr.univcotedazur.simpletcfs.Controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.simpletcfs.controllers.MemberController;
 import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
@@ -11,10 +10,8 @@ import fr.univcotedazur.simpletcfs.exceptions.AccountNotFoundException;
 import fr.univcotedazur.simpletcfs.interfaces.ISWUPLS;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
-import org.apache.http.message.BasicHttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,23 +21,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.client.ResourceAccessException;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-
+@Transactional
 public class MemberControllerTests {
-    @Mock
-    HttpURLConnection mockHttpConnection;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,7 +50,7 @@ public class MemberControllerTests {
     @BeforeEach
     void setUp(){
         try {
-            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com"));
+            memberHandler.deleteAccount( memberFinder.findByMail("John.Doe@mail.com").orElse(null));
         } catch (AccountNotFoundException ignored) {
         }
     }
@@ -125,7 +119,7 @@ public class MemberControllerTests {
     @Test
     void ParkingTests() throws Exception {
 
-        ParkingDTO parkingDTO = new ParkingDTO("123456789","John.Doe@mail.com");
+        ParkingDTO parkingDTO = new ParkingDTO("123456789","John.Doe@mail.com",1);
             mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(parkingDTO)))
@@ -140,16 +134,68 @@ public class MemberControllerTests {
                     .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
                     .andExpect(MockMvcResultMatchers.content()
                             .contentType(MediaType.APPLICATION_JSON));
-            MemberAccount account = memberFinder.findByMail("John.Doe@mail.com");
-            account.setStatus(AccountStatus.VFP);
+            MemberAccount account = memberFinder.findByMail("John.Doe@mail.com").orElse(null);
 
+        memberHandler.updateAccountStatus(account, AccountStatus.VFP);
             mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(parkingDTO)))
                     .andExpect(MockMvcResultMatchers.status().isCreated())
                     .andExpect(MockMvcResultMatchers.content()
                             .contentType(MediaType.APPLICATION_JSON));
-            verify(iswupls).startParkingTimer("123456789");
+            verify(iswupls).startParkingTimer("123456789",1);
 
     }
+
+    @Test
+    void deleteMemberTest() throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        String mail = "John.Doe@mail.com";
+        memberHandler.createAccount("John Doe", mail, "password", LocalDate.parse("11/04/2001",formatter));
+        assertTrue(memberFinder.findByMail(mail).isPresent());
+        mockMvc.perform(MockMvcRequestBuilders.delete(MemberController.BASE_URI + "/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mail)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType(MediaType.APPLICATION_JSON));
+       assertTrue(memberFinder.findByMail(mail).isEmpty());
+    }
+
+    @Test
+    void archiveMemberTest() throws Exception {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        String mail = "John.Doe@mail.com";
+        memberHandler.createAccount("John Doe", mail, "password", LocalDate.parse("11/04/2001",formatter));
+        assertTrue(memberFinder.findByMail(mail).isPresent());
+        assertTrue(memberFinder.findByMail(mail).get().getStatus().equals(AccountStatus.REGULAR));
+        mockMvc.perform(MockMvcRequestBuilders.put(MemberController.BASE_URI + "/archive")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mail)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType(MediaType.APPLICATION_JSON));
+        assertTrue(memberFinder.findByMail(mail).get().getStatus().equals(AccountStatus.EXPIRED));
+
+    }
+
+    @Test
+    public void restoreAccountTests() throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        String mail = "John.Doe@mail.com";
+        memberHandler.createAccount("John Doe", mail, "password", LocalDate.parse("11/04/2001",formatter));
+        assertTrue(memberFinder.findByMail(mail).isPresent());
+        memberHandler.updateAccountStatus(memberFinder.findByMail("John.Doe@mail.com").get(),AccountStatus.EXPIRED);
+        assertTrue(memberFinder.findByMail(mail).get().getStatus().equals(AccountStatus.EXPIRED));
+        mockMvc.perform(MockMvcRequestBuilders.put(MemberController.BASE_URI + "/restore")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mail)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType(MediaType.APPLICATION_JSON));
+        assertTrue(memberFinder.findByMail(mail).get().getStatus().equals(AccountStatus.REGULAR));
+
+    }
+
 }

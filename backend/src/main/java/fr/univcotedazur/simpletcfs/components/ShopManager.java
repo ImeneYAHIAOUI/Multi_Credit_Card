@@ -1,77 +1,112 @@
 package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingProductException;
 import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.exceptions.ProductNotFoundException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopFinder;
 import fr.univcotedazur.simpletcfs.interfaces.ShopHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperFinder;
-import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
-import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
+import fr.univcotedazur.simpletcfs.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.LocalTime;
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
+
 public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
+
+    private  PlanningRepository planningRepository;
     @Autowired
-    public ShopManager(ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository) {
+    public ShopManager(ShopRepository shopRepository,
+                       ShopKeeperAccountRepository shopKeeperAccountRepository,
+                  PlanningRepository  planningRepository){
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
+        this.planningRepository=planningRepository;
     }
+    public Optional<Planning> findPlanningByDay(Shop shop, WeekDay day){
+        return shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
+    }
+
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
-        if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
-            if(shop.getPlanning().get(day)==null){
-                shop.getPlanning().put(day,new Planning(OpeningHours, ClosingHours));
+        if(shop!= null && day!= null ){
+            if( shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
+                if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
+                    System.out.println(ClosingHours);
+                    System.out.println(OpeningHours);
+                    Planning planning =new Planning(day,OpeningHours, ClosingHours);
+                    planning.setShop(shop);
+                    shop.addPlanning(planning);
+                    planningRepository.save(planning);
+                }
             }
             else{
-                shop.getPlanning().get(day).setOpeningHours(OpeningHours);
-                shop.getPlanning().get(day).setClosingHours(ClosingHours);
+                // update existing planning
+                Planning planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
+                if(OpeningHours!=null && ClosingHours!=null){
+                    if( OpeningHours.isBefore(ClosingHours)){
+                        planning.setOpeningHours(OpeningHours);
+                        planning.setClosingHours(ClosingHours);
+                    }
+                }else if(OpeningHours==null && ClosingHours!=null){
+                    if(planning.getOpeningHours().isBefore(ClosingHours)) {
+                        planning.setClosingHours(ClosingHours);
+                    }
+                }else if( OpeningHours!=null  ){
+                    if(OpeningHours.isBefore(planning.getClosingHours())) {
+                        planning.setOpeningHours(OpeningHours);
+                    }
+                }
+                planningRepository.save(planning);
             }
         }
-
     }
     @Override
-    public void modifyAdress(Shop shop, String adress){
-        if(adress!=null)
-            shop.setAddress(adress);
-    }
-    @Override
-    public void addGift(Shop shop, Gift gift){
-        if(gift!=null && !shop.getGiftList().contains(gift))
-            shop.getGiftList().add(gift);
-    }
-    @Override
-    public void removeGift(Shop shop, Gift gift) throws GiftNotFoundException {
-        if(gift!=null ){
-            if(shop.getGiftList().contains(gift))
-                shop.getGiftList().remove(gift);
-            else
-                throw new GiftNotFoundException();
+    public void modifyName(Shop shop, String name){
+        if(name!=null){
+            shop.setName(name);
+            shopRepository.save(shop);
         }
-
     }
     @Override
-    public Optional<Shop> findShopById(UUID id){
+    public void modifyAddress(Shop shop, String address){
+        if(address!=null){
+            shop.setAddress(address);
+            shopRepository.save(shop);
+        }
+    }
+
+    @Override
+    public Optional<Shop> findShopById(Long id){
         return shopRepository.findById(id);
     }
-
+    public List<Shop> findShopByAddress(String address){
+        return shopRepository.findAll().stream().filter(shop-> shop.getAddress().equals(address)).collect(Collectors.toList());
+    }
 
     @Override
-    public Optional<ShopKeeperAccount> findShopKeeperAccountById(UUID id){
+    public Optional<ShopKeeperAccount> findShopKeeperAccountById(Long id){
         return shopKeeperAccountRepository.findById(id);
     }
     @Override
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name){
-        return shopKeeperAccountRepository.findByName(name);
+        for (ShopKeeperAccount  shopKeeperAccount : shopKeeperAccountRepository.findAll()) {
+            if (shopKeeperAccount.getMail().equals(name)) {
+                return Optional.of(shopKeeperAccount);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

@@ -2,15 +2,10 @@ package fr.univcotedazur.simpletcfs.controllers;
 
 import fr.univcotedazur.simpletcfs.components.MemberManager;
 import fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto.ISWUPLSDTO;
-import fr.univcotedazur.simpletcfs.controllers.dto.ErrorDTO;
-import fr.univcotedazur.simpletcfs.controllers.dto.AccountDTO;
-import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
-import fr.univcotedazur.simpletcfs.controllers.dto.ParkingDTO;
+import fr.univcotedazur.simpletcfs.controllers.dto.*;
+import fr.univcotedazur.simpletcfs.entities.AccountStatus;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingMemberException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.exceptions.NotVFPException;
-import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
+import fr.univcotedazur.simpletcfs.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -59,7 +55,7 @@ public class MemberController {
         } catch (AlreadyExistingMemberException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail())));
+                    .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail()).orElse(null)));
         } catch (MissingInformationException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
         } catch (UnderAgeException e) {
@@ -70,22 +66,93 @@ public class MemberController {
     @PostMapping(path = "parking", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<ParkingDTO> startParkingTime(@RequestBody @Valid ParkingDTO ParkingDTO)
     {
-        MemberAccount memberAccount = memberManager.findByMail(ParkingDTO.getMail());
+        MemberAccount memberAccount = memberManager.findByMail(ParkingDTO.getMail()).orElse(null);
         if(memberAccount == null)
         {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not found",0));
         }
         try {
-            memberManager.useParkingTime(memberAccount,ParkingDTO.getCarRegistrationNumber());
+            memberManager.useParkingTime(memberAccount,ParkingDTO.getCarRegistrationNumber(), ParkingDTO.getParkingSpotNumber());
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ParkingDTO);
         } catch (NotVFPException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not vfp"));
-        }catch(ResourceAccessException e){
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ParkingDTO(" ","ISWPLS not responding"));
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not vfp",0));
+        }catch( Exception e){
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ParkingDTO(" ","ISWPLS not responding",0));
+        }
+    }
+    @DeleteMapping(path = "delete",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteAccount(@RequestBody @Valid  @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid") String mail) {
+        mail  = mail.replaceAll("\"", "");
+        MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
+        if(memberAccount == null)
+        {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+        }
+        try {
+            memberManager.deleteAccount(memberAccount);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("member deleted");
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
         }
     }
 
+    @PutMapping(path="status",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UpdateStatusDTO> updateStatus(@RequestBody @Valid  UpdateStatusDTO updateStatusDTO) {
+        MemberAccount memberAccount = memberManager.findByMail(updateStatusDTO.getMail()).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ","user not found"));
+        }
+        try {
+            AccountStatus newStatus = switch (updateStatusDTO.getStatus()) {
+                case "VFP" -> AccountStatus.VFP;
+                case "REGULAR" -> AccountStatus.REGULAR;
+                case "EXPIRED" -> AccountStatus.EXPIRED;
+                default -> throw new IllegalStateException("Unexpected value: " + updateStatusDTO.getStatus());
+            };
+            memberManager.updateAccountStatus(memberAccount,newStatus);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(updateStatusDTO);
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ","user not found"));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ","status not valid"));
+        }
+    }
+
+    @PutMapping(path="archive",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> archiveMember(@RequestBody @Valid String mail){
+        mail  = mail.replaceAll("\"", "");
+        MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+        try {
+            memberManager.archiveAccount(memberAccount);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account archived");
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+    }
+
+    @PutMapping(path="restore",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> restoreMember(@RequestBody @Valid String mail){
+        mail  = mail.replaceAll("\"", "");
+        MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+        try {
+            memberManager.restoreAccount(memberAccount);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account restored");
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        }
+    }
 
     private MemberDTO convertMemberAccountToDto(MemberAccount member) { // In more complex cases, we could use ModelMapper
         return new MemberDTO( member.getName(), member.getMail(), member.getPassword(), member.getBirthDate().toString());

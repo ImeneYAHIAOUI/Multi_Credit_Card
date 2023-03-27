@@ -2,6 +2,7 @@ package fr.univcotedazur.simpletcfs.cli;
 
 import fr.univcotedazur.simpletcfs.cli.model.CliAdmin;
 import fr.univcotedazur.simpletcfs.cli.model.CliMember;
+import fr.univcotedazur.simpletcfs.cli.model.CliShop;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class CliContext {
 
     private Map<String, CliMember> memberAccounts;
     private Map<String, CliAdmin> adminAccounts;
-
+    private Map<String, CliShop> shops;
     public Map<String, CliMember> getMemberAccounts() {
         return memberAccounts;
     }
@@ -25,6 +26,7 @@ public class CliContext {
     {
         this.memberAccounts = new HashMap<>();
         this.adminAccounts = new HashMap<>();
+        shops=new HashMap<>();
     }
 
     @Override
@@ -38,5 +40,8 @@ public class CliContext {
         return adminAccounts.keySet().stream()
                 .map(key -> key + "=" + adminAccounts.get(key))
                 .collect(Collectors.joining(", ", "{", "}"));
+    }
+    public Map<String, CliShop> getShops() {
+        return shops;
     }
 }

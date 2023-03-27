@@ -1,0 +1,1 @@
+docker-compose down && cd Artifactory && docker-compose down && cd ..

@@ -24,7 +24,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -48,4 +47,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>8ead0d7e91d8-releases</name>
+            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>8ead0d7e91d8-snapshots</name>
+            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

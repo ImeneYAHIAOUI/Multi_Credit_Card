@@ -11,9 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
+
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
+@Transactional
 public class ParkingManagerTest {
 
 
@@ -26,12 +29,12 @@ public class ParkingManagerTest {
     @Test
     void registerParkingTest(){
         try {
-            parkingHandler.registerParking("123456789");
+            parkingHandler.registerParking("123456789",0);
         }
         catch(Exception ignored){
 
         }
-        verify(iswupls).startParkingTimer("123456789");
+        verify(iswupls).startParkingTimer("123456789",0);
     }
 
 

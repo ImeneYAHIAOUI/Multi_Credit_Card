@@ -1,12 +1,24 @@
 package fr.univcotedazur.simpletcfs.entities;
 
 
+import javax.persistence.*;
 
+@Entity
 public class Item {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private int amount;
+    @OneToOne
+    @JoinColumn(name = "Product_id")
+    private Product product;
 
-    public int amount;
+    @ManyToOne
+    @JoinColumn(name = "Transaction_id")
+    private Purchase purchase;
+    public Item() {
+    }
 
-    public Product product;
     public  Item(Product product, int amount){
         this.product = product;
         this.amount = amount;
@@ -26,5 +38,9 @@ public class Item {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public void setPurchase(Purchase tran) {
+        this.purchase = tran;
     }
 }

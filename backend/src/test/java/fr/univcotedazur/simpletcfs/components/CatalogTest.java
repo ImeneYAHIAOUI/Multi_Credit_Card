@@ -1,100 +1,168 @@
 package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.simpletcfs.entities.Planning;
+import fr.univcotedazur.simpletcfs.entities.AccountStatus;
+import fr.univcotedazur.simpletcfs.entities.Gift;
 import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.entities.Shop;
-import fr.univcotedazur.simpletcfs.entities.WeekDay;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
+import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
+import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalTime;
+import javax.transaction.Transactional;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 public class CatalogTest {
     @Autowired
     private ShopRegistration shopRegistration;
     @Autowired
     private Catalog catalog;
+    @Autowired
+    private ShopManager shopManager;
+    @Autowired
+    GiftRepository giftRepository;
+    @Autowired
+    CatalogRepository catalogRepository;
     private Shop shop;
     private Product product;
     private Product product1;
     private Product product2;
     private Product product3;
     private Product product4;
+    @Autowired
+    ShopRepository  shopRepository;
+    Gift gift;
+    Gift gift1;
+    Gift gift2;
     @BeforeEach
-    public void setUp() throws MissingInformationException {
-        Map<WeekDay, Planning> planning=new HashMap();
-        planning.put(WeekDay.Friday,new Planning(LocalTime.of(10,00),LocalTime.of(15,00)));
-        planning.put(WeekDay.Saturday,new Planning(LocalTime.of(10,00),LocalTime.of(14,00)));
-        planning.put(WeekDay.Monday,new Planning(LocalTime.of(9,00),LocalTime.of(19,00)));
-         product=new Product(UUID.randomUUID(),"ring",1.0,0);
-         product1=new Product(UUID.randomUUID(),"Cookie",2.0,0);
-         product2=new Product(UUID.randomUUID(),"Cake",1.0,0);
-         product3=new Product(UUID.randomUUID(),"ring",1.0,0);
-        product4=new Product(UUID.randomUUID(),"chocolat",1.5,0);
-        catalog.addProductToCatalog( product);
-        catalog.addProductToCatalog( product1);
-        catalog.addProductToCatalog( product2);
-        List<Product> productList=new ArrayList<>();
-        productList.add(product);
-        productList.add(product1);
-        productList.add(product2);
-        shop=shopRegistration.addShop("A", "1 rue de la paix", planning, productList,null);
-
+    public void setUp() throws MissingInformationException, AlreadyExistingProductException,
+            AlreadyExistingGiftException{
+        shopRepository.deleteAll();
+         product=new Product("ring",1.0,0,0.0);
+         product1=new Product("Cookie",2.0,0,0.0);
+         product2=new Product("Cake",1.0,0,0.0);
+         product3=new Product("phone",1.0,0,0.0);
+        product4=new Product("chocolat",1.5,0,0.0);
+        shop=shopRegistration.addShop("A", "1 rue de la paix");
+        product.setShop(shop);
+        product1.setShop(shop);
+        product2.setShop(shop);
+        catalog.addProductToCatalog(shop, product);
+        catalog.addProductToCatalog( shop,product1);
+        catalog.addProductToCatalog(shop, product2);
+        gift=new Gift(150,"ring", AccountStatus.VFP);
+        gift1=new Gift(10,"cake", AccountStatus.REGULAR);
+        gift.setShop(shop);
+        gift1.setShop(shop);
+        catalog.addGift(shop,gift);
+        catalog.addGift(shop,gift1);
+        gift2=new Gift(10,"cookie", AccountStatus.VFP);
     }
-
     @Test
-    public void  editCatalogTest() {
+    public  void addGiftTest()throws AlreadyExistingGiftException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertFalse(shop.getGiftList().contains(gift2));
+        assertNull(gift2.getGiftId());
+        catalog.addGift(shop,gift2);
+        assertTrue(giftRepository.findById(gift2.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift2));
+        assertEquals(shop, gift2.getShop());
+    }
+    @Test
+    public  void addGiftTest2()throws AlreadyExistingGiftException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertThrows(AlreadyExistingGiftException.class,()->catalog.addGift(shop,gift));
+    }
+    @Test
+    public  void RemoveGiftTest() {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        assertThrows(GiftNotFoundException.class,()->catalog.removeGift(shop,gift2));
+    }
+    @Test
+    public  void RemoveGiftTest1()throws GiftNotFoundException {
+        assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
+        assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
+        assertTrue(shop.getGiftList().contains(gift1));
+        assertTrue(shop.getGiftList().contains(gift));
+        catalog.removeGift(shop,gift);
+        assertTrue(giftRepository.findById(gift.getGiftId()).isEmpty());
+        assertFalse(shop.getGiftList().contains(gift));
+    }
+    @Test
+    public void  editTest() throws AlreadyExistingProductException, ProductNotFoundException {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
-        catalog.editCatalog(List.of(product3),List.of(product));
-        assertTrue(catalog.findProductById(product.getId()).isEmpty());
+        product3.setShop(shop);
+        catalog.addProductToCatalog(shop,product3);
         assertTrue(catalog.findProductById(product3.getId()).isPresent());
-    }
-    @Test
-    public void  editCatalogTest1() {
-        assertTrue(catalog.findProductById(product.getId()).isPresent());
-        assertTrue(catalog.findProductById(product1.getId()).isPresent());
-        assertTrue(catalog.findProductById(product2.getId()).isPresent());
-        catalog.editCatalog(List.of(product),List.of(product3));
-        assertTrue(catalog.findProductById(product3.getId()).isEmpty());
-        catalog.editCatalog(List.of(product4),null);
-        assertTrue(catalog.findProductById(product4.getId()).isPresent());
-    }
-    @Test
-    public void editShopCatalogTest() {
-        assertTrue(catalog.findProductById(product.getId()).isPresent());
-        assertTrue(catalog.findProductById(product1.getId()).isPresent());
-        assertTrue(catalog.findProductById(product2.getId()).isPresent());
-        assertFalse(shop.getProductList().contains(product3));
-        assertTrue(shop.getProductList().contains(product1));
-        assertTrue(shop.getProductList().contains(product2));
-        assertTrue(shop.getProductList().contains(product));
-        catalog.editShopCatalog(shop,List.of(product3),List.of(product));
-        assertFalse(shop.getProductList().contains(product));
-        assertTrue(shop.getProductList().contains(product3));
+        catalog.removeProductFromCatalog(shop,product);
         assertTrue(catalog.findProductById(product.getId()).isEmpty());
     }
     @Test
-    public void editShopCatalogTest1() {
+    public void  editTest1() throws AlreadyExistingProductException, ProductNotFoundException {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
-        assertFalse(shop.getProductList().contains(product3));
+        assertTrue(shop.getProductList().contains(product));
         assertTrue(shop.getProductList().contains(product1));
         assertTrue(shop.getProductList().contains(product2));
+        catalog.removeProductFromCatalog(shop,product);
+        assertTrue(catalog.findProductById(product.getId()).isEmpty());
+        assertFalse(shop.getProductList().contains(product));
+        assertThrows(ProductNotFoundException.class,()->catalog.removeProductFromCatalog(shop,product));
+
+    }
+    @Test
+    public void editShopCatalogTest() throws AlreadyExistingProductException, ProductNotFoundException{
+        assertTrue(catalog.findProductById(product.getId()).isPresent());
+        assertTrue(catalog.findProductById(product1.getId()).isPresent());
+        assertTrue(catalog.findProductById(product2.getId()).isPresent());
         assertTrue(shop.getProductList().contains(product));
-        catalog.editShopCatalog(shop,List.of(product3),null);
+        assertTrue(shop.getProductList().contains(product1));
+        assertTrue(shop.getProductList().contains(product2));
+        assertNull(product3.getId());
+        product3.setShop(shop);
+        assertFalse(shop.getProductList().contains(product3));
+        catalog.editShopCatalog(shop,List.of(product3),List.of(product));
         assertTrue(shop.getProductList().contains(product3));
+        assertFalse(shop.getProductList().contains(product));
+        assertTrue(catalogRepository.findById(product3.getId()).isPresent());
+        assertTrue(catalog.findProductById(product.getId()).isEmpty());
+    }
+    @Test
+    public void editShopCatalogTest1() throws AlreadyExistingProductException, ProductNotFoundException {
+        assertTrue(catalog.findProductById(product.getId()).isPresent());
+        assertTrue(catalog.findProductById(product1.getId()).isPresent());
+        assertTrue(catalog.findProductById(product2.getId()).isPresent());
+        assertTrue(shop.getProductList().contains(product));
+        assertTrue(shop.getProductList().contains(product1));
+        assertTrue(shop.getProductList().contains(product2));
+        assertNull(product3.getId());
+        product3.setShop(shop);
+        catalog.editShopCatalog(shop,List.of(product3),null);
+        assertTrue(catalogRepository.findById(product3.getId()).isPresent());
+        assertTrue(shop.getProductList().contains(product3));
+        catalog.editShopCatalog(shop,null,List.of(product3));
+        assertTrue(catalogRepository.findById(product3.getId()).isEmpty());
+        assertFalse(shop.getProductList().contains(product3));
     }
 }
