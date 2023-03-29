@@ -2,6 +2,7 @@ package fr.univcotedazur.simpletcfs.connectors;
 
 import fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto.MailSenderDTO;
 import fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto.PaymentDTO;
+import fr.univcotedazur.simpletcfs.entities.Mail;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.entities.Survey;
 import fr.univcotedazur.simpletcfs.interfaces.MailSender;
@@ -16,11 +17,11 @@ import java.util.List;
 
 @Component
 public class MailProxy implements MailSender {
-    @Value("http://localhost:8080")
+    @Value("${mailproxy.host.baseurl}")
     private String mailSenderHostandPort;
     private RestTemplate restTemplate = new RestTemplate();
     @Override
-    public boolean sendMail(List<MemberAccount> members, String mailToSend) {
+    public boolean sendMail(List<MemberAccount> members, Mail mailToSend) {
         try {
             ResponseEntity<MailSenderDTO> result = restTemplate.postForEntity(
                     mailSenderHostandPort + "",

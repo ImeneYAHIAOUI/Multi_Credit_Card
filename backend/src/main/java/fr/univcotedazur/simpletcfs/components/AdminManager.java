@@ -13,18 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Component
-public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder{
+public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder, MailHandler{
 
+    private final MailSender mailSender;
     private final AdminAccountRepository adminAccountRepository;
     private final ShopRepository shopRepository;
     private final ShopKeeperAccountRepository shopKeeperAccountRepository;
     private final ShopManager shopManager;
 
     @Autowired
-    public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager) {
+    public AdminManager(MailSender mailSender, AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager) {
+        this.mailSender = mailSender;
         this.adminAccountRepository = adminAccountRepository;
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
@@ -39,7 +42,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
                 return Optional.of(adminAccount);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -67,7 +70,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void deleteAdminAccount(AdminAccount account) {
-        if(findAdminById(account.getId()) != null){
+        if(findAdminById(account.getId()).isPresent()){
             adminAccountRepository.deleteById(account.getId());
         }
     }
@@ -122,4 +125,13 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         return null;
     }
 
+    @Override
+    public Survey createSurvey(LocalDate endDate, List<Question> questions) {
+        return new Survey(endDate, questions);
+    }
+
+    @Override
+    public Mail createMail(String mailContent, String subject) {
+        return new Mail(mailContent, subject);
+    }
 }

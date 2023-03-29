@@ -1,17 +1,18 @@
 package fr.univcotedazur.simpletcfs.connectors.externaldto.externaldto;
 
+import fr.univcotedazur.simpletcfs.entities.Mail;
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 import fr.univcotedazur.simpletcfs.entities.Survey;
 
 import java.util.List;
 
 public class MailSenderDTO {
-    private String message;
+    private Mail mail;
     private List<MemberAccount> members;
     private Survey survey;
 
-    public MailSenderDTO(List<MemberAccount> members, String message) {
-        this.message = message;
+    public MailSenderDTO(List<MemberAccount> members, Mail mail) {
+        this.mail = mail;
         this.members = members;
     }
 
@@ -23,12 +24,12 @@ public class MailSenderDTO {
     public MailSenderDTO() {
     }
 
-    public String getMessage() {
-        return message;
+    public Mail getMail() {
+        return mail;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMail(Mail mail) {
+        this.mail = mail;
     }
 
     public Survey getSurvey() {
