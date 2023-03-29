@@ -7,6 +7,15 @@ import javax.validation.constraints.Pattern;
 public class AccountDTO {
 
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private long id;
 
     @NotBlank(message = "name should not be blank")
 
@@ -24,7 +33,8 @@ public class AccountDTO {
 
     private String birthDate;
 
-    public AccountDTO(String name, String mail, String password, String birthDate) {
+    public AccountDTO(long id,String name, String mail, String password, String birthDate) {
+        this.id=id;
         this.name = name;
         this.mail = mail;
         this.password = password;

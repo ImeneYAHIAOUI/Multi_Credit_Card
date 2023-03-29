@@ -2,6 +2,7 @@ package fr.univcotedazur.simpletcfs.interfaces;
 
 import fr.univcotedazur.simpletcfs.entities.MemberAccount;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberFinder {
@@ -10,4 +11,5 @@ public interface MemberFinder {
 
     Optional<MemberAccount> findByMail(String mail);
 
+    List<MemberAccount> findAll();
 }

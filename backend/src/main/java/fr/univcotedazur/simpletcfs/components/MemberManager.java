@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -163,6 +164,11 @@ public class MemberManager implements MemberHandler, MemberFinder {
                 archiveAccount(memberAccount);
         }
 
+    }
+
+    @Override
+    public List<MemberAccount> findAll() {
+        return memberRepository.findAll();
     }
 
 
