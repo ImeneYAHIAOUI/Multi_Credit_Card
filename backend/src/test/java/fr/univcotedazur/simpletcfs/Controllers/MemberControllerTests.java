@@ -57,7 +57,7 @@ public class MemberControllerTests {
 
     @Test
     public void validMemberTest() throws Exception {
-        MemberDTO validMember = new MemberDTO("John Doe", "John.Doe@mail.com", "password", "11/04/2001");
+        MemberDTO validMember = new MemberDTO(0,"John Doe", "John.Doe@mail.com", "password", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validMember)))
@@ -75,7 +75,7 @@ public class MemberControllerTests {
 
     @Test
     public void inValidMemberTest() throws Exception {
-        MemberDTO badMailAddress = new MemberDTO("John Doe", "John.doe", "password", "11/04/2001");
+        MemberDTO badMailAddress = new MemberDTO(0,"John Doe", "John.doe", "password", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(badMailAddress)))
@@ -83,7 +83,7 @@ public class MemberControllerTests {
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
 
-        MemberDTO badName = new MemberDTO("", "John.Doe@mail.com", "password", "11/04/2001");
+        MemberDTO badName = new MemberDTO(0,"", "John.Doe@mail.com", "password", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(badName)))
@@ -91,7 +91,7 @@ public class MemberControllerTests {
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
 
-        MemberDTO badPassword = new MemberDTO("John Doe", "John.Doe@mail.com", "pass", "11/04/2001");
+        MemberDTO badPassword = new MemberDTO(0,"John Doe", "John.Doe@mail.com", "pass", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(badPassword)))
@@ -99,7 +99,7 @@ public class MemberControllerTests {
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
 
-        MemberDTO badBirthday = new MemberDTO("John Doe", "John.Doe@mail.com", "password", "11/04/2010");
+        MemberDTO badBirthday = new MemberDTO(0,"John Doe", "John.Doe@mail.com", "password", "11/04/2010");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(badBirthday)))
@@ -107,7 +107,7 @@ public class MemberControllerTests {
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
 
-        MemberDTO missingInformation = new MemberDTO(null, "John.Doe@mail.com", "password", "11/04/2001");
+        MemberDTO missingInformation = new MemberDTO(0,null, "John.Doe@mail.com", "password", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(missingInformation)))
