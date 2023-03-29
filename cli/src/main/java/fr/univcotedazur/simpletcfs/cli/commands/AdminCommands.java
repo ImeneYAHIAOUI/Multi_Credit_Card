@@ -7,6 +7,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 @ShellComponent
 public class AdminCommands {
 
@@ -22,8 +24,8 @@ public class AdminCommands {
     }
 
     @ShellMethod("Register an admin in the multi-credit backend (register ADMIN_NAME ADMIN_MAIL ADMIN_PASSWORD ADMIN_BIRTHDATE)")
-    public CliAdmin registerAdmin(String name, String mail, String password, String birthDate) {
-        CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(name,mail,password,birthDate), CliAdmin.class);
+    public CliAdmin registerAdmin(long id, String name, String mail, String password, String birthDate) {
+        CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(id, name,mail,password,birthDate), CliAdmin.class);
         cliContext.getAdminAccounts().put(res.getName(), res);
         return res;
     }
@@ -32,7 +34,4 @@ public class AdminCommands {
     public String admins() {
         return cliContext.printAdminAccounts();
     }
-
-
-
 }

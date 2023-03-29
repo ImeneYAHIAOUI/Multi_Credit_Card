@@ -70,7 +70,7 @@ public class AdminController {
 
 
     private AdminDTO convertAdminAccountToDto(AdminAccount admin) { // In more complex cases, we could use ModelMapper
-        return new AdminDTO( admin.getName(), admin.getMail(), admin.getPassword(), admin.getBirthDate().toString());
+        return new AdminDTO(admin.getId(), admin.getName(), admin.getMail(), admin.getPassword(), admin.getBirthDate().toString());
     }
 }
 
