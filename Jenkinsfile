@@ -79,6 +79,12 @@ pipeline {
             }
         }
         stage('Deploy') {
+            agent {
+                docker {
+                    image 'docker:latest'
+                    label 'Host'
+                }
+            }
             when {
                 branch 'main'
             }
