@@ -85,7 +85,6 @@ pipeline {
                 echo 'Deploying...'
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'service docker start'
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     echo '{$DOCKER_USERNAME} logged in to DockerHub'
 
