@@ -80,10 +80,7 @@ pipeline {
         }
         stage('Deploy') {
             agent {
-                docker {
-                    image 'docker:latest'
-                    label 'Host'
-                }
+                label 'Host'
             }
             when {
                 branch 'main'
