@@ -10,12 +10,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>fr.univ-cotedazur</groupId>
-    <artifactId>simpleTCFS</artifactId>
+    <groupId>fr.univ.cotedazur.multicard</groupId>
+    <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>simpleTCFS</name>
-    <description>simpleTCFS</description>
+    <name>backend</name>
+    <description>backend</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
