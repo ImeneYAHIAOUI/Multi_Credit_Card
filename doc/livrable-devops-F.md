@@ -50,7 +50,7 @@ Une fois connecter au VPN de l'Université, il est possible d'accéder aux servi
         <td><img src="https://www.jenkins.io/images/logos/jenkins/jenkins.svg" width="50" alt="Jenkins' Logo"></td>
         <td><strong>Jenkins</strong></td>
         <td><a>http://vmpx06.polytech.unice.fr:8000</a></td>
-        <td>admin</td>
+        <td>DevOps</td>
         <td>DevOps</td>
     </tr>
     <tr>
