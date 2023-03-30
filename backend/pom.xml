@@ -10,12 +10,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>fr.univ-cotedazur</groupId>
-    <artifactId>simpleTCFS</artifactId>
+    <groupId>fr.univ.cotedazur.multicard</groupId>
+    <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>simpleTCFS</name>
-    <description>simpleTCFS</description>
+    <name>backend</name>
+    <description>backend</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -163,12 +163,12 @@
 
     <distributionManagement>
         <repository>
-            <id>central</id>
+            <id>artifactoryCentral</id>
             <name>8ead0d7e91d8-releases</name>
             <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release-local</url>
         </repository>
         <snapshotRepository>
-            <id>snapshots</id>
+            <id>artifactorySnapshots</id>
             <name>8ead0d7e91d8-snapshots</name>
             <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot-local</url>
         </snapshotRepository>
