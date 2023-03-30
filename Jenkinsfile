@@ -5,6 +5,7 @@ pipeline {
         maven 'Maven3.9'
         jdk 'JDK17'
         nodejs 'NodeJS18'
+        dockerTool 'Docker'
     }
 
     stages {
@@ -49,6 +50,11 @@ pipeline {
             }
         }
         stage('Code Analysis') {
+            when {
+                not {
+                    branch 'main'
+                }
+            }
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo 'Analyzing Backend:'
@@ -65,10 +71,10 @@ pipeline {
             }
             steps {
                 echo 'Packaging Backend:'
-                sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
+                // sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
 
                 echo 'Packaging CLI:'
-                sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
+                // sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=snapshots'
             }
         }
         stage('Deploy') {
@@ -80,7 +86,6 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-
                     echo '{$DOCKER_USERNAME} logged in to DockerHub'
 
                     echo 'Building Backend Container'
