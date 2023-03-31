@@ -78,6 +78,36 @@ public class TransactionHandlerTest {
 
     }
     @Test
+    public void removePointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+        setUp("John.Doe@mail.com","John");
+        account.setPoints(100);
+        UsePoints transaction=new UsePoints(LocalDate.now(),account);
+        transaction.setUsedPoints(50);
+        assertDoesNotThrow(()-> transactionHandler.removePoints(account,transaction));
+        assertEquals(50, account.getPoints());
+    }
+    @Test
+    public void removePointsTest1() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
+        account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
+        account.setPoints(10);
+        UsePoints transaction=new UsePoints(LocalDate.now(),account);
+        transaction.setUsedPoints(50);
+        assertThrows(InsufficientPointsException.class,()-> transactionHandler.removePoints(account,transaction));
+        assertEquals(10, account.getPoints());
+    }
+
+    @Test
+    public void addPointsTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
+        account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
+        account.setPoints(100);
+        Product product3=new Product("ring",1.0,10,0.0);
+        Purchase transaction=new Purchase(LocalDate.now(),account,List.of(new Item(product3,2)));
+        assertDoesNotThrow(()-> transactionHandler.addPoints(account,transaction));
+        assertEquals(120, account.getPoints());
+    }
+    @Test
     public void processPointsUsageTest() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
          setUp("John.Doe@mail.com","John");
         account.setPoints(100);

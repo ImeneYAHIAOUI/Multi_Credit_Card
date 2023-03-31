@@ -19,25 +19,23 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
-public class TransactionHandler implements TransactionProcessor, TransactionExplorer {
+public class TransactionHandler implements TransactionProcessor, TransactionExplorer,PointTrader {
     private final TransactionRepository transactionRepository;
     private PurchaseRepository purchaseRepository;
     private UsePointsRepository usePointsRepository;
-    private final PointTrader pointTrader;
     private Payment payment;
     private final Environment env;
     private final MemberHandler memberHandler;
     private final MemberFinder memberFinder;
     @Autowired
     public TransactionHandler(TransactionRepository transactionRepository,
-                              PointTrader pointTrader, Payment payment,
+                             Payment payment,
                               MemberFinder memberFinder,
                               PurchaseRepository p, UsePointsRepository u, Environment env, MemberHandler memberHandler) {
         this.transactionRepository = transactionRepository;
         this.purchaseRepository=p;
         this.usePointsRepository=u;
         this.payment=payment;
-        this.pointTrader=pointTrader;
         this.memberFinder = memberFinder;
         this.env = env;
         this.memberHandler = memberHandler;
@@ -46,13 +44,21 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
     public Optional<Transaction> findTransactionById(Long id){
         return transactionRepository.findById(id);
     }
+    public void removePoints(MemberAccount memberAccount, UsePoints usePoints) throws InsufficientPointsException{
+        if(memberAccount.getPoints()>=usePoints.getUsedPoints())
+            memberAccount.setPoints(memberAccount.getPoints()-usePoints.getUsedPoints());
+        else throw new InsufficientPointsException();
+    }
+    public void addPoints(MemberAccount memberAccount, Purchase purchase) {
+        memberAccount.setPoints(memberAccount.getPoints()+ purchase.getEarnedPoints());
+    }
     public void processPurchase(MemberAccount memberAccount, Purchase purchase, String card) throws PaymentException, AccountNotFoundException{
         if(memberAccount.getId() == null || memberFinder.findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
         else{
             payment.payment(purchase,card);
             purchase.setMemberAccount(memberAccount);
             purchase.setDate(LocalDate.now());
-            pointTrader.addPoints(memberAccount,purchase);
+            addPoints(memberAccount,purchase);
             memberAccount.getTransactions().add(purchase);
             if(memberAccount.getTransactions().stream()
                     .filter(t -> t instanceof Purchase)
@@ -76,7 +82,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
                  {
                 throw new DeclinedTransactionException();
             }else{
-                pointTrader.removePoints(memberAccount,usePoint);
+                removePoints(memberAccount,usePoint);
                 memberAccount.getTransactions().add(usePoint);
                 usePointsRepository.save(usePoint);
             }
