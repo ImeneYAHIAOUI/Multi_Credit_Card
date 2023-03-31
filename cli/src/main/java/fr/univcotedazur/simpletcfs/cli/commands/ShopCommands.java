@@ -21,6 +21,7 @@ public class ShopCommands {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
     private final CliContext cliContext;
 
     public ShopCommands(CliContext cliContext) {
@@ -28,11 +29,10 @@ public class ShopCommands {
     }
 
     @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
-    public String save(String name, String address) {
+    public String addShop(String name, String address) {
         CliShop res = restTemplate.postForObject(BASE_URI + "/save", new CliShop(name,address), CliShop.class);
         cliContext.getShops().put(res.getName(), res);
         return res.toString();
-
     }
     @ShellMethod("update shop address (update SHOP_id SHOP_ADDRESS )")
     public String updateShopAddress( Long id, String address) {
@@ -51,7 +51,6 @@ public class ShopCommands {
     }
     @ShellMethod(" get shop (get SHOP_id )")
     public String getShop( Long id) {
-
         CliShop p= restTemplate.getForObject(BASE_URI + "/"+id.toString(),CliShop.class);
         if(p==null)
             return "invalid shop id";

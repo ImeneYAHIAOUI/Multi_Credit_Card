@@ -125,24 +125,7 @@ public class MemberManagerTests {
         assertNull(memberFinder.findById(account.getId()).orElse(null));
         memberHandler.deleteAccount(account);
     }
-    @Test
-    public void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, NotVFPException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        MemberAccount account;
-        try {
-            account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        }catch (AlreadyExistingMemberException e){
-            memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com").get());
-            account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        }
-        MemberAccount finalAccount = account;
-        assertThrows(NotVFPException.class, () -> memberHandler.useParkingTime(finalAccount, "123456789",0));
-        account.setStatus(AccountStatus.VFP);
-        when(iswupls.startParkingTimer(anyString(),anyInt())).thenReturn(true);
-        memberHandler.useParkingTime(account, "123456789",0);
 
-
-    }
 
 
 

@@ -19,7 +19,6 @@ public interface MemberHandler {
     void updateAccountStatus(MemberAccount memberAccount, AccountStatus status) throws
             AccountNotFoundException;
 
-    void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber,int parkingSpotNumber) throws NotVFPException;
 
     void renewMembership(MemberAccount memberAccount) throws AccountNotFoundException, TooEarlyForRenewalException;
 

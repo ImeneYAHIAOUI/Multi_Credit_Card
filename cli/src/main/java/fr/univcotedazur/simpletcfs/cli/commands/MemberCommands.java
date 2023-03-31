@@ -3,7 +3,6 @@ package fr.univcotedazur.simpletcfs.cli.commands;
 import fr.univcotedazur.simpletcfs.cli.CliContext;
 import fr.univcotedazur.simpletcfs.cli.model.CliForm;
 import fr.univcotedazur.simpletcfs.cli.model.CliMember;
-import fr.univcotedazur.simpletcfs.cli.model.CliParking;
 import fr.univcotedazur.simpletcfs.cli.model.CliUpdateStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -73,12 +72,7 @@ public class MemberCommands {
     }
 
 
-    @ShellMethod("use parking time (parking CAR_REGISTRATION_NUMBER MAIL PARKING_SPOT)")
-    public CliParking startParking(String carRegistrationNumber, String mail, int parkingSpotNumber)
-    {
-        CliParking res = restTemplate.postForObject(BASE_URI + "/parking",new CliParking(carRegistrationNumber,mail,parkingSpotNumber), CliParking.class);
-        return res;
-    }
+
 
     @ShellMethod("Get member information (get-member-info id)")
     public CliMember getMemberInfo(Long id) {

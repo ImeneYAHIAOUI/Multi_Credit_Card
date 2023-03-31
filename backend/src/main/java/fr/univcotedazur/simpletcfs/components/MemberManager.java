@@ -27,9 +27,6 @@ public class MemberManager implements MemberHandler, MemberFinder {
     private final TransactionRepository transactionRepository;
     private final Environment env;
 
-
-
-
     @Autowired
     public MemberManager( MemberRepository memberRepository, ParkingHandler parkingHandler, TransactionRepository transactionRepository, Environment env) {
         this.memberRepository = memberRepository;
@@ -92,7 +89,6 @@ public class MemberManager implements MemberHandler, MemberFinder {
         if(form.getMail() != null)
             memberAccount.setMail(form.getMail());
     }
-
     @Scheduled(cron = "${VFP.updateRate.cron}" )
     @Override
     public void updateAccountsStatus() {
@@ -102,7 +98,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
                     .getTransactions().stream()
                     .filter(t -> t instanceof Purchase)
                     .filter(t2 -> t2.getDate().isAfter(LocalDate.now().minusWeeks(1)))
-                    .count() );
+                    .count());
             if(memberAccount
                     .getTransactions().stream()
                     .filter(t -> t instanceof Purchase)
@@ -134,14 +130,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
         return Optional.empty();
     }
 
-    @Override
-    public void useParkingTime(MemberAccount memberAccount,String carRegistrationNumber,int parkingSpot) throws NotVFPException
-    {
-        if(! memberAccount.getStatus().equals(AccountStatus.VFP))
-            throw new NotVFPException();
-        parkingHandler.registerParking(carRegistrationNumber, parkingSpot);
 
-    }
 
     @Override
     public void renewMembership(MemberAccount memberAccount) throws AccountNotFoundException, TooEarlyForRenewalException {

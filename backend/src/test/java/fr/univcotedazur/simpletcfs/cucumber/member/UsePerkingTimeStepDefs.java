@@ -29,6 +29,8 @@ public class UsePerkingTimeStepDefs {
     @Autowired
     MemberFinder memberFinder;
     MemberAccount memberAccount;
+    @Autowired
+    ParkingHandler parkingHandler;
 
     @Autowired
     ISWUPLSProxy parkingProxy;
@@ -64,13 +66,13 @@ public class UsePerkingTimeStepDefs {
     @Then("they get a positive response")
     public void positive()  {
 
-        assertDoesNotThrow(() -> memberHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null),"123456789",50));
+        assertDoesNotThrow(() -> parkingHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null),"123456789",50));
 
     }
 
     @Then("they get a negative response")
     public void negative() {
-        assertThrows(NotVFPException.class, () -> memberHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null), "123456789", 50));
+        assertThrows(NotVFPException.class, () -> parkingHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null), "123456789", 50));
 
     }
 }

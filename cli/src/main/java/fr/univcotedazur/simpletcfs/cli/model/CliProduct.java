@@ -32,6 +32,9 @@ public class CliProduct {
     }
     @Override
     public String toString(){
-        return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
+        if(shop!=null)
+            return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage+" Shop : "+shop.toString();
+        else
+            return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
     }
 }

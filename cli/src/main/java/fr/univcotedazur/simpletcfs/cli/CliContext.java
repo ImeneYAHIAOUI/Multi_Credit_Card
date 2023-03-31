@@ -4,6 +4,7 @@ import fr.univcotedazur.simpletcfs.cli.model.CliAccount;
 import fr.univcotedazur.simpletcfs.cli.model.CliMember;
 
 import fr.univcotedazur.simpletcfs.cli.model.CliShop;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -15,8 +16,6 @@ public class CliContext {
 
     private Map<String, CliMember> memberAccounts;
     private Map<String, CliShop> shops;
-
-
 
     public CliContext()
     {

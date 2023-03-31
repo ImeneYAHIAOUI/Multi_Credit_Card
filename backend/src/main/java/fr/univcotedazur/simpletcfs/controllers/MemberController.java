@@ -68,24 +68,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping(path = "parking", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ParkingDTO> startParkingTime(@RequestBody @Valid ParkingDTO ParkingDTO)
-    {
-        MemberAccount memberAccount = memberManager.findByMail(ParkingDTO.getMail()).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not found",0));
-        }
-        try {
-            memberManager.useParkingTime(memberAccount,ParkingDTO.getCarRegistrationNumber(), ParkingDTO.getParkingSpotNumber());
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ParkingDTO);
-        } catch (NotVFPException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ParkingDTO(" ","user not vfp",0));
-        }catch( Exception e){
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ParkingDTO(" ","ISWPLS not responding",0));
-        }
-    }
+
     @DeleteMapping("delete")
     public ResponseEntity<String> deleteAccount(@RequestBody @Valid  @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid") String mail) {
         mail  = mail.replaceAll("\"", "");

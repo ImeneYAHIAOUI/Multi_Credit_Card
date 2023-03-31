@@ -44,8 +44,6 @@ public class ShopController {
     }
     @PostMapping(path = "/save", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<ShopDTO> registerShop(@RequestBody @Valid ShopDTO shopDTO) {
-        // Note that there is no validation at all on the shop mapped
-        // from the request body. This is because the @Valid annotation
         try {
             if (shopManager.findShopByAddress(shopDTO.getAddress()).isEmpty()) {
                 Shop shop = shopRegistration.addShop(shopDTO.getName(), shopDTO.getAddress());

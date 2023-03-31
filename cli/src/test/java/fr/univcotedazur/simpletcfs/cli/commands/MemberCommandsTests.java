@@ -1,8 +1,10 @@
 package fr.univcotedazur.simpletcfs.cli.commands;
+import fr.univcotedazur.simpletcfs.cli.CliContext;
 import fr.univcotedazur.simpletcfs.cli.model.CliMember;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -20,7 +22,8 @@ public class MemberCommandsTests {
 
     @Autowired
     private MockRestServiceServer server;
-
+@MockBean
+    CliContext cliContext;
 
     /*@Test
     public void registerMemberTest() {

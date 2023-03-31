@@ -45,8 +45,7 @@ public class MemberControllerTests {
     private MemberHandler memberHandler;
     @Autowired
     private MemberFinder memberFinder;
-    @SpyBean
-    ISWUPLS iswupls;
+
     @BeforeEach
     void setUp(){
         try {
@@ -116,36 +115,7 @@ public class MemberControllerTests {
                         .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    void ParkingTests() throws Exception {
 
-        ParkingDTO parkingDTO = new ParkingDTO("123456789","John.Doe@mail.com",1);
-            mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(parkingDTO)))
-                    .andExpect(MockMvcResultMatchers.status().isNotFound())
-                    .andExpect(MockMvcResultMatchers.content()
-                            .contentType(MediaType.APPLICATION_JSON));
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-            memberHandler.createAccount("John Doe", "John.Doe@mail.com", "pass", LocalDate.parse("11/04/2001", formatter));
-            mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(parkingDTO)))
-                    .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
-                    .andExpect(MockMvcResultMatchers.content()
-                            .contentType(MediaType.APPLICATION_JSON));
-            MemberAccount account = memberFinder.findByMail("John.Doe@mail.com").orElse(null);
-
-        memberHandler.updateAccountStatus(account, AccountStatus.VFP);
-            mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/parking")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(parkingDTO)))
-                    .andExpect(MockMvcResultMatchers.status().isCreated())
-                    .andExpect(MockMvcResultMatchers.content()
-                            .contentType(MediaType.APPLICATION_JSON));
-            verify(iswupls).startParkingTimer("123456789",1);
-
-    }
 
     @Test
     void deleteMemberTest() throws Exception {
