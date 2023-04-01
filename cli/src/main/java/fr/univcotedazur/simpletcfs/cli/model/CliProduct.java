@@ -27,6 +27,11 @@ public class CliProduct {
         return name;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
     public double getDiscountPercentage() {
         return discountPercentage;
     }

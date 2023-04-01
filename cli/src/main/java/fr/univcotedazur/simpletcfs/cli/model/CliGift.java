@@ -24,6 +24,10 @@ public class CliGift {
         return description;
     }
 
+    public void setGiftId(Long giftId) {
+        this.giftId = giftId;
+    }
+
     public Long getGiftId() {
         return giftId;
     }
@@ -34,5 +38,8 @@ public class CliGift {
 
     public String getStatus() {
         return status;
+    }
+    public String toString(){
+        return "Gift : Description : "+description+" Points needed : "+pointsNeeded+" Status : "+status;
     }
 }
