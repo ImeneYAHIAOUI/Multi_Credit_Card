@@ -57,7 +57,6 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
         else{
             payment.payment(purchase,card);
             purchase.setMemberAccount(memberAccount);
-            purchase.setDate(LocalDate.now());
             addPoints(memberAccount,purchase);
             memberAccount.getTransactions().add(purchase);
             if(memberAccount.getTransactions().stream()
