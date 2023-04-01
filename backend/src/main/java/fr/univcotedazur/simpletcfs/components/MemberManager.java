@@ -23,15 +23,11 @@ import java.util.Optional;
 @Transactional
 public class MemberManager implements MemberHandler, MemberFinder {
     private final MemberRepository memberRepository;
-    private final ParkingHandler parkingHandler;
-    private final TransactionRepository transactionRepository;
     private final Environment env;
 
     @Autowired
-    public MemberManager( MemberRepository memberRepository, ParkingHandler parkingHandler, TransactionRepository transactionRepository, Environment env) {
+    public MemberManager( MemberRepository memberRepository, Environment env) {
         this.memberRepository = memberRepository;
-        this.parkingHandler = parkingHandler;
-        this.transactionRepository = transactionRepository;
         this.env = env;
     }
 

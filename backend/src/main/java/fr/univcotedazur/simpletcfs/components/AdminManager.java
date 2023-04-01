@@ -26,14 +26,12 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     private final AdminAccountRepository adminAccountRepository;
     private final ShopRepository shopRepository;
     private final ShopKeeperAccountRepository shopKeeperAccountRepository;
-    private final ShopManager shopManager;
 
     @Autowired
-    public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager) {
+    public AdminManager(AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository) {
         this.adminAccountRepository = adminAccountRepository;
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
-        this.shopManager = shopManager;
     }
 
     @Override
@@ -70,7 +68,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void removeShop(Shop shop) {
-        if(shopManager.findShopById(shop.getId()).isPresent()){
+        if(shopRepository.findById(shop.getId()).isPresent()){
             shopRepository.deleteById(shop.getId());
         }
     }
@@ -94,7 +92,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void deleteShopKeeperAccount(ShopKeeperAccount account) {
-        if(account!=null && shopManager.findShopKeeperAccountById(account.getId()).isPresent()){
+        if(account!=null && shopKeeperAccountRepository.findById(account.getId()).isPresent()){
             shopKeeperAccountRepository.deleteById(account.getId());
         }
     }
