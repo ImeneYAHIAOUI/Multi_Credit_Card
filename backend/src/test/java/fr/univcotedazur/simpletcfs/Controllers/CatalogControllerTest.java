@@ -216,7 +216,7 @@ public class CatalogControllerTest {
         assert(gift.getStatus().equals("VFP"));
         assert(Objects.equals(gift.getDescription(), "cookie"));
         assert (gift.getGiftId()!=null);
-        result=mockMvc.perform(MockMvcRequestBuilders.get(CatalogController.BASE_URI + "/get/Gifts/"+gift.getGiftId())
+        result=mockMvc.perform(MockMvcRequestBuilders.get(CatalogController.BASE_URI + "/Gifts/"+gift.getGiftId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
