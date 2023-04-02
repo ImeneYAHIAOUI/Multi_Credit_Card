@@ -48,5 +48,7 @@ public class CliGift {
                 ", pointsNeeded=" + pointsNeeded +
                 ", status='" + status + '\'' +
                 ", description='" + description + '\'' +
+                '}';
+    }
 
 }
