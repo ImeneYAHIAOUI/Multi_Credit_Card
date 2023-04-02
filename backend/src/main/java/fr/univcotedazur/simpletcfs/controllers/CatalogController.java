@@ -80,9 +80,8 @@ public class CatalogController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
             }
         }
-
     }
-    @GetMapping(path="/get/Gifts/{giftId}")
+    @GetMapping(path="/Gifts/{giftId}")
     public ResponseEntity<GiftDTO> getGiftById(@PathVariable("giftId") Long giftId) {
         Optional<Gift> g = catalog.findGiftById(giftId);
         if(g.isEmpty())

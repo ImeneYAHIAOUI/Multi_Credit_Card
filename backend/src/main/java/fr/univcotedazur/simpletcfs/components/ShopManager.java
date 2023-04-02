@@ -20,11 +20,10 @@ import java.util.stream.Collectors;
 
 @Component
 @Transactional
-public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
+public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
-
     private  PlanningRepository planningRepository;
     @Autowired
     public ShopManager(ShopRepository shopRepository,

@@ -56,11 +56,20 @@ public class CliProduct {
         return name;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
     public double getDiscountPercentage() {
         return discountPercentage;
     }
     @Override
     public String toString(){
-        return "id :"+id+" Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
+
+        if(shop!=null)
+            return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage+" Shop : "+shop.toString();
+        else
+            return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
     }
 }

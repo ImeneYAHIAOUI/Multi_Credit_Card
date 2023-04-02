@@ -7,6 +7,7 @@ import org.springframework.http.*;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalTime;
@@ -21,6 +22,7 @@ public class ShopCommands {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
     private final CliContext cliContext;
 
     public ShopCommands(CliContext cliContext) {
@@ -28,34 +30,41 @@ public class ShopCommands {
     }
 
     @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
-    public String save(String name, String address) {
+    public String addShop(String name, String address) {
         CliShop res = restTemplate.postForObject(BASE_URI + "/save", new CliShop(name,address), CliShop.class);
         cliContext.getShops().put(res.getName(), res);
         return res.toString();
-
     }
     @ShellMethod("update shop address (update SHOP_id SHOP_ADDRESS )")
     public String updateShopAddress( Long id, String address) {
         if (id < 0) {
             return "Invalid shop ID";
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> request = new HttpEntity<>(address, headers);
-        ResponseEntity<String> response = restTemplate.exchange(BASE_URI +"/"+id+"/address", HttpMethod.PUT, request, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        try{
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<>(address, headers);
+            ResponseEntity<String> response = restTemplate.exchange(BASE_URI +"/"+id+"/address", HttpMethod.PUT, request, String.class);
             return "Shop address updated successfully";
-        } else {
+        }catch (HttpClientErrorException ex) {
+            if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
+                return "Invalid shop id : shop not found";
+            }
             return "Failed to update shop address";
         }
     }
     @ShellMethod(" get shop (get SHOP_id )")
     public String getShop( Long id) {
+        try {
+            CliShop p = restTemplate.getForObject(BASE_URI + "/" + id.toString(), CliShop.class);
+            return p.toString();
+        }catch (HttpClientErrorException ex) {
+            if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
+                return "Invalid shop id : shop not found";
+            }
+            return "Error while getting shop";
+        }
 
-        CliShop p= restTemplate.getForObject(BASE_URI + "/"+id.toString(),CliShop.class);
-        if(p==null)
-            return "invalid shop id";
-        return p.toString();
     }
     @ShellMethod("List all shops")
     public String shops() {
@@ -66,12 +75,18 @@ public class ShopCommands {
         if (id < 0) {
             return "Invalid shop ID";
         }
-        ResponseEntity<String> response = restTemplate.exchange(BASE_URI +"/"+id, HttpMethod.DELETE, null, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/" + id, HttpMethod.DELETE, null, String.class);
             return "Shop deleted successfully";
-        } else {
-            return "Failed to delete shop";
+
+        }catch (HttpClientErrorException ex) {
+            if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
+                return "Failed to delete shop : shop not found";
+            }
+            return "Error while deleting shop";
         }
+
+
     }
     @ShellMethod(value = "Modify the opening and closing hours of a specific day for a shop(modify-planning SHOP_ID DAY_OF_WEEK OPENING_TIME CLOSING_TIME)")
     public String modifyPlanning(@ShellOption(help = "ID du shop") long shopId,
@@ -80,27 +95,30 @@ public class ShopCommands {
                                @ShellOption(help = "Heure de fermeture (HH:mm)") String closingTime) {
         // Vérification des paramètres
         if (shopId < 0) {
-            return "Invalid shop ID";
+            return "Failed to modify planning : Invalid shop ID";
         }
         if (!isValidDayOfWeek(dayOfWeek)) {
-            return "Invalid day of week";
+            return "Failed to modify planning : Invalid day of week";
         }
         if (!isValidTime(openingTime) || !isValidTime(closingTime)) {
-            return "Invalid time format (must be HH:mm)";
+            return "Failed to modify planning : Invalid time format (must be HH:mm)";
         }
-        // Conversion des paramètres
-        CliPlanning planning = new CliPlanning(dayOfWeek, openingTime, closingTime);
-        // Création de l'URL
-        String url =BASE_URI+"/" + shopId +"/planning";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<CliPlanning> requestEntity = new HttpEntity<>(planning, headers);
-        // Envoi de la requête HTTP PUT
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        try{
+            CliPlanning planning = new CliPlanning(dayOfWeek, openingTime, closingTime);
+            String url =BASE_URI+"/" + shopId +"/planning";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<CliPlanning> requestEntity = new HttpEntity<>(planning, headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
             return "Planning successfully modified.";
-        } else {
-           return "Failed to modify planning.";
+        }catch (HttpClientErrorException ex) {
+            if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
+                return "Failed to modify planning : shop not found";
+            }
+            if(HttpStatus.BAD_REQUEST.equals(ex.getStatusCode())){
+                return "Failed to modify planning : "+ex.getResponseBodyAsString();
+            }
+            return "Failed to modify planning.";
         }
     }
     // Vérification de la validité du jour de la semaine

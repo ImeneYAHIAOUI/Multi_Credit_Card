@@ -44,8 +44,6 @@ public class ShopController {
     }
     @PostMapping(path = "/save", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<ShopDTO> registerShop(@RequestBody @Valid ShopDTO shopDTO) {
-        // Note that there is no validation at all on the shop mapped
-        // from the request body. This is because the @Valid annotation
         try {
             if (shopManager.findShopByAddress(shopDTO.getAddress()).isEmpty()) {
                 Shop shop = shopRegistration.addShop(shopDTO.getName(), shopDTO.getAddress());
@@ -75,7 +73,7 @@ public class ShopController {
     public ResponseEntity<String> updateShopAddress(@PathVariable("id") Long shopId, @RequestBody String newAddress) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if (shop.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop not found");
         }
         shopManager.modifyAddress(shop.get(), newAddress);
         return ResponseEntity.ok("Shop address updated successfully");
@@ -87,7 +85,7 @@ public class ShopController {
     ){
         Optional<Shop> shop = shopManager.findShopById(id);
         if (shop.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop not found");
         }
         if (planning.getDayWorking() == null) {
             return ResponseEntity.badRequest().body("Invalid day parameter");
@@ -106,7 +104,7 @@ public class ShopController {
     public ResponseEntity<String> deleteShopById(@PathVariable("id") Long shopId) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if (shop.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop not found");
         }
         shopRegistration.removeShop(shop.get());
         return ResponseEntity.ok("Shop deleted successfully");
