@@ -12,7 +12,6 @@ use actix_web::{
     delete,
     web::Path,
     web::Json,
-    web::Data,
     HttpResponse,
     http::StatusCode,
     error::ResponseError,
@@ -142,12 +141,29 @@ pub async fn get(path: Path<(String,)>) -> HttpResponse {
 
 
 
+
 #[get("/parking")]
 pub async fn list() -> HttpResponse {
     HttpResponse::Ok()
         .content_type("application/json")
         .json(PARKING.lock().unwrap().values().cloned().collect::<Vec<Parking>>())
 
+}
+
+#[get("/parking")]
+pub async fn get_parking_by_car_number(request: String) -> HttpResponse {
+    let found_parking: Option<Parking>  = PARKING.lock().unwrap().values().find(|parking| parking.car_reg_num == request).to_owned().cloned();
+    match found_parking {
+        Some(parking) => {
+            HttpResponse::Ok()
+                .content_type("application/json")
+                .json(parking)
+        },
+        None => HttpResponse::NoContent()
+            .content_type("application/json")
+            .await
+            .unwrap(),
+    }
 }
 
 #[delete("/parking/{id}")]

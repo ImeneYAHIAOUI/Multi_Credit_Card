@@ -39,7 +39,14 @@ public class CliGift {
     public String getStatus() {
         return status;
     }
-    public String toString(){
-        return "Gift : Description : "+description+" Points needed : "+pointsNeeded+" Status : "+status;
-    }
+
+    @Override
+    public String toString() {
+        return "CliGift{" +
+                "giftId=" + giftId +
+                ", shop=" + shop +
+                ", pointsNeeded=" + pointsNeeded +
+                ", status='" + status + '\'' +
+                ", description='" + description + '\'' +
+
 }

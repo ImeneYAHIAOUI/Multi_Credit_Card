@@ -2,6 +2,7 @@ package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.*;
+import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ParkingHandler;
@@ -24,11 +25,14 @@ import java.util.Optional;
 public class MemberManager implements MemberHandler, MemberFinder {
     private final MemberRepository memberRepository;
     private final Environment env;
+    private final Bank bank;
 
     @Autowired
-    public MemberManager( MemberRepository memberRepository, Environment env) {
+    public MemberManager( MemberRepository memberRepository, Environment env, Bank bank) {
+
         this.memberRepository = memberRepository;
         this.env = env;
+        this.bank = bank;
     }
 
 
@@ -154,6 +158,14 @@ public class MemberManager implements MemberHandler, MemberFinder {
     @Override
     public List<MemberAccount> findAll() {
         return memberRepository.findAll();
+    }
+
+    @Override
+    public void chargeMembershipCard(MemberAccount memberAccount, double amount, String creditCard) throws AccountNotFoundException, PaymentException {
+        if(memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(bank.pay(creditCard, amount))
+            memberAccount.setBalance(memberAccount.getBalance() + amount);
+        else throw new PaymentException();
     }
 
 

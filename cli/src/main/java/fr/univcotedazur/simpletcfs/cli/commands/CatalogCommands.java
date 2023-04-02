@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.Arrays;
 
 @ShellComponent
-public class CatalogCommands {
+public class  CatalogCommands {
     public static final String BASE_URI = "/catalog";
     @Autowired
     RestTemplate restTemplate;
@@ -30,6 +30,7 @@ public class CatalogCommands {
 
     @ShellMethod("add product (add-product SHOP_ID PRODUCT_NAME PRODUCT_PRICE PRODUCT_POINTS PRODUCT_DISCOUNT) )")
     public String addProduct(Long id,String name, Double price,int points,Double discount) {
+
         try {
             CliProduct p = restTemplate.postForObject(BASE_URI + "/add/" + id + "/" + "Products", new CliProduct(name, points, price, discount), CliProduct.class);
          return "Product added successfully : " + p.toString();
@@ -44,6 +45,7 @@ public class CatalogCommands {
     }
     @ShellMethod("add gift (add-gift SHOP_ID POINTS_NEEDED DESCRIPTION STATUS) )")
     public String addGift(Long id, int points,String description,String status) {
+
         String[] accountStatus = {"EXPIRED", "REGULAR", "VFP"};
         if(! Arrays.asList(accountStatus).contains(status.toUpperCase()))
             return "Failed to add gift : Invalid status";

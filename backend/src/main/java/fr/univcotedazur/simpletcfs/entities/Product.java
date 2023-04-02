@@ -85,4 +85,8 @@ public class Product {
     public String toString(){
         return " Product id : "+id+" Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

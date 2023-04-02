@@ -19,6 +19,7 @@ public class BankProxy implements Bank {
 
     @Override
     public boolean pay(String creditCard, double value) {
+        System.out.println(creditCard + " " + value);
         try {
             ResponseEntity<PaymentDTO> result = restTemplate.postForEntity(
                     bankHostandPort + "/cctransactions",
@@ -29,6 +30,7 @@ public class BankProxy implements Bank {
         }
         catch (HttpClientErrorException errorException) {
             if (errorException.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+                System.out.println(errorException.getResponseBodyAsString());
                 return false;
             }
             throw errorException;

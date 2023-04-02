@@ -61,7 +61,7 @@ public class EarnsPointsDefs {
 
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
         when(bankMock.pay("1234567999123456", anyDouble())).thenReturn(true);
-        transactionHandler.processPurchase(memberAccount,tran,card );
+        transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,card );
     */}
     @Then("the client earns points")
     public void the_client_earns_points() {
@@ -73,7 +73,7 @@ public class EarnsPointsDefs {
         Product product3=new Product("ring",1.0,10);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
         when(bankMock.pay("1234567999123456", anyDouble())).thenReturn(false);
-        Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchase(memberAccount,tran,card));
+        Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,card));
     */}
     @Then("the client doesn't earn points")
     public void the_client_doesnt_earns_points() {

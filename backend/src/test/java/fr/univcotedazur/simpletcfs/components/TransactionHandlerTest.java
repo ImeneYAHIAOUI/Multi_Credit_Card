@@ -240,7 +240,7 @@ public class TransactionHandlerTest {
         itemRepository.save(item);
         // Mocking the bank proxy
         when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(true);
-        transactionHandler.processPurchase(john, purchaseOfJohn,"1234567999123456");
+        transactionHandler.processPurchaseWithCreditCard(john, purchaseOfJohn,"1234567999123456");
         assertEquals(purchaseOfJohn.getEarnedPoints(), john.getPoints());
         assertTrue(transactionRepository.existsById(purchaseOfJohn.getId()));
         assertTrue(transactionRepository.findById(purchaseOfJohn.getId()).isPresent());
@@ -269,15 +269,15 @@ public class TransactionHandlerTest {
 
 
         assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
-        transactionHandler.processPurchase(account,purchase,"123456456789");
+        transactionHandler.processPurchaseWithCreditCard(account,purchase,"123456456789");
         assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
-        transactionHandler.processPurchase(account, purchase,"123456456789");
+        transactionHandler.processPurchaseWithCreditCard(account, purchase,"123456456789");
         assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
-        transactionHandler.processPurchase(account, purchase,"123456456789");
+        transactionHandler.processPurchaseWithCreditCard(account, purchase,"123456456789");
         assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
-        transactionHandler.processPurchase(account,purchase,"123456456789");
+        transactionHandler.processPurchaseWithCreditCard(account,purchase,"123456456789");
         assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.REGULAR);
-        transactionHandler.processPurchase(account,purchase,"123456456789");
+        transactionHandler.processPurchaseWithCreditCard(account,purchase,"123456456789");
         assertEquals(memberFinder.findById(account.getId()).get().getStatus(), AccountStatus.VFP);
         memberHandler.deleteAccount(account);
 
@@ -290,13 +290,40 @@ public class TransactionHandlerTest {
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findById(pat.getId()));
         when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(false);
-        assertThrows(PaymentException.class,()-> transactionHandler.processPurchase(pat, purchaseOfPat,"1234567999123456"));
+        assertThrows(PaymentException.class,()-> transactionHandler.processPurchaseWithCreditCard(pat, purchaseOfPat,"1234567999123456"));
         assertNull(purchaseOfPat.getId());
         assertEquals(0, pat.getPoints());
         assertNotEquals(purchaseOfPat.getEarnedPoints(), pat.getPoints());
     }
     @Test
     public void processPurchaseTest2(){
-        assertThrows(AccountNotFoundException.class,()-> transactionHandler.processPurchase( new MemberAccount("john","mail","pass",LocalDate.of(2001,11,04),0,0), purchaseOfPat,"1234567999123456"));
+        assertThrows(AccountNotFoundException.class,()-> transactionHandler.processPurchaseWithCreditCard( new MemberAccount("john","mail","pass",LocalDate.of(2001,11,04),0,0), purchaseOfPat,"1234567999123456"));
+    }
+
+    @Test
+    public void processPurchaseWithCash() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+        Product product=new Product("cake",1.0,10,0.0);
+        purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
+        pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        assertNotNull(memberFinder.findById(pat.getId()));
+        transactionHandler.processPurchaseWithCash(pat,purchaseOfPat);
+        assertEquals(50, pat.getPoints());
+        assertTrue(pat.getTransactions().contains(purchaseOfPat));
+
+    }
+
+    @Test
+    public void processPurchaseWithMembershipCard() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+        Product product=new Product("cake",1.0,10,0.0);
+        purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
+        pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        assertNotNull(memberFinder.findById(pat.getId()));
+        assertThrows(PaymentException.class, () -> transactionHandler.processPurchaseWithMemberCard(pat,purchaseOfPat));
+        pat.setBalance(5.0);
+        assertDoesNotThrow(() -> transactionHandler.processPurchaseWithMemberCard(pat,purchaseOfPat));
+        assertEquals(50, pat.getPoints());
+        assertEquals(0.0,pat.getBalance());
+        assertTrue(pat.getTransactions().contains(purchaseOfPat));
+
     }
 }
