@@ -20,10 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class AdminManagerTest {
-
-
-
-
     @Autowired
     private AdminRegistration adminRegistration;
 

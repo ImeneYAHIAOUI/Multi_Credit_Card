@@ -227,6 +227,42 @@ public class MemberController {
         return memberDTO;
     }
 
+    @PutMapping("/charge")
+    public ResponseEntity<String> chargeMemberCard(@RequestBody @Valid ChargeCardDTO chargeCardDTO) {
+        MemberAccount memberAccount = memberManager.findById(chargeCardDTO.getMemberId()).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+        }
+        try {
+            memberManager.chargeMembershipCard(memberAccount, chargeCardDTO.getAmount(), chargeCardDTO.getCardNumber());
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("card charged");
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+        } catch (PaymentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("payement refused");
+        }
+    }
+
+    @PostMapping(path="/renew/{id}",consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<MemberDTO> renewAccount(@PathVariable("id") Long id)
+    {
+        MemberAccount memberAccount = memberManager.findById(id).orElse(null);
+        if(memberAccount == null)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+        }
+        try {
+            memberManager.renewMembership(memberAccount);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(convertMemberAccountToDto(memberAccount));
+        } catch (AccountNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+        } catch (TooEarlyForRenewalException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","too early to renew"));
+        }
+    }
+
+
 }
 
 

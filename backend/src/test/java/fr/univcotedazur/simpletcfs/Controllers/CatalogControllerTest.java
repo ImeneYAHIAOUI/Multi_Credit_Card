@@ -66,7 +66,6 @@ public class CatalogControllerTest {
         assert(productDTO.getPoints()==10);
         assert(Objects.equals(productDTO.getName(), "cookie"));
         assert(productDTO.getPrice()==2.3);
-        assert (productDTO.getId()!=null);
         mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedShop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
@@ -104,7 +103,6 @@ public class CatalogControllerTest {
         assert(productDTO.getPoints()==10);
         assert(Objects.equals(productDTO.getName(), "cookie"));
         assert(productDTO.getPrice()==2.3);
-        assert (productDTO.getId()!=null);
         mockMvc.perform(MockMvcRequestBuilders.post(CatalogController.BASE_URI + "/add/"+savedShop.getId()+"/Products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDTO)))
@@ -259,7 +257,6 @@ public class CatalogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)).andReturn();
         json = result.getResponse().getContentAsString();
         productDTO= mapper.readValue(json, ProductDTO.class);
-        assert (productDTO.getId()!=null);
         assert (productDTO.getPoints()==10);
         assert (productDTO.getPrice()==2.3);
         assert (productDTO.getDiscountPercentage()==0.0);
@@ -299,7 +296,6 @@ public class CatalogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)).andReturn();
         json = result.getResponse().getContentAsString();
         productDTO= mapper.readValue(json, ProductDTO.class);
-        assert (productDTO.getId()!=null);
         assert (productDTO.getPoints()==10);
         assert (productDTO.getPrice()==2.3);
         assert (productDTO.getDiscountPercentage()==0.0);

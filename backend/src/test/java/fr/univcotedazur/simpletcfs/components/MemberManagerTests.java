@@ -5,14 +5,11 @@ import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.*;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
-import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
-import org.hibernate.Transaction;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.TestPropertySource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,9 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -188,16 +183,16 @@ public class MemberManagerTests {
         purchase2.addItem(item);
         purchase2.setShop(shop);
 
-        transactionProcessor.processPurchase(account,purchase,"123456456789");
-        transactionProcessor.processPurchase(account, purchase,"123456456789");
-        transactionProcessor.processPurchase(account, purchase,"123456456789");
-        transactionProcessor.processPurchase(account,purchase,"123456456789");
-        transactionProcessor.processPurchase(account,purchase,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account,purchase,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account, purchase,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account, purchase,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account,purchase,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account,purchase,"123456456789");
 
-        transactionProcessor.processPurchase(account2,purchase2,"123456456789");
-        transactionProcessor.processPurchase(account2, purchase2,"123456456789");
-        transactionProcessor.processPurchase(account2, purchase2,"123456456789");
-        transactionProcessor.processPurchase(account2,purchase2,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account2,purchase2,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account2, purchase2,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account2, purchase2,"123456456789");
+        transactionProcessor.processPurchaseWithCreditCard(account2,purchase2,"123456456789");
 
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() ->
                 verify(memberHandler, Mockito.atLeast(4)).updateAccountsStatus());

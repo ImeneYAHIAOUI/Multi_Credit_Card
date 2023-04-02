@@ -6,12 +6,18 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 public class Purchase extends Transaction{
-    public  int earnedPoints;
-    public double totalPrice;
+    private  int earnedPoints;
+    private double totalPrice;
+    private PaymentMethod paymentMethod;
+
+
+    public String getCreditCardNumber() {
+        return creditCardNumber;
+    }
+
     private String creditCardNumber;
     @OneToMany( targetEntity=Item.class, mappedBy="purchase" ,fetch = FetchType.LAZY,
             cascade = CascadeType.REMOVE)
@@ -64,5 +70,13 @@ public class Purchase extends Transaction{
 
     public void setItem(List<Item> item) {
         this.item = item;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

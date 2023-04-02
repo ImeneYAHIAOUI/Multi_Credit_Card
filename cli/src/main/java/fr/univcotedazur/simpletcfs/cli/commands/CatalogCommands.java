@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Arrays;
 
 @ShellComponent
-public class CatalogCommands {
+public class  CatalogCommands {
     public static final String BASE_URI = "/catalog";
     @Autowired
     RestTemplate restTemplate;
@@ -31,21 +31,21 @@ public class CatalogCommands {
     public String addProduct(Long id,String name, Double price,int points,Double discount) {
         CliProduct p= restTemplate.postForObject(BASE_URI +"/add/"+id+"/"+"Products", new CliProduct(name,points,price,discount), CliProduct.class);
         if(p!=null)
-            return "Product added successfully : "+p.toString();
+            return "Product added successfully : "+p;
         else
             return "Error during adding product";
     }
     @ShellMethod("add gift (add-gift SHOP_ID POINTS_NEEDED DESCRIPTION STATUS) )")
     public String addGift(Long id, int points,String description,String status) {
-        String[]    accountStatus = {"EXPIRED", "REGULAR", "VFP"};
+        String[]    accountStatus = {"REGULAR", "VFP"};
         if(! Arrays.asList(accountStatus).contains(status.toUpperCase()))
             return "Invalid status";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<CliGift> request = new HttpEntity<>(new CliGift(points, description, status), headers);
-        ResponseEntity<CliGift> response = restTemplate.postForEntity(BASE_URI + "/add/" + id + "/Gifts/add", request, CliGift.class);
+        ResponseEntity<CliGift> response = restTemplate.postForEntity(BASE_URI + "/add/" + id + "/Gifts", request, CliGift.class);
         if(response.getStatusCode() == HttpStatus.CREATED) {
-            return "Gift added successfully: " + response.getBody().getDescription();
+            return "Gift added successfully: " + response.getBody().toString();
         } else if(response.getStatusCode() == HttpStatus.CONFLICT) {
             return "Gift already exists";
         } else {

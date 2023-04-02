@@ -1,9 +1,38 @@
 package fr.univcotedazur.simpletcfs.cli.model;
 
 public class CliProduct {
-    private Long id;
+    private long id;
     private int points;
     private  String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setShop(CliShop shop) {
+        this.shop = shop;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
     private CliShop shop;
     private double price;
     private double discountPercentage;
@@ -32,6 +61,6 @@ public class CliProduct {
     }
     @Override
     public String toString(){
-        return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
+        return "id :"+id+" Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
     }
 }

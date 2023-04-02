@@ -1,10 +1,7 @@
 package fr.univcotedazur.simpletcfs.cli.commands;
 
 import fr.univcotedazur.simpletcfs.cli.CliContext;
-import fr.univcotedazur.simpletcfs.cli.model.CliForm;
-import fr.univcotedazur.simpletcfs.cli.model.CliMember;
-import fr.univcotedazur.simpletcfs.cli.model.CliParking;
-import fr.univcotedazur.simpletcfs.cli.model.CliUpdateStatus;
+import fr.univcotedazur.simpletcfs.cli.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -37,10 +34,6 @@ public class MemberCommands {
         return res;
     }
 
-    @ShellMethod("List all members")
-    public String members() {
-        return cliContext.getMemberAccounts().toString();
-    }
 
     @ShellMethod("delete a member (delete-member MEMBER_MAIL)")
     public String deleteMember(String mail) {
@@ -93,8 +86,14 @@ public class MemberCommands {
     }
 
     @ShellMethod("update a member (update-member MEMBER_MAIL NEW_NAME NEW_PASSWORD NEW_BIRTHDATE)")
-    public CliMember updateMember(Long id, @ShellOption(defaultValue = "") String name, @ShellOption( defaultValue = "")  String mail, @ShellOption(defaultValue = "") String password, @ShellOption(defaultValue = "") String birthDate) {
+    public CliMember updateMember(long id, @ShellOption(defaultValue = "") String name, @ShellOption( defaultValue = "")  String mail, @ShellOption(defaultValue = "") String password, @ShellOption(defaultValue = "") String birthDate) {
         CliMember res = restTemplate.postForObject(BASE_URI + "/"+id, new CliForm(name,mail,password,birthDate), CliMember.class);
+        return res;
+    }
+
+    @ShellMethod("renew membership (renew-membership id)")
+    public CliMember renewMembership(long id) {
+        CliMember res = restTemplate.postForObject(BASE_URI + "/ /"+id, null, CliMember.class);
         return res;
     }
 
@@ -102,6 +101,12 @@ public class MemberCommands {
     public String updateAllMembersStatus() {
         restTemplate.put(BASE_URI + "/status", null);
         return "All members status updated";
+    }
+
+    @ShellMethod("charge membership card: (charge-membership-card MEMBER_ID AMOUNT CREDIT_CARD_NUMBER)")
+    public String chargeMembershipCard(long member, int amount, String CreditCardNumber) {
+        restTemplate.put(BASE_URI + "/charge", new CliChargeCard(member, amount, CreditCardNumber));
+        return "Membership card charged";
     }
 
 

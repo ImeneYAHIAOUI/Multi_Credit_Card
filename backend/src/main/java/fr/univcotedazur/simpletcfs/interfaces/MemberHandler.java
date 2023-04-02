@@ -24,4 +24,6 @@ public interface MemberHandler {
     void renewMembership(MemberAccount memberAccount) throws AccountNotFoundException, TooEarlyForRenewalException;
 
     void archiveOrDeleteExpiredAccounts() throws AccountNotFoundException;
+
+    void chargeMembershipCard(MemberAccount memberAccount, double amount, String creditCard) throws AccountNotFoundException, PaymentException;
 }

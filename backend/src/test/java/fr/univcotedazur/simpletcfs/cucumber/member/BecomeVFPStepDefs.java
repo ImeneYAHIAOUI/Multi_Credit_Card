@@ -8,13 +8,11 @@ import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.TransactionProcessor;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
-import fr.univcotedazur.simpletcfs.repositories.TransactionRepository;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
@@ -28,11 +26,7 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *","VFP.MinPurchasesNumber=5"})
@@ -97,7 +91,7 @@ public class BecomeVFPStepDefs {
         purchase.addItem(item);
         purchase.setShop(shop);
         for (int i = 0; i < nbPurchases; i++) {
-            transactionProcessor.processPurchase(memberAccount,purchase,"123456456789");
+            transactionProcessor.processPurchaseWithCreditCard(memberAccount,purchase,"123456456789");
         }
     }
 

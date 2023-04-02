@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-
+@Transactional
 public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
 
     private ShopRepository shopRepository;

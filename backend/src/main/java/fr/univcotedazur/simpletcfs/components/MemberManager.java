@@ -2,6 +2,7 @@ package fr.univcotedazur.simpletcfs.components;
 
 import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.*;
+import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ParkingHandler;
@@ -26,16 +27,18 @@ public class MemberManager implements MemberHandler, MemberFinder {
     private final ParkingHandler parkingHandler;
     private final TransactionRepository transactionRepository;
     private final Environment env;
+    private final Bank bank;
 
 
 
 
     @Autowired
-    public MemberManager( MemberRepository memberRepository, ParkingHandler parkingHandler, TransactionRepository transactionRepository, Environment env) {
+    public MemberManager( MemberRepository memberRepository, ParkingHandler parkingHandler, TransactionRepository transactionRepository, Environment env, Bank bank) {
         this.memberRepository = memberRepository;
         this.parkingHandler = parkingHandler;
         this.transactionRepository = transactionRepository;
         this.env = env;
+        this.bank = bank;
     }
 
 
@@ -169,6 +172,14 @@ public class MemberManager implements MemberHandler, MemberFinder {
     @Override
     public List<MemberAccount> findAll() {
         return memberRepository.findAll();
+    }
+
+    @Override
+    public void chargeMembershipCard(MemberAccount memberAccount, double amount, String creditCard) throws AccountNotFoundException, PaymentException {
+        if(memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty()) throw new AccountNotFoundException();
+        if(bank.pay(creditCard, amount))
+            memberAccount.setBalance(memberAccount.getBalance() + amount);
+        else throw new PaymentException();
     }
 
 
