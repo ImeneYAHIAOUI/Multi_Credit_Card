@@ -45,16 +45,13 @@ public class EarnsPointsDefs {
     private Bank bankMock;
     @Given("a client has an account in the system")
     public void a_client_has_an_account_in_the_system()throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
-       /* memberAccountRepository.deleteAll();
-        name = "John Doe";
-        mail = "sourour.gazzeh@outlook.fr";
-        password="123456";
-        birthDate = LocalDate.parse("01/01/2000",formatter);
-        memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
-    */}
-
-
+        try {
+            memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        }catch (AlreadyExistingMemberException e){
+            memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com").get());
+            memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
+        }
+    }
     @When("the client makes a valid purchase")
     public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException {
         /*Product product3=new Product("ring",1.0,10);

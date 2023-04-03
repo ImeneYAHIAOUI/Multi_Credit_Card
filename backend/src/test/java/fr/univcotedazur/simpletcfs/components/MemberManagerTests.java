@@ -49,11 +49,6 @@ public class MemberManagerTests {
 
     @Autowired
     CatalogRepository catalogRepository;
-
-
-
-
-
     @Test
     public void testCreateAccount() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
