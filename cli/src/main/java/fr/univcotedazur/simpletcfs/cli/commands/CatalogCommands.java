@@ -49,7 +49,6 @@ public class  CatalogCommands {
     }
     @ShellMethod("add gift (add-gift SHOP_ID POINTS_NEEDED DESCRIPTION STATUS) )")
     public String addGift(Long id, int points,String description,String status) {
-
         String[] accountStatus = {"EXPIRED", "REGULAR", "VFP"};
         if(! Arrays.asList(accountStatus).contains(status.toUpperCase()))
             return "Failed to add gift : Invalid status";

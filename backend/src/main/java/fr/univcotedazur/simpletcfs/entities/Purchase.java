@@ -13,7 +13,6 @@ public class Purchase extends Transaction{
     private double totalPrice;
     private PaymentMethod paymentMethod;
 
-
     public String getCreditCardNumber() {
         return creditCardNumber;
     }

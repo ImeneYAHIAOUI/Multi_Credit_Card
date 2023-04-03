@@ -145,6 +145,105 @@ public class TransactionHandlerTest {
 
     }
     @Test
+    public void  getStatisticsOnClientUsageTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
+        assertTrue(transactionHandler.getStatisticsOnClientUsage(account).isEmpty());
+        account.setPoints(100);
+        UsePoints transaction=new UsePoints(LocalDate.now(),account);
+        Gift gift=new Gift();
+        gift.setRequiredStatus(AccountStatus.VFP);
+        transaction.setGift(gift);
+        transaction.setUsedPoints(50);
+        account.setStatus(AccountStatus.VFP);
+        Product product3=new Product("ring",1.0,10,0.0);
+        Shop shop=new Shop("A", "1 rue de la paix");
+        product3.setShop(shop);
+        gift.setShop(shop);
+        shopRepository.save(shop);
+        shop.addProduct(product3);
+        catalogRepository.save(product3);
+        shop.addGift(gift);
+        giftRepository.save(gift);
+        Item item=new Item(product3,2);
+        Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));
+        tran.setMemberAccount(account);
+        item.setPurchase(tran);
+        tran.addItem(item);
+        tran.setShop(shop);
+        account.getTransactions().add(tran);
+        purchaseRepository.save(tran);
+        itemRepository.save(item);
+        transaction.setMemberAccount(account);
+        transaction.setShop(shop);
+        transactionRepository.save(transaction);
+        assertEquals(2, transactionHandler.getStatisticsOnClientUsage(account).stream().count());
+    }
+    @Test
+    public void  getStatisticsOnClientUsageTest2() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
+        assertTrue(transactionHandler.getStatisticsOnClientUsage(account).isEmpty());
+        account.setPoints(100);
+        UsePoints transaction=new UsePoints(LocalDate.now(),account);
+        Gift gift=new Gift();
+        gift.setRequiredStatus(AccountStatus.VFP);
+        transaction.setGift(gift);
+        transaction.setUsedPoints(50);
+        account.setStatus(AccountStatus.VFP);
+        Product product3=new Product("ring",1.0,10,0.0);
+        Shop shop=new Shop("A", "1 rue de la paix");
+        product3.setShop(shop);
+        gift.setShop(shop);
+        shopRepository.save(shop);
+        shop.addProduct(product3);
+        catalogRepository.save(product3);
+        shop.addGift(gift);
+        giftRepository.save(gift);
+        transaction.setMemberAccount(account);
+        transaction.setShop(shop);
+        transactionRepository.save(transaction);
+        assertEquals(1, transactionHandler.getStatisticsOnClientUsage(account).stream().count());
+    }
+    @Test
+    public void  getStatisticsOnClientUsageAtShopTest3() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+        setUp("John.Doe@mail.com","John");
+        Shop shop=new Shop("A", "1 rue de la paix");
+        shopRepository.save(shop);
+        Shop shop1=new Shop("4", "5 rue de la paix");
+        shopRepository.save(shop1);
+        assertTrue(transactionHandler.getStatisticsOnClientUsageAtShop(shop,account).isEmpty());
+        assertTrue(transactionHandler.getStatisticsOnClientUsageAtShop(shop1,account).isEmpty());
+
+        account.setPoints(100);
+        UsePoints transaction=new UsePoints(LocalDate.now(),account);
+        Gift gift=new Gift();
+        gift.setRequiredStatus(AccountStatus.VFP);
+        transaction.setGift(gift);
+        transaction.setUsedPoints(50);
+        account.setStatus(AccountStatus.VFP);
+        Product product3=new Product("ring",1.0,10,0.0);
+        product3.setShop(shop);
+        gift.setShop(shop);
+        shop.addProduct(product3);
+        catalogRepository.save(product3);
+        shop.addGift(gift);
+        giftRepository.save(gift);
+        transaction.setShop(shop);
+        Item item=new Item(product3,2);
+        Purchase tran=new Purchase(LocalDate.now(),account,List.of(item));
+        tran.setMemberAccount(account);
+        item.setPurchase(tran);
+        tran.addItem(item);
+        tran.setShop(shop1);
+        account.getTransactions().add(tran);
+        purchaseRepository.save(tran);
+        itemRepository.save(item);
+        transaction.setMemberAccount(account);
+        transaction.setShop(shop);
+        transactionRepository.save(transaction);
+        assertEquals(1, transactionHandler.getStatisticsOnClientUsageAtShop(shop,account).stream().count());
+        assertEquals(1, transactionHandler.getStatisticsOnClientUsageAtShop(shop1,account).stream().count());
+    }
+    @Test
     public void processPointsUsageTest1()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
 
          setUp("joel.Doe@mail.com","joel");

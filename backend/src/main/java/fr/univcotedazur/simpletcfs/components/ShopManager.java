@@ -5,9 +5,7 @@ import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingProductException;
 import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.ProductNotFoundException;
-import fr.univcotedazur.simpletcfs.interfaces.ShopFinder;
-import fr.univcotedazur.simpletcfs.interfaces.ShopHandler;
-import fr.univcotedazur.simpletcfs.interfaces.ShopkeeperFinder;
+import fr.univcotedazur.simpletcfs.interfaces.*;
 import fr.univcotedazur.simpletcfs.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,34 +23,37 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
     private  PlanningRepository planningRepository;
+     private MailSender mailSender;
+     private MemberRepository  memberRepository;
+
     @Autowired
     public ShopManager(ShopRepository shopRepository,
                        ShopKeeperAccountRepository shopKeeperAccountRepository,
-                  PlanningRepository  planningRepository){
+                  PlanningRepository  planningRepository,
+                       MailSender mailSender,MemberRepository memberRepository){
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
         this.planningRepository=planningRepository;
+        this.mailSender=mailSender;
+        this.memberRepository=memberRepository;
     }
     public Optional<Planning> findPlanningByDay(Shop shop, WeekDay day){
         return shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
     }
-
     @Override
     public void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours){
+        Planning planning=null;
         if(shop!= null && day!= null ){
             if( shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().isEmpty()){
                 if(OpeningHours!=null && ClosingHours!=null && OpeningHours.isBefore(ClosingHours) ){
-                    System.out.println(ClosingHours);
-                    System.out.println(OpeningHours);
-                    Planning planning =new Planning(day,OpeningHours, ClosingHours);
+                    planning =new Planning(day,OpeningHours, ClosingHours);
                     planning.setShop(shop);
                     shop.addPlanning(planning);
-                    planningRepository.save(planning);
-                }
+                 }
             }
             else{
                 // update existing planning
-                Planning planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
+                 planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
                 if(OpeningHours!=null && ClosingHours!=null){
                     if( OpeningHours.isBefore(ClosingHours)){
                         planning.setOpeningHours(OpeningHours);
@@ -67,8 +68,12 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
                         planning.setOpeningHours(OpeningHours);
                     }
                 }
-                planningRepository.save(planning);
             }
+
+        }
+        if(planning!=null){
+            planningRepository.save(planning);
+            mailSender.sendMail(memberRepository.findAll(), new Mail("Planning modified", "The planning of the shop "+shop.getName()+" has been modified"));
         }
     }
     @Override

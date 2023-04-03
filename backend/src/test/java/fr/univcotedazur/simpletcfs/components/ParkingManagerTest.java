@@ -40,7 +40,6 @@ import static org.mockito.Mockito.when;
 @Commit
 @Transactional
 public class ParkingManagerTest {
-
     @Autowired
     MemberHandler memberHandler;
     @SpyBean

@@ -52,11 +52,9 @@ public class ShopManagerTests {
     assertFalse(giftRepository.findAll().isEmpty());
         shopRepository.deleteAll();
         assertTrue(giftRepository.findAll().isEmpty());
-
     }
 
     @Test
-
     public void testModifyAddress() {
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");

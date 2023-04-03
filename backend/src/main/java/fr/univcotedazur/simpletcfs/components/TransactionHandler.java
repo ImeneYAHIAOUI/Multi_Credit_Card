@@ -42,7 +42,32 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
     public Optional<Transaction> findTransactionById(Long id){
         return transactionRepository.findById(id);
     }
-
+    public List<Transaction> getStatisticsOnClientUsage(MemberAccount memberAccount){
+        List<Transaction> transactions = new ArrayList<>();
+        for (UsePoints transaction : usePointsRepository.findAll()) {
+            if(transaction.getMemberAccount().equals(memberAccount))
+                transactions.add(transaction);
+        }
+        for (Purchase
+                transaction : purchaseRepository.findAll()) {
+            if(transaction.getMemberAccount().equals(memberAccount))
+                transactions.add(transaction);
+        }
+        return  transactions;
+    }
+    public List<Transaction> getStatisticsOnClientUsageAtShop(Shop shop,MemberAccount memberAccount){
+        List<Transaction> transactions = new ArrayList<>();
+        for (UsePoints transaction : usePointsRepository.findAll()) {
+            if(transaction.getMemberAccount().equals(memberAccount)&& transaction.getShop().equals(shop))
+                transactions.add(transaction);
+        }
+        for (Purchase
+                transaction : purchaseRepository.findAll()) {
+            if(transaction.getMemberAccount().equals(memberAccount)&& transaction.getShop().equals(shop))
+                transactions.add(transaction);
+        }
+        return  transactions;
+    }
     @Override
     public List<Transaction> findAllTransactions() {
         return transactionRepository.findAll();
