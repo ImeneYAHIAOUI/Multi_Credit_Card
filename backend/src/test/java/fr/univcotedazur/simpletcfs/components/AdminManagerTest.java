@@ -20,8 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class AdminManagerTest {
 
+    @Autowired
     private AdminRegistration adminRegistration;
 
+    @Autowired
     private AdminFinder adminFinder;
 
     private AdminAccount accountCreated;
