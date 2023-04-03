@@ -8,6 +8,6 @@ import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 
 public interface ShopkeeperRegistration {
-    ShopKeeperAccount createShopKeeperAccount(Form form, Shop shop) throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException;
+    ShopKeeperAccount createShopKeeperAccount(Form form, long shopId) throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException;
     void deleteShopKeeperAccount(ShopKeeperAccount account);
 }

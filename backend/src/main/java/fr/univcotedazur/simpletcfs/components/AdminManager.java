@@ -93,7 +93,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     }
 
     @Override
-    public ShopKeeperAccount createShopKeeperAccount(Form form, Shop shop) throws MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
+    public ShopKeeperAccount createShopKeeperAccount(Form form, long id) throws MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
         if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();
         }
@@ -104,6 +104,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if(form.getBirthDate().isAfter(LocalDate.now().minusYears(16))){
             throw new UnderAgeException();
         }
+        Shop shop = shopManager.findShopById(id).get();
         shopKeeperAccount = new ShopKeeperAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
         shopKeeperAccountRepository.save(shopKeeperAccount);
         return shopKeeperAccount;
