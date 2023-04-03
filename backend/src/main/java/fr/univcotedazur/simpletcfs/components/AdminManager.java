@@ -64,6 +64,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
             throw new AlreadyExistingAdminException();
         }
         AdminAccount adminAccount = new AdminAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
+
         adminAccountRepository.save(adminAccount);
         return adminAccount;
     }
@@ -94,7 +95,8 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public ShopKeeperAccount createShopKeeperAccount(Form form, long id) throws MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
-        if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
+        Optional<Shop> shop = shopManager.findShopById(id);
+        if (shop.isEmpty() || form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();
         }
         ShopKeeperAccount shopKeeperAccount = findShopkeeperAccountByMail(form.getMail());
@@ -104,8 +106,8 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if(form.getBirthDate().isAfter(LocalDate.now().minusYears(16))){
             throw new UnderAgeException();
         }
-        Shop shop = shopManager.findShopById(id).get();
-        shopKeeperAccount = new ShopKeeperAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop);
+        shopKeeperAccount = new ShopKeeperAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate(), shop.get());
+        shop.get().setShopKeeperAccount(shopKeeperAccount);
         shopKeeperAccountRepository.save(shopKeeperAccount);
         return shopKeeperAccount;
     }
@@ -113,7 +115,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
     @Override
     public void deleteShopKeeperAccount(ShopKeeperAccount account) {
         if(account!=null && shopManager.findShopKeeperAccountById(account.getId()).isPresent()){
-            shopRepository.deleteById(account.getId());
+            shopKeeperAccountRepository.deleteById(account.getId());
         }
     }
     @Override
@@ -125,7 +127,6 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         }
         return null;
     }
-
     @Override
     public Survey createSurvey(LocalDate endDate, List<Question> questions) {
         return new Survey(endDate, questions);
@@ -133,6 +134,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public Mail createMail(String mailContent, String subject) {
+
         return new Mail(mailContent, subject);
     }
 }

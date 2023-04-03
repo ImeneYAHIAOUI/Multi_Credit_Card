@@ -44,7 +44,6 @@ public class MakingChangesToTheProductCatalogDefs {
     public void a_shop_with_an_empty_product_list()throws MissingInformationException {
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(10,00),LocalTime.of(18,00));
         assertTrue(shop.getProductList().isEmpty());
     }
     @When("the shop adds a product to the catalog")
@@ -65,7 +64,6 @@ public class MakingChangesToTheProductCatalogDefs {
     public void a_shop_with_a_product_list() throws MissingInformationException, AlreadyExistingProductException{
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(10,00),LocalTime.of(18,00));
         assertTrue(shop.getProductList().isEmpty());
         product=new  Product("chocolat",1.5,0,0.0);
         product1=new  Product("Cake",1.0,0,0.0);

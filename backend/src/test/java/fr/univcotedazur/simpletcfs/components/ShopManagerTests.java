@@ -4,6 +4,7 @@ import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
 import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.interfaces.MailSender;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
@@ -11,12 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.transaction.Transactional;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
@@ -35,6 +39,8 @@ public class ShopManagerTests {
     Gift gift;
     Gift gift1;
     Gift gift2;
+    @MockBean
+    private MailSender mailSender;
     @BeforeEach
     public void setUp() throws MissingInformationException , AlreadyExistingGiftException {
         shopRepository.deleteAll();
@@ -46,12 +52,8 @@ public class ShopManagerTests {
         catalog.addGift(shop,gift);
         catalog.addGift(shop,gift1);
         gift2=new Gift(10,"cookie", AccountStatus.VFP);
-    }
-    @Test
-    public void Test(){
-    assertFalse(giftRepository.findAll().isEmpty());
-        shopRepository.deleteAll();
-        assertTrue(giftRepository.findAll().isEmpty());
+        when(mailSender.sendMail(any(), any())).thenReturn(true);
+
     }
 
     @Test

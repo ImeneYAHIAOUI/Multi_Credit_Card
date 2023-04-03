@@ -12,16 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParkingManager implements ParkingHandler {
     private final ISWUPLS iswupls;
+
+    @Autowired
+    public ParkingManager(ISWUPLS iswupls){
+        this.iswupls = iswupls;
+    }
     @Override
     public void useParkingTime(MemberAccount memberAccount, String carRegistrationNumber, int parkingSpot) throws NotVFPException
     {
         if(! memberAccount.getStatus().equals(AccountStatus.VFP))
             throw new NotVFPException();
         registerParking(carRegistrationNumber, parkingSpot);
-    }
-    @Autowired
-    public ParkingManager(ISWUPLS iswupls){
-        this.iswupls = iswupls;
     }
     @Override
     public void registerParking(String CarRegistrationNumber,int parkingSpotNumber) {

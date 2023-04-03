@@ -165,7 +165,6 @@ public class getStatisticsOnClientUsageDefs {
         transaction.setShop(shop);
         usePointsRepository.save(transaction);
         list=transactionHandler.getStatisticsOnClientUsageAtShop(shop,account);
-
     }
     @Then("the usage statistics for the client will display a count of the one transaction.")
     public void statistics(){

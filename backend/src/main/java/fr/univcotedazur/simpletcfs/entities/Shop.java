@@ -27,13 +27,14 @@ public class Shop {
     @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy = "shop")
     private List<Gift> giftList=new ArrayList<>();
 
+    @OneToOne(mappedBy = "shop", cascade = CascadeType.REMOVE)
+    private ShopKeeperAccount shopKeeperAccount;
 
     public Shop(String name, String address) {
         this.name = name;
         this.address = address;
     }
     public Shop() {
-
     }
 
 
@@ -66,6 +67,12 @@ public class Shop {
 
     public String getName() {
         return name;
+    }
+    public ShopKeeperAccount getShopKeeperAccount() {
+        return shopKeeperAccount;
+    }
+    public void setShopKeeperAccount(ShopKeeperAccount shopKeeperAccount) {
+        this.shopKeeperAccount = shopKeeperAccount;
     }
 
     public String getAddress() {

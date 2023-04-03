@@ -16,20 +16,16 @@ public class AdminCommands {
 
     @Autowired
     RestTemplate restTemplate;
-
     private final CliContext cliContext;
-
     public AdminCommands(CliContext cliContext) {
         this.cliContext = cliContext;
     }
-
     @ShellMethod("Register an admin in the multi-credit backend (register ADMIN_NAME ADMIN_MAIL ADMIN_PASSWORD ADMIN_BIRTHDATE)")
     public CliAdmin registerAdmin(long id, String name, String mail, String password, String birthDate) {
         CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(id, name,mail,password,birthDate), CliAdmin.class);
         cliContext.getAdminAccounts().put(res.getName(), res);
         return res;
     }
-
     @ShellMethod("List all admins")
     public String admins() {
         return cliContext.printAdminAccounts();

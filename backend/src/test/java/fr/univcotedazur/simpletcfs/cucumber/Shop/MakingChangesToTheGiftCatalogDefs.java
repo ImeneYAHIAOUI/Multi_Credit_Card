@@ -6,6 +6,7 @@ import fr.univcotedazur.simpletcfs.entities.*;
 import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
 import fr.univcotedazur.simpletcfs.exceptions.GiftNotFoundException;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.interfaces.MailSender;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
@@ -14,11 +15,14 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class MakingChangesToTheGiftCatalogDefs {
@@ -37,12 +41,13 @@ public class MakingChangesToTheGiftCatalogDefs {
     Shop shop;
     Gift gift;
     Gift gift1;
+
     @Given("a shop with an empty gift list")
     public void a_shop_with_an_empty_gift_list()throws MissingInformationException {
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(10,00),LocalTime.of(18,00));
         assertTrue(shop.getGiftList().isEmpty());
+
     }
     @When("the shop adds a gift to the catalog")
     public void the_shop_adds_a_gift_to_the_catalog() throws AlreadyExistingGiftException {
@@ -62,8 +67,7 @@ public class MakingChangesToTheGiftCatalogDefs {
     public void a_shop_with_a_gift_list() throws MissingInformationException, AlreadyExistingGiftException{
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(10,00),LocalTime.of(18,00));
-        assertTrue(shop.getGiftList().isEmpty());
+     assertTrue(shop.getGiftList().isEmpty());
         gift=new Gift(150,"ring", AccountStatus.VFP);
         gift1=new Gift(10,"cake", AccountStatus.REGULAR);
         catalog.addGift(shop, gift);

@@ -9,12 +9,14 @@ import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.PlanningDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ShopDTO;
 import fr.univcotedazur.simpletcfs.entities.Shop;
+import fr.univcotedazur.simpletcfs.interfaces.MailSender;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,6 +26,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -35,6 +39,8 @@ public class ShopControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private ShopRepository shopRepository;
+    @MockBean
+    private MailSender mailSender;
     @BeforeEach
     public void setup(){
         shopRepository.deleteAll();
@@ -157,6 +163,8 @@ public class ShopControllerTest {
     }
         @Test
         public void modifyPlanningTest()throws Exception{
+            when(mailSender.sendMail(any(), any())).thenReturn(true);
+
             PlanningDTO planningDTO=new PlanningDTO();
 
 

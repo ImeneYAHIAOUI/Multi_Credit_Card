@@ -23,7 +23,7 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
     private  PlanningRepository planningRepository;
-     private MailSender mailSender;
+     private final  MailSender mailSender;
      private MemberRepository  memberRepository;
 
     @Autowired
