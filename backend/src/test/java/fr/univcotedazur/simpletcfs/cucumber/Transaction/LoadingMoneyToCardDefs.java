@@ -9,6 +9,7 @@ import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
 import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -19,15 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class EarnsPointsDefs {
+public class LoadingMoneyToCardDefs {
     MemberAccount memberAccount;
     String name;
     String mail;
@@ -46,10 +46,11 @@ public class EarnsPointsDefs {
     private ShopRegistration shopRegistration;
     @Autowired
     CatalogRepository catalogRepository;
-    String card;
+    String card="1234567999123456";
+    double amount;
     @Autowired
     private Bank bankMock;
-    @Given("a client has an account in the system")
+    @Given("a client has a valid account in the system")
     public void a_client_has_an_account_in_the_system()throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         try {
             memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
@@ -58,35 +59,36 @@ public class EarnsPointsDefs {
             memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         }
     }
-    @When("the client makes a valid purchase")
+    @When("the client load card with money")
     public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
-        Product product3=new Product("phone",1.0,20,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
-        product3.setShop(shop);
-        catalogRepository.save(product3);
-        Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        tran.setShop(shop);
-        when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(true);
-        transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,"1234567999123456" );
+        amount=10.0;
+        assertEquals(0.0,memberAccount.getBalance());
+        when(bankMock.pay(eq(card), anyDouble())).thenReturn(true);
     }
-    @Then("the client earns points")
-    public void the_client_earns_points() {
-       assertEquals(40,memberAccount.getPoints());
+    @Then("the money should be successfully loaded to the card")
+    public void the_client_earns_points() throws AccountNotFoundException, PaymentException, MissingInformationException{
+       memberHandler.chargeMembershipCard(memberAccount,amount,card);
     }
-    @When("the client makes an invalid purchase")
+    @When("the card balance increases.")
     public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
-        assertEquals(0,memberAccount.getPoints());
-        Product product3=new Product("phone",1.0,20,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
-        product3.setShop(shop);
-        catalogRepository.save(product3);
-        Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(false);
-        Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,card));
-        assertEquals(0,memberAccount.getPoints());
+        assertEquals(10.0,memberAccount.getBalance());
+
     }
-    @Then("the client doesn't earn points")
-    public void the_client_doesnt_earns_points() {
-        assertEquals(0,memberAccount.getPoints());
+    @Then("the bank should decline the card loading")
+    public void bank_decline() throws AccountNotFoundException, PaymentException, MissingInformationException{
+        amount=10000000000.0;
+        assertEquals(0.0,memberAccount.getBalance());
+        when(bankMock.pay(eq(card), anyDouble())).thenReturn(false);
     }
+    @And("the system should indicate that the loading was unsuccessful")
+    public void the_system_should_indicate_that_the_loading_was_unsuccessful() throws AccountNotFoundException, PaymentException, MissingInformationException {
+        Assertions.assertThrows(PaymentException.class, () -> {
+            memberHandler.chargeMembershipCard(memberAccount,amount,card);
+        });
+    }
+    @And("the card balance should remain the same")
+    public void the_card_balance_should_remain_the_same() throws AccountNotFoundException, PaymentException, MissingInformationException {
+        assertEquals(0,memberAccount.getBalance());
+    }
+
 }
