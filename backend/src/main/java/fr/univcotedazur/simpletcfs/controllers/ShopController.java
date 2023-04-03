@@ -61,12 +61,12 @@ public class ShopController {
     }
 
     @GetMapping("/{shopId}")
-    public ResponseEntity<ShopDTO> getShopById(@PathVariable("shopId") Long shopId) {
+    public ResponseEntity<String> getShopById(@PathVariable("shopId") Long shopId) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
         if(shop.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop not found");
         return ResponseEntity.ok()
-                .body(convertShopToDto(shop.get()));
+                .body(shop.get().toString());
     }
     // method to update the address of the shop
     @PutMapping("/{id}/address")

@@ -1,5 +1,6 @@
 package fr.univcotedazur.simpletcfs.Controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.simpletcfs.components.ShopManager;
 import fr.univcotedazur.simpletcfs.controllers.MemberController;
@@ -129,15 +130,6 @@ public class ShopControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
-        result=mockMvc.perform(MockMvcRequestBuilders.get(ShopController.BASE_URI + "/"+savedshop.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(null)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
-        json = result.getResponse().getContentAsString();
-        savedshop = mapper.readValue(json, ShopDTO.class);
-        assertEquals("new address",savedshop.getAddress());
     }
     @Test
     public void deleteShopByIdTest()throws Exception{

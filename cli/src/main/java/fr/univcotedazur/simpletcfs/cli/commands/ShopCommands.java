@@ -56,15 +56,14 @@ public class ShopCommands {
     @ShellMethod(" get shop (get SHOP_id )")
     public String getShop( Long id) {
         try {
-            CliShop p = restTemplate.getForObject(BASE_URI + "/" + id.toString(), CliShop.class);
-            return p.toString();
+            String p = restTemplate.getForObject(BASE_URI + "/" + id.toString(), String.class);
+            return p;
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
                 return "Invalid shop id : shop not found";
             }
             return "Error while getting shop";
         }
-
     }
     @ShellMethod("List all shops")
     public String shops() {

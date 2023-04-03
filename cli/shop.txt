@@ -1,0 +1,8 @@
+shops
+delete-shop 1
+add-shop Sephora address
+get-shop 1
+add-shop Primark adresse
+get-shop 2
+delete-shop 2
+get-shop 2

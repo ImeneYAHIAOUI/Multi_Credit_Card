@@ -43,6 +43,10 @@ public class  CatalogCommands {
             return "Error during adding product";
         }
     }
+    @ShellMethod("echo (ECHO TEXTE) )")
+    public String echo(String message) {
+        return message;
+    }
     @ShellMethod("add gift (add-gift SHOP_ID POINTS_NEEDED DESCRIPTION STATUS) )")
     public String addGift(Long id, int points,String description,String status) {
 

@@ -69,7 +69,8 @@ public class ShopCommandsTest {
         server.expect(requestTo(BASE_URI + "/" + savedshop.getId()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
-        assertEquals(savedshop.toString(), client.getShop(savedshop.getId()));
+
+        assertEquals("{\"id\":10,\"name\":\"sephsssdsora\",\"address\":\"adresse\"}", client.getShop(savedshop.getId()));
         server.verify();
     }
     @Test
