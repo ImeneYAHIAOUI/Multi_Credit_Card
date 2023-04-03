@@ -102,5 +102,20 @@ public class Shop {
         this.address = address;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPlanningList(List<Planning> planningList) {
+        this.planningList = planningList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    public void setGiftList(List<Gift> giftList) {
+        this.giftList = giftList;
+    }
 }
 

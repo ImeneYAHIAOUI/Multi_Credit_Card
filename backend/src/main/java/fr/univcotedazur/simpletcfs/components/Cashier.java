@@ -12,16 +12,13 @@ import java.time.LocalDate;
 @Component
 public class Cashier implements Payment {
     private Bank bank;
-
     @Autowired
     public Cashier(Bank bank) {
         this.bank = bank;
     }
 
-
     public void payment(Purchase purchase, String creditCard) throws PaymentException {
         if(! bank.pay(creditCard, purchase.getTotalPrice())) throw new PaymentException();
-        //if(creditCard.getExpirationDate().isBefore(LocalDate.now())) throw new PaymentException();
         else{
             purchase.setCreditCardNumber(creditCard);
             purchase.setDate(LocalDate.now());

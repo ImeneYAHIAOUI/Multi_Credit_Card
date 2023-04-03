@@ -1,7 +1,6 @@
 # Created by Sourour GAZZEH at 2/26/2023
 Feature: earns points
   # Enter feature description here
-
   Background:
     Given a client has an account in the system
 

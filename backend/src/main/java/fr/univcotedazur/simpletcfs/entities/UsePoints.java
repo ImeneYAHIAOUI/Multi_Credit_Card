@@ -8,10 +8,10 @@ import java.util.UUID;
 @Entity
 public class UsePoints extends Transaction{
 
-    public int usedPoints;
+    int usedPoints;
     @OneToOne
     @JoinColumn( name="Gift_id" )
-    public Gift gift;
+    Gift gift;
 
     public UsePoints() {
         super();

@@ -6,10 +6,8 @@ import fr.univcotedazur.simpletcfs.controllers.ShopController;
 import fr.univcotedazur.simpletcfs.controllers.dto.GiftDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ProductDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ShopDTO;
-import fr.univcotedazur.simpletcfs.entities.Product;
 import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
 import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,12 +18,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
@@ -66,7 +60,6 @@ public class CatalogControllerTest {
         assert(productDTO.getPoints()==10);
         assert(Objects.equals(productDTO.getName(), "cookie"));
         assert(productDTO.getPrice()==2.3);
-        assert (productDTO.getId()!=null);
         mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedShop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
@@ -104,7 +97,6 @@ public class CatalogControllerTest {
         assert(productDTO.getPoints()==10);
         assert(Objects.equals(productDTO.getName(), "cookie"));
         assert(productDTO.getPrice()==2.3);
-        assert (productDTO.getId()!=null);
         mockMvc.perform(MockMvcRequestBuilders.post(CatalogController.BASE_URI + "/add/"+savedShop.getId()+"/Products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDTO)))
@@ -222,7 +214,7 @@ public class CatalogControllerTest {
         assert(gift.getStatus().equals("VFP"));
         assert(Objects.equals(gift.getDescription(), "cookie"));
         assert (gift.getGiftId()!=null);
-        result=mockMvc.perform(MockMvcRequestBuilders.get(CatalogController.BASE_URI + "/get/Gifts/"+gift.getGiftId())
+        result=mockMvc.perform(MockMvcRequestBuilders.get(CatalogController.BASE_URI + "/Gifts/"+gift.getGiftId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -259,7 +251,6 @@ public class CatalogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)).andReturn();
         json = result.getResponse().getContentAsString();
         productDTO= mapper.readValue(json, ProductDTO.class);
-        assert (productDTO.getId()!=null);
         assert (productDTO.getPoints()==10);
         assert (productDTO.getPrice()==2.3);
         assert (productDTO.getDiscountPercentage()==0.0);
@@ -299,7 +290,6 @@ public class CatalogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)).andReturn();
         json = result.getResponse().getContentAsString();
         productDTO= mapper.readValue(json, ProductDTO.class);
-        assert (productDTO.getId()!=null);
         assert (productDTO.getPoints()==10);
         assert (productDTO.getPrice()==2.3);
         assert (productDTO.getDiscountPercentage()==0.0);

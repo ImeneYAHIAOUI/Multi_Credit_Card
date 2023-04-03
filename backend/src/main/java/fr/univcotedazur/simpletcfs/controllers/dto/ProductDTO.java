@@ -3,13 +3,13 @@ package fr.univcotedazur.simpletcfs.controllers.dto;
 import fr.univcotedazur.simpletcfs.entities.Product;
 
 public class ProductDTO {
-    private Long id;
+    private long id;
     private ShopDTO shop;
     private int points;
     private  String name;
     private double price;
     private double discountPercentage;
-    public  ProductDTO(Long id ,ShopDTO shop, String name,int points, double price, double discountPercentage) {
+    public  ProductDTO(long id ,ShopDTO shop, String name,int points, double price, double discountPercentage) {
         this.points = points;
         this.price = price;
         this.name=name;
@@ -26,7 +26,7 @@ public class ProductDTO {
         this.discountPercentage = discountPercentage;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

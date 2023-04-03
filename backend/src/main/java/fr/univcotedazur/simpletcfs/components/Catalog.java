@@ -73,8 +73,9 @@ public class Catalog implements CatalogEditor, CatalogFinder {
             product.setShop(shop);
             shop.addProduct(product);
             catalogRepository.save(product);
-        }else
-            throw new AlreadyExistingProductException();
+        }else{
+            System.out.println("product already exists");
+            throw new AlreadyExistingProductException();}
     }
     @Override
     public void removeProductFromCatalog(Shop shop,Product product) throws ProductNotFoundException {
