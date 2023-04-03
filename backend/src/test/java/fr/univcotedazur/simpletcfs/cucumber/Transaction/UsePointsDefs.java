@@ -56,25 +56,6 @@ public class UsePointsDefs {
     @Given("a client has an account")
     @Transactional
     public void a_client_has_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
-        /*memberAccountRepository.deleteAll();
-        transactionRepository.deleteAll();
-        name = "John Doe";
-        mail = "sourour.gazzeh@outlook.fr";
-        password="123456";
-        birthDate = LocalDate.parse("01/01/2000",formatter);
-        memberAccount = memberHandler.createAccount(name,mail,password,birthDate);
-        assertEquals(memberFinder.findById(memberAccount.getId()).get().getId(),memberAccount.getId());
-         transaction=new UsePoints(LocalDate.now(),memberAccount);
-        Gift gift=new Gift();
-        gift.setRequiredStatus(AccountStatus.VFP);
-        transaction.setGift(gift);
-        transaction.setUsedPoints(100);
-        memberAccount.setStatus(AccountStatus.VFP);
-        Product product3=new Product("ring",1.0,10);
-
-        tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        tran.setMemberAccount(memberAccount);
-        transactionRepository.save(tran);*/
         try {
             memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         }catch (AlreadyExistingMemberException e){
@@ -88,7 +69,6 @@ public class UsePointsDefs {
         transaction=new UsePoints(LocalDate.now(),memberAccount);
         transaction.setUsedPoints(100);
         transaction.setGift(gift);
-
         Product product3=new Product("phone",1.0,0,0.0);
         Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
         product3.setShop(shop);

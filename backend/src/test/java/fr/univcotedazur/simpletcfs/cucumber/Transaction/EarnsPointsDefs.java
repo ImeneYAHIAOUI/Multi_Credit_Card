@@ -6,6 +6,8 @@ import fr.univcotedazur.simpletcfs.exceptions.*;
 import fr.univcotedazur.simpletcfs.interfaces.Bank;
 import fr.univcotedazur.simpletcfs.interfaces.MemberFinder;
 import fr.univcotedazur.simpletcfs.interfaces.MemberHandler;
+import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import fr.univcotedazur.simpletcfs.repositories.CatalogRepository;
 import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -40,6 +42,10 @@ public class EarnsPointsDefs {
     TransactionHandler transactionHandler;
     @Autowired
     MemberRepository memberAccountRepository;
+    @Autowired
+    private ShopRegistration shopRegistration;
+    @Autowired
+    CatalogRepository catalogRepository;
     String card;
     @Autowired
     private Bank bankMock;
@@ -53,27 +59,34 @@ public class EarnsPointsDefs {
         }
     }
     @When("the client makes a valid purchase")
-    public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException {
-        /*Product product3=new Product("ring",1.0,10);
-
+    public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
+        Product product3=new Product("phone",1.0,20,0.0);
+        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
+        product3.setShop(shop);
+        catalogRepository.save(product3);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        when(bankMock.pay("1234567999123456", anyDouble())).thenReturn(true);
-        transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,card );
-    */}
+        tran.setShop(shop);
+        when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(true);
+        transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,"1234567999123456" );
+    }
     @Then("the client earns points")
     public void the_client_earns_points() {
-       // assertEquals(20,memberAccount.getPoints());
+       assertEquals(40,memberAccount.getPoints());
     }
     @When("the client makes an invalid purchase")
-    public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException {
-       /* assertEquals(0,memberAccount.getPoints());
-        Product product3=new Product("ring",1.0,10);
+    public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
+        assertEquals(0,memberAccount.getPoints());
+        Product product3=new Product("phone",1.0,20,0.0);
+        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
+        product3.setShop(shop);
+        catalogRepository.save(product3);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
-        when(bankMock.pay("1234567999123456", anyDouble())).thenReturn(false);
+        when(bankMock.pay(eq("1234567999123456"), anyDouble())).thenReturn(false);
         Assertions.assertThrows(PaymentException.class, () -> transactionHandler.processPurchaseWithCreditCard(memberAccount,tran,card));
-    */}
+        assertEquals(0,memberAccount.getPoints());
+    }
     @Then("the client doesn't earn points")
     public void the_client_doesnt_earns_points() {
-        //assertEquals(0,memberAccount.getPoints());
+        assertEquals(0,memberAccount.getPoints());
     }
 }

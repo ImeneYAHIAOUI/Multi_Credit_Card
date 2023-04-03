@@ -66,7 +66,6 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
             purchase.setMemberAccount(memberAccount);
             purchase.setPaymentMethod(PaymentMethod.CREDIT_CARD);
             return registerPurchase(memberAccount, purchase);
-
         }
     }
 
