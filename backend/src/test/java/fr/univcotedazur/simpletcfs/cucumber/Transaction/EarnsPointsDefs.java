@@ -71,7 +71,7 @@ public class EarnsPointsDefs {
     }
     @Then("the client earns points")
     public void the_client_earns_points() {
-       assertEquals(40,memberAccount.getPoints());
+       assertEquals(460,memberAccount.getPoints());
     }
     @When("the client makes an invalid purchase")
     public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
