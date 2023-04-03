@@ -8,12 +8,14 @@ services:
     environment:
       - BANK_WITH_PORT=bank-system:9090
       - ISWUPLS_WITH_PORT=iswupls:8085
+      - MAILSERVICE_WITH_PORT=mailservice:8090
       - POSTGRES_HOST=postgres:5432
     entrypoint: "bash -c '/opt/app/wait-for-it.sh $${POSTGRES_HOST} -- java -jar /opt/app/app.jar --bank.host.baseurl=http://$${BANK_WITH_PORT} --iswupls.host.baseurl=http://$${ISWUPLS_WITH_PORT}'"
     depends_on:
       - bank-system
       - postgres
       - iswupls
+      - mailService
     ports:
       - "8080:8080"
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
@@ -51,5 +53,12 @@ services:
     container_name: iswupls
     ports:
       - "8085:8085"
+
+  # mail service rust external service
+  mailService:
+    image: equipef/rust_mailservice
+    container_name: mailService
+    ports:
+      - "8090:8090"
 
 
