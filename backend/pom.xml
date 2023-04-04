@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>fr.univ.cotedazur.multicard</groupId>
-    <artifactId>backend</artifactId>
+    <artifactId>multicard-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>backend</name>
