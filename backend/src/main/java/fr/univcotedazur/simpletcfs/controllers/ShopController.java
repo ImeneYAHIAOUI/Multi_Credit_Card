@@ -82,8 +82,6 @@ public class ShopController {
         shopManager.modifyPlanning(shop.get(), WeekDay.valueOf(planning.getDayWorking()), openingHours, closingHours);
         return ResponseEntity.ok("Shop planning for " + planning.getDayWorking() + " updated successfully");
     }
-
-
     @GetMapping("/shopKeepers/{shopId}")
     public ResponseEntity<String> getShopKeeperById(@PathVariable("shopKeeperId") Long shopKeepersId) {
         Optional<ShopKeeperAccount> shop = shopManager.findShopkeeperAccountById(shopKeepersId);

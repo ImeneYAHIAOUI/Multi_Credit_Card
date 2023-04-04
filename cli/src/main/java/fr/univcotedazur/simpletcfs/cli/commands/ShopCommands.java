@@ -18,6 +18,7 @@ import java.util.Map;
 @ShellComponent
 public class ShopCommands {
     public static final String BASE_URI = "/shops";
+    public static final String SHOPKEEPER_BASE_URI = "/shopKeepers";
 
     @Autowired
     RestTemplate restTemplate;
@@ -58,6 +59,18 @@ public class ShopCommands {
                 return "Invalid shop id : shop not found";
             }
             return "Error while getting shop";
+        }
+    }
+    @ShellMethod(" get shopkeeper (get SHOP_id )")
+    public String getShopKeeper( Long id) {
+        try {
+            String p = restTemplate.getForObject(BASE_URI + "/shopKeepers/" + id.toString(), String.class);
+            return p;
+        }catch (HttpClientErrorException ex) {
+            if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
+                return " 404 Invalid shop id : shop keeper not found";
+            }
+            return "Error while getting shop keeper account";
         }
     }
     @ShellMethod("List all shops")

@@ -28,10 +28,20 @@ public class AdminCommands {
         this.cliContext = cliContext;
     }
     @ShellMethod("Register an admin in the multi-credit backend (register ADMIN_NAME ADMIN_MAIL ADMIN_PASSWORD ADMIN_BIRTHDATE)")
-    public CliAdmin registerAdmin(long id, String name, String mail, String password, String birthDate) {
-        CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(id, name,mail,password,birthDate), CliAdmin.class);
-        cliContext.getAdminAccounts().put(res.getName(), res);
-        return res;
+    public String registerAdmin(long id, String name, String mail, String password, String birthDate) {
+        try {
+            CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(id, name,mail,password,birthDate), CliAdmin.class);
+            cliContext.getAdminAccounts().put(res.getName(), res);
+            return res.toString();
+        }catch (HttpClientErrorException ex) {
+            if(HttpStatus.CONFLICT.equals(ex.getStatusCode())){
+                return "409 Failed to add admin account : account already exists";
+            }
+            else if(HttpStatus.UNPROCESSABLE_ENTITY.equals(ex.getStatusCode())){
+                return "422 Failed tto add admin account : invalid parameters";
+            }
+            return "Error while adding admin account ";
+        }
     }
     @ShellMethod("List all admins")
     public String admins() {

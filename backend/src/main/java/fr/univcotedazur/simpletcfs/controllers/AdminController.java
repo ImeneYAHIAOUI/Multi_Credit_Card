@@ -53,10 +53,9 @@ public class AdminController {
             Form form = new Form(adminDTO.getName(), adminDTO.getMail(), adminDTO.getPassword(),  LocalDate.parse(adminDTO.getBirthDate(),formatter));
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(convertAdminAccountToDto(adminManager.createAdminAccount(form)));
-
         } catch (AlreadyExistingAdminException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
-            return ResponseEntity.status(HttpStatus.OK)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(convertAdminAccountToDto(adminManager.findAdminByMail(adminDTO.getMail())));
         } catch (MissingInformationException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
