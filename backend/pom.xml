@@ -130,6 +130,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
             <!-- maven-surefire-plugin is designed for running unit tests and if any of the tests fail then it will fail the build immediately.
                  maven-failsafe-plugin is designed for running integration tests, and decouples failing the build if there are test failures from actually running the tests."
               Look at https://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html
@@ -165,12 +166,12 @@
         <repository>
             <id>artifactoryCentral</id>
             <name>8ead0d7e91d8-releases</name>
-            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release-local</url>
+            <url>http://134.59.213.136:8002/artifactory/libs-release-local</url>
         </repository>
         <snapshotRepository>
             <id>artifactorySnapshots</id>
             <name>8ead0d7e91d8-snapshots</name>
-            <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-snapshot-local</url>
+            <url>http://134.59.213.136:8002/artifactory/libs-snapshot-local</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
