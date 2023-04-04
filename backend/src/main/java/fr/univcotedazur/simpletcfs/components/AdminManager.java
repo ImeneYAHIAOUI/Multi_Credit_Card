@@ -119,14 +119,20 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         }
     }
 
-
     @Override
-    public Survey createSurvey(LocalDate endDate, List<Question> questions) {
-        return new Survey(endDate, questions);
+    public void sendSurvey(List<MemberAccount> receivers, String sender, LocalDate endDate, List<Question> questions) {
+        Survey surveyToSend = new Survey(sender, endDate, questions);
+        if(!mailSender.sendSurvey(receivers, surveyToSend)){
+            System.out.println("Error while sending survey");
+            throw new RuntimeException();
+        }
     }
     @Override
-    public Mail createMail(String mailContent, String subject) {
-
-        return new Mail(mailContent, subject);
+    public void sendMail(List<MemberAccount> receivers, String sender, String mailContent, String subject) {
+        Mail mailToSend = new Mail(sender, mailContent, subject);
+        if(!mailSender.sendMail(receivers, mailToSend)){
+            System.out.println("Error while sending mail");
+            throw new RuntimeException();
+        }
     }
 }

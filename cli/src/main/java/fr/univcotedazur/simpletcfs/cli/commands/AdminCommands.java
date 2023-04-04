@@ -28,9 +28,9 @@ public class AdminCommands {
         this.cliContext = cliContext;
     }
     @ShellMethod("Register an admin in the multi-credit backend (register ADMIN_NAME ADMIN_MAIL ADMIN_PASSWORD ADMIN_BIRTHDATE)")
-    public String registerAdmin(long id, String name, String mail, String password, String birthDate) {
+    public String registerAdmin(String name, String mail, String password, String birthDate) {
         try {
-            CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(id, name,mail,password,birthDate), CliAdmin.class);
+            CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin(name,mail,password,birthDate), CliAdmin.class);
             cliContext.getAdminAccounts().put(res.getName(), res);
             return res.toString();
         }catch (HttpClientErrorException ex) {

@@ -1,28 +1,14 @@
-package fr.univcotedazur.simpletcfs.entities;
+package fr.univcotedazur.simpletcfs.cli.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@Entity
-public class Question {
-
-    @NotBlank
+public class CliQuestion {
     private String title;
-
-    @ElementCollection
     private List<String> possibleAnswers;
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    public Question(String title, List<String> possibleAnswers) {
+    public CliQuestion(String title, List<String> possibleAnswers) {
         this.title = title;
         this.possibleAnswers = possibleAnswers;
-    }
-
-    public Question() {
-
     }
 
     public String getTitle() {
@@ -39,13 +25,5 @@ public class Question {
 
     public void setPossibleAnswers(List<String> possibleAnswers) {
         this.possibleAnswers = possibleAnswers;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 }

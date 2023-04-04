@@ -1,31 +1,13 @@
-package fr.univcotedazur.simpletcfs.entities;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-
-@Entity
-public class Mail {
-
-    @NotBlank
+package fr.univcotedazur.simpletcfs.cli.model;
+public class CliMail {
     private String sender;
-    @NotBlank
     private String mailContent;
-    @NotBlank
     private String subject;
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    public Mail(String sender, String mailContent, String subject) {
+    public CliMail(String sender, String mailContent, String subject) {
         this.sender = sender;
         this.mailContent = mailContent;
         this.subject = subject;
-    }
-
-    public Mail() {
-
     }
 
     public String getMailContent() {
@@ -52,11 +34,4 @@ public class Mail {
         this.sender = sender;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }
