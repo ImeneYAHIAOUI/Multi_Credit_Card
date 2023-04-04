@@ -6,20 +6,20 @@ import java.util.List;
 public class CliSurvey {
 
     private String sender;
-    private LocalDate endDate;
+    private String endDate;
     private List<CliQuestion> questions;
 
-    public CliSurvey(String sender, LocalDate endDate, List<CliQuestion> questions) {
+    public CliSurvey(String sender, String endDate, List<CliQuestion> questions) {
         this.sender = sender;
         this.endDate = endDate;
         this.questions = questions;
     }
 
-    public LocalDate getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

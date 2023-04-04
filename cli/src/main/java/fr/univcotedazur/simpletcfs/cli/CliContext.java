@@ -1,9 +1,6 @@
 package fr.univcotedazur.simpletcfs.cli;
 
-import fr.univcotedazur.simpletcfs.cli.model.CliAdmin;
-import fr.univcotedazur.simpletcfs.cli.model.CliMember;
-import fr.univcotedazur.simpletcfs.cli.model.CliShop;
-import fr.univcotedazur.simpletcfs.cli.model.CliShopKeeper;
+import fr.univcotedazur.simpletcfs.cli.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +10,20 @@ import java.util.stream.Collectors;
 
 @Component
 public class CliContext {
-
     private Map<String, CliMember> memberAccounts;
     private Map<String, CliAdmin> adminAccounts;
     private Map<String, CliShop> shops;
     private Map<String, CliShopKeeper> shopKeepers;
-
-    public Map<String, CliAdmin> getAdminAccounts() {
-        return adminAccounts;
-    }
-
+    private Map<String, CliMail> mails;
+    private Map<String, CliSurvey> surveys;
     public CliContext()
     {
         this.memberAccounts = new HashMap<>();
         this.adminAccounts = new HashMap<>();
         shopKeepers = new HashMap<>();
         shops=new HashMap<>();
+        mails = new HashMap<>();
+        surveys = new HashMap<>();
     }
 
     @Override
@@ -46,11 +41,19 @@ public class CliContext {
     public Map<String, CliShop> getShops() {
         return shops;
     }
-
     public Map<String, CliMember> getMemberAccounts() {
         return memberAccounts;
     }
     public Map<String, CliShopKeeper> getShopKeepers(){
         return  shopKeepers;
+    }
+    public Map<String, CliMail> getMails() {
+        return mails;
+    }
+    public Map<String, CliSurvey> getSurveys() {
+        return surveys;
+    }
+    public Map<String, CliAdmin> getAdminAccounts() {
+        return adminAccounts;
     }
 }
