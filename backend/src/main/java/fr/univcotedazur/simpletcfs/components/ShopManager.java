@@ -73,7 +73,8 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         }
         if(planning!=null){
             planningRepository.save(planning);
-            mailSender.sendMail(memberRepository.findAll(), new Mail(shop.getShopKeeperAccount().getMail(), "Planning modified", "The planning of the shop "+shop.getName()+" has been modified"));
+            //TODO mettre un vrai mail ^^
+            mailSender.sendMail(memberRepository.findAll(), new Mail("me@me.com", "Planning modified", "The planning of the shop "+shop.getName()+" has been modified"));
         }
     }
     @Override

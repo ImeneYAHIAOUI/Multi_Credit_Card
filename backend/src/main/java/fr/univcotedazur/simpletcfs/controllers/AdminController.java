@@ -45,7 +45,7 @@ public class AdminController {
         return errorDTO;
     }
 
-    @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
+    @PostMapping(path = "/register", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<AccountDTO> register(@RequestBody @Valid AdminDTO adminDTO) {
         // Note that there is no validation at all on the CustomerDto mapped
         try {
