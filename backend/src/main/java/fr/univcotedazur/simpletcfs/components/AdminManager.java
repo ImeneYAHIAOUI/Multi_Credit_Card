@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class AdminManager implements ShopRegistration, ShopkeeperRegistration, AdminRegistration, AdminFinder, MailHandler{
+public class AdminManager implements ShopRegistration,ShopkeeperRegistration, AdminRegistration, AdminFinder, MailHandler{
 
     private final MailSender mailSender;
     private final AdminAccountRepository adminAccountRepository;
@@ -99,7 +99,7 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
         if (shop.isEmpty() || form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();
         }
-        ShopKeeperAccount shopKeeperAccount = findShopkeeperAccountByMail(form.getMail());
+        ShopKeeperAccount shopKeeperAccount = shopManager.findShopkeeperAccountByMail(form.getMail());
         if(shopKeeperAccount != null ){
             throw new AlreadyExistingMemberException();
         }
@@ -114,24 +114,16 @@ public class AdminManager implements ShopRegistration, ShopkeeperRegistration, A
 
     @Override
     public void deleteShopKeeperAccount(ShopKeeperAccount account) {
-        if(account!=null && shopManager.findShopKeeperAccountById(account.getId()).isPresent()){
+        if(account!=null && shopManager.findShopkeeperAccountById(account.getId()).isPresent()){
             shopKeeperAccountRepository.deleteById(account.getId());
         }
     }
-    @Override
-    public  ShopKeeperAccount findShopkeeperAccountByMail(String mail) {
-        for (ShopKeeperAccount  shopkeeperAccount : shopKeeperAccountRepository.findAll()) {
-            if (shopkeeperAccount.getMail().equals(mail)) {
-                return shopkeeperAccount;
-            }
-        }
-        return null;
-    }
+
+
     @Override
     public Survey createSurvey(LocalDate endDate, List<Question> questions) {
         return new Survey(endDate, questions);
     }
-
     @Override
     public Mail createMail(String mailContent, String subject) {
 

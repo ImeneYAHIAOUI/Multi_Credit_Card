@@ -92,8 +92,7 @@ public class CatalogCommandsTest {
     @Test public void getGiftTestNotFound() {
         server.expect(requestTo(BASE_URI + "/Gifts/1"))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withStatus(HttpStatus.NOT_FOUND)
-                        .contentType(MediaType.APPLICATION_JSON));
+                .andRespond(withStatus(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON));
         assertEquals("Gift id 1 unknown", client.getGift(1L));
         server.verify();
     }

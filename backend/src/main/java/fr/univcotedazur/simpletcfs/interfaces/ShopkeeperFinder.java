@@ -7,10 +7,10 @@ import java.util.UUID;
 
 public interface ShopkeeperFinder {
 
-    Optional<ShopKeeperAccount> findShopKeeperAccountById(Long id);
-
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name);
 
-    public Optional<ShopKeeperAccount> findShopKeeperAccountByMail(String mail);
+    public Optional<ShopKeeperAccount> findShopkeeperAccountById(Long id);
+    ShopKeeperAccount findShopkeeperAccountByMail(String mail);
 
 }
+
