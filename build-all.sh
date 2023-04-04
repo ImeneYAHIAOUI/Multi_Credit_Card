@@ -15,4 +15,8 @@ build_dir "cli"
 
 build_dir "bank"
 
+build_dir "ISWUPLS"
+
+build_dir "MailService"
+
 echo "** Done all"
