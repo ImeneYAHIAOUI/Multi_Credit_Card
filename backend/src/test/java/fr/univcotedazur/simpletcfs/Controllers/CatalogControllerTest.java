@@ -1,6 +1,7 @@
 package fr.univcotedazur.simpletcfs.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.univcotedazur.simpletcfs.controllers.AdminController;
 import fr.univcotedazur.simpletcfs.controllers.CatalogController;
 import fr.univcotedazur.simpletcfs.controllers.ShopController;
 import fr.univcotedazur.simpletcfs.controllers.dto.GiftDTO;
@@ -38,7 +39,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -60,7 +61,7 @@ public class CatalogControllerTest {
         assert(productDTO.getPoints()==10);
         assert(Objects.equals(productDTO.getName(), "cookie"));
         assert(productDTO.getPrice()==2.3);
-        mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedShop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+savedShop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -76,7 +77,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -101,7 +102,7 @@ public class CatalogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDTO)))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
-        mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedShop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+savedShop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -111,7 +112,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -135,7 +136,7 @@ public class CatalogControllerTest {
         assert (gift.getShop().getId()==savedShop.getId());
         assert(Objects.equals(gift.getDescription(), "cookie"));
         assert (gift.getGiftId()!=null);
-        mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedShop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+savedShop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -145,7 +146,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -188,7 +189,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -233,7 +234,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -261,7 +262,7 @@ public class CatalogControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         json = result.getResponse().getContentAsString();
         assertEquals(json,objectMapper.writeValueAsString(productDTO));
-        mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedShop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+savedShop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -272,7 +273,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -308,7 +309,7 @@ public class CatalogControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())

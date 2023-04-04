@@ -3,6 +3,7 @@ package fr.univcotedazur.simpletcfs.Controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.simpletcfs.components.ShopManager;
+import fr.univcotedazur.simpletcfs.controllers.AdminController;
 import fr.univcotedazur.simpletcfs.controllers.MemberController;
 import fr.univcotedazur.simpletcfs.controllers.ShopController;
 import fr.univcotedazur.simpletcfs.controllers.dto.MemberDTO;
@@ -50,13 +51,13 @@ public class ShopControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON));
-        mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
@@ -66,18 +67,18 @@ public class ShopControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress(null);
-        mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
         shop.setName(null);
         shop.setAddress("addresse");
-        mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
         shop.setAddress(null);
-        mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
@@ -91,7 +92,7 @@ public class ShopControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -120,7 +121,7 @@ public class ShopControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adress");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -142,7 +143,7 @@ public class ShopControllerTest {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adress");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(shop)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -152,11 +153,11 @@ public class ShopControllerTest {
         String json = result.getResponse().getContentAsString();
         ObjectMapper mapper = new ObjectMapper();
         ShopDTO savedshop = mapper.readValue(json, ShopDTO.class);
-        mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedshop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+savedshop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-        mockMvc.perform(MockMvcRequestBuilders.delete(ShopController.BASE_URI + "/"+savedshop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops"+savedshop.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -176,7 +177,7 @@ public class ShopControllerTest {
             ShopDTO shop=new ShopDTO();
             shop.setName("Sephora");
             shop.setAddress("adress");
-            MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(ShopController.BASE_URI + "/save")
+            MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(shop)))
                     .andExpect(MockMvcResultMatchers.status().isCreated())

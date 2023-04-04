@@ -18,8 +18,7 @@ public class CliAccount {
 
     private String birthDate;
 
-    public CliAccount(long id, String name, String mail, String password, String birthDate) {
-        this.id = id;
+    public CliAccount(String name, String mail, String password, String birthDate) {
         this.name = name;
         this.mail = mail;
         this.password = password;

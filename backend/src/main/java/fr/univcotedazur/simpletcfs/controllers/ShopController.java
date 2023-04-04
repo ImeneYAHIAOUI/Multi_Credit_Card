@@ -6,6 +6,7 @@ import fr.univcotedazur.simpletcfs.controllers.dto.PlanningDTO;
 import fr.univcotedazur.simpletcfs.controllers.dto.ShopDTO;
 import fr.univcotedazur.simpletcfs.entities.Planning;
 import fr.univcotedazur.simpletcfs.entities.Shop;
+import fr.univcotedazur.simpletcfs.entities.ShopKeeperAccount;
 import fr.univcotedazur.simpletcfs.entities.WeekDay;
 import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
@@ -41,23 +42,6 @@ public class ShopController {
         errorDTO.setError("Cannot process shop information");
         errorDTO.setDetails(e.getMessage());
         return errorDTO;
-    }
-    @PostMapping(path = "/save", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
-    public ResponseEntity<ShopDTO> registerShop(@RequestBody @Valid ShopDTO shopDTO) {
-        try {
-            if (shopManager.findShopByAddress(shopDTO.getAddress()).isEmpty()) {
-                Shop shop = shopRegistration.addShop(shopDTO.getName(), shopDTO.getAddress());
-                return ResponseEntity.status(HttpStatus.CREATED)
-                        .body(convertShopToDto(shop));
-            }else{
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-            }
-
-        }catch (MissingInformationException e){
-
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                    .body(null);
-        }
     }
 
     @GetMapping("/{shopId}")
@@ -99,17 +83,13 @@ public class ShopController {
         return ResponseEntity.ok("Shop planning for " + planning.getDayWorking() + " updated successfully");
     }
 
-    // method to delete a shop by id
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteShopById(@PathVariable("id") Long shopId) {
-        Optional<Shop> shop = shopManager.findShopById(shopId);
-        if (shop.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop not found");
-        }
-        shopRegistration.removeShop(shop.get());
-        return ResponseEntity.ok("Shop deleted successfully");
-    }
-    private ShopDTO convertShopToDto(Shop shop) { // In more complex cases, we could use ModelMapper
-        return new ShopDTO( shop.getId(),shop.getName(), shop.getAddress());
+
+    @GetMapping("/shopKeepers/{shopId}")
+    public ResponseEntity<String> getShopKeeperById(@PathVariable("shopKeeperId") Long shopKeepersId) {
+        Optional<ShopKeeperAccount> shop = shopManager.findShopkeeperAccountById(shopKeepersId);
+        if(shop.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop keeper not found");
+        return ResponseEntity.ok()
+                .body(shop.get().toString());
     }
 }

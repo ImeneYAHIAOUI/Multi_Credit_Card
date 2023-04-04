@@ -29,12 +29,7 @@ public class ShopCommands {
         this.cliContext = cliContext;
     }
 
-    @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
-    public String addShop(String name, String address) {
-        CliShop res = restTemplate.postForObject(BASE_URI + "/save", new CliShop(name,address), CliShop.class);
-        cliContext.getShops().put(res.getName(), res);
-        return res.toString();
-    }
+
     @ShellMethod("update shop address (update SHOP_id SHOP_ADDRESS )")
     public String updateShopAddress( Long id, String address) {
         if (id < 0) {
@@ -69,24 +64,7 @@ public class ShopCommands {
     public String shops() {
         return   cliContext.getShops().toString();
     }
-    @ShellMethod("delete a shop (delete SHOP_ID)")
-    public String deleteShop(@ShellOption(value = {"-i", "--id"}) Long id) {
-        if (id < 0) {
-            return "Invalid shop ID";
-        }
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/" + id, HttpMethod.DELETE, null, String.class);
-            return "Shop deleted successfully";
 
-        }catch (HttpClientErrorException ex) {
-            if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
-                return "Failed to delete shop : shop not found";
-            }
-            return "Error while deleting shop";
-        }
-
-
-    }
     @ShellMethod(value = "Modify the opening and closing hours of a specific day for a shop(modify-planning SHOP_ID DAY_OF_WEEK OPENING_TIME CLOSING_TIME)")
     public String modifyPlanning(@ShellOption(help = "ID du shop") long shopId,
                                @ShellOption(help = "Jour de la semaine") String dayOfWeek,

@@ -31,7 +31,7 @@ public class MemberCommands {
 
     @ShellMethod("Register a member in the multi-credit backend (register-member MEMBER_NAME MEMBER_MAIL MEMBER_PASSWORD MEMBER_BIRTHDATE)")
     public CliMember registerMember( String name, String mail, String password, String birthDate) {
-        CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(0,name,mail,password,birthDate), CliMember.class);
+        CliMember res = restTemplate.postForObject(BASE_URI + "/register", new CliMember(name,mail,password,birthDate), CliMember.class);
         assert res != null;
         cliContext.getMemberAccounts().put(res.getName(), res);
         return res;

@@ -40,7 +40,7 @@ public class CreateShopKeeperAccountDefs {
     private ShopRegistration shopRegistration;
     @Autowired
     ShopRepository shopRepository;
-Shop shop;
+    Shop shop;
     @Given("a shop who wants to create an account")
     public void aMemberWhoWantsToCreateAnAccount() throws MissingInformationException{
         /*shopRepository.deleteAll();

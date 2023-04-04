@@ -90,7 +90,10 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
             shopRepository.save(shop);
         }
     }
-
+    @Override
+    public  Optional<ShopKeeperAccount> findShopkeeperAccountById(Long id) {
+        return  shopKeeperAccountRepository.findById(id);
+    }
     @Override
     public Optional<Shop> findShopById(Long id){
         return shopRepository.findById(id);
@@ -98,10 +101,14 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     public List<Shop> findShopByAddress(String address){
         return shopRepository.findAll().stream().filter(shop-> shop.getAddress().equals(address)).collect(Collectors.toList());
     }
-
     @Override
-    public Optional<ShopKeeperAccount> findShopKeeperAccountById(Long id){
-        return shopKeeperAccountRepository.findById(id);
+    public  ShopKeeperAccount findShopkeeperAccountByMail(String mail) {
+        for (ShopKeeperAccount  shopkeeperAccount : shopKeeperAccountRepository.findAll()) {
+            if (shopkeeperAccount.getMail().equals(mail)) {
+                return shopkeeperAccount;
+            }
+        }
+        return null;
     }
     @Override
     public Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name){
@@ -113,14 +120,4 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         return Optional.empty();
     }
 
-    @Override
-    public Optional<ShopKeeperAccount> findShopKeeperAccountByMail(String mail)
-    {
-        for (ShopKeeperAccount  shopKeeperAccount : shopKeeperAccountRepository.findAll()) {
-            if (shopKeeperAccount.getMail().equals(mail)) {
-                return Optional.of(shopKeeperAccount);
-            }
-        }
-        return Optional.empty();
-    }
 }
