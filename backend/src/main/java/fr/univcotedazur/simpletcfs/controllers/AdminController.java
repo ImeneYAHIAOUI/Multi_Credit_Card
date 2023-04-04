@@ -82,6 +82,29 @@ public class AdminController {
             }
         }
     }
+
+    @PostMapping(path="/mails/send", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> sendMail(@RequestBody @Valid MailDTO mailDTO){
+        try {
+            adminManager.sendMail(mailDTO.getSender(),mailDTO.getSubject(),mailDTO.getMailContent());
+            return ResponseEntity.status(HttpStatus.OK).body("Mail sent successfully");
+        }catch (ResourceAccessException e){
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Mail service unavailable");
+        }
+    }
+
+    @PostMapping(path="/surveys/send", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> sendSurvey(@RequestBody @Valid SurveyDTO surveyDTO){
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+            LocalDate endDate=LocalDate.parse(surveyDTO.getEndDate(),formatter);
+            adminManager.sendSurvey(surveyDTO.getSender(), endDate, surveyDTO.getQuestions());
+            return ResponseEntity.status(HttpStatus.OK).body("Survey sent successfully");
+        }catch (ResourceAccessException e){
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Survey service unavailable");
+        }
+    }
+
     // method to delete a shop by id
     @DeleteMapping("/shops/{id}")
     public ResponseEntity<String> deleteShopById(@PathVariable("id") Long shopId) {

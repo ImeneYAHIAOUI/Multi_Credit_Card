@@ -7,6 +7,7 @@ import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
 import fr.univcotedazur.simpletcfs.exceptions.UnderAgeException;
 import fr.univcotedazur.simpletcfs.interfaces.*;
 import fr.univcotedazur.simpletcfs.repositories.AdminAccountRepository;
+import fr.univcotedazur.simpletcfs.repositories.MemberRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopKeeperAccountRepository;
 import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,16 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
     private final ShopRepository shopRepository;
     private final ShopKeeperAccountRepository shopKeeperAccountRepository;
     private final ShopManager shopManager;
+    private MemberRepository memberRepository;
 
     @Autowired
-    public AdminManager(MailSender mailSender, AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager) {
+    public AdminManager(MailSender mailSender, AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager, MemberRepository memberRepository) {
         this.mailSender = mailSender;
         this.adminAccountRepository = adminAccountRepository;
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
         this.shopManager = shopManager;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -120,17 +123,17 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
     }
 
     @Override
-    public void sendSurvey(List<MemberAccount> receivers, String sender, LocalDate endDate, List<Question> questions) {
+    public void sendSurvey(String sender, LocalDate endDate, List<Question> questions) {
         Survey surveyToSend = new Survey(sender, endDate, questions);
-        if(!mailSender.sendSurvey(receivers, surveyToSend)){
+        if(!mailSender.sendSurvey(memberRepository.findAll(), surveyToSend)){
             System.out.println("Error while sending survey");
             throw new RuntimeException();
         }
     }
     @Override
-    public void sendMail(List<MemberAccount> receivers, String sender, String mailContent, String subject) {
+    public void sendMail(String sender, String mailContent, String subject) {
         Mail mailToSend = new Mail(sender, mailContent, subject);
-        if(!mailSender.sendMail(receivers, mailToSend)){
+        if(!mailSender.sendMail(memberRepository.findAll(), mailToSend)){
             System.out.println("Error while sending mail");
             throw new RuntimeException();
         }
