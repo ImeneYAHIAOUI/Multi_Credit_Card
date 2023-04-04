@@ -1,1 +1,1 @@
-docker build -t equipef/rust_mailService .
+docker build -t equipef/rust_mailservice .

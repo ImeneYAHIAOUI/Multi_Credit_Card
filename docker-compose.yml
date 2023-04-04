@@ -15,7 +15,7 @@ services:
       - bank-system
       - postgres
       - iswupls
-      - mailService
+      - mailservice
     ports:
       - "8080:8080"
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
@@ -55,9 +55,9 @@ services:
       - "8085:8085"
 
   # mail service rust external service
-  mailService:
+  mailservice:
     image: equipef/rust_mailservice
-    container_name: mailService
+    container_name: mailservice
     ports:
       - "8090:8090"
 
