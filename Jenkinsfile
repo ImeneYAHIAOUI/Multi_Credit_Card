@@ -59,10 +59,10 @@ pipeline {
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo 'Analyzing Backend:'
-                    sh 'mvn -f backend/pom.xml clean verify sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend'
+                    sh 'mvn -f backend/pom.xml clean verify sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-Backend -Pcoverage'
 
                     echo 'Analyzing CLI:'
-                    sh 'mvn -f cli/pom.xml clean verify sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI'
+                    sh 'mvn -f cli/pom.xml clean verify sonar:sonar -Dsonar.projectKey=DevOpsCodeAnalysis-CLI -Pcoverage'
                 }
             }
         }
@@ -90,7 +90,7 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    echo '{$DOCKER_USERNAME} logged in to DockerHub'
+                    echo '$DOCKER_USERNAME logged in to DockerHub'
 
                     echo 'Building Backend Container'
                     sh 'docker build -t sswaz/multicard-backend:latest -f backend/Dockerfile backend'
