@@ -14,10 +14,10 @@ function runCommand() {
 function assertEquals() {
   echo "$2" | grep -Eq "$1"
   if [ $? -eq 0 ]; then
-    echo " | ${GREEN}Passed${NC}\n"
+    printf " | ${GREEN}Passed${NC}\n"
     return 0
   else
-    echo " | ${RED}Failed${NC}\n"
+    printf " | ${RED}Failed${NC}\n"
     return 1
   fi
 }
@@ -69,53 +69,53 @@ expected="member { id=(.*), name=john smith, mail=john.doe@mail.com, password=wo
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test8: renew membership"
+printf "Test 8: renew membership"
 command="renew-membership ${memberId}"
 result=$(runCommand "$command")
 expected='404 : "{"id":0,"name":" ","mail":"","password":"","birthDate":"too early to renew","points":0,"balance":0.0,"status":null,"membershipCardNumber":null}"'
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test9: charge membership card"
+printf "Test 9: charge membership card"
 command="charge-membership-card ${memberId} 5.5 123456789896983"
 result=$(runCommand "$command")
 expected="Membership card charged"
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test10: get member information"
+printf "Test 10: get member information"
 result=$(runCommand "get-member-info $memberId")
 expected="member { id=(.*), name=john smith, mail=john.doe@mail.com, password=wordpass, birthDate=2000-09-26, membershipCardNumber=(.*), points=0, balance=5.5, status=REGULAR }"
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test11: delete member"
+printf "Test 11: delete member"
 result=$(runCommand "delete-member john.doe@mail.com")
 expected="Member deleted"
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test12: create member with underage birthdate"
+printf "Test 12: create member with underage birthdate"
 
 result=$(runCommand "register-member \"john doe\" john.doe@mail.com password 26/05/2015")
 expected='422 : "{"id":0,"name":"under age","mail":"","password":"","birthDate":"","points":0,"balance":0.0,"status":null,"membershipCardNumber":null}'
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test13: create member with invalid mail"
+printf "Test 13: create member with invalid mail"
 
 result=$(runCommand "register-member \"john doe\" john.doe.com password 26/05/1995")
 expected='422 : "{"error":"Cannot process Member information","details":"Validation failed for argument [0]*'
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test14: create member with invalid password"
+printf "Test 14: create member with invalid password"
 result=$(runCommand "register-member \"john doe\" john.doe@mail.com ps 26/05/2015")
 expected='422 : "{"error":"Cannot process Member information","details":"Validation failed for argument [0]*'
 assertEquals "$expected" "$result"
 globalResult+=($?)
 
-printf "Test15: create member with invalid birthdate"
+printf "Test 15: create member with invalid birthdate"
 result=$(runCommand "register-member \"john doe\" john.doe@mail.com password 45217")
 expected='422 : "{"error":"Cannot process Member information","details":"Validation failed for argument [0]*'
 assertEquals "$expected" "$result"
