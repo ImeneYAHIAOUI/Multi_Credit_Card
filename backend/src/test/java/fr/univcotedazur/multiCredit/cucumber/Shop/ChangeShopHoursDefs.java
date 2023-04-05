@@ -1,11 +1,11 @@
-package fr.univcotedazur.multiCredit.cucumber.Shop;
+package fr.univcotedazur.simpletcfs.cucumber.Shop;
 
-import fr.univcotedazur.multiCredit.components.ShopManager;
-import fr.univcotedazur.multiCredit.connectors.MailProxy;
-import fr.univcotedazur.multiCredit.entities.*;
-import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
-import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
-import fr.univcotedazur.multiCredit.repositories.ShopRepository;
+import fr.univcotedazur.simpletcfs.components.ShopManager;
+import fr.univcotedazur.simpletcfs.connectors.MailProxy;
+import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -37,36 +37,36 @@ public class ChangeShopHoursDefs {
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
         when(mailSender.sendMail(any(), any())).thenReturn(true);
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(10,00),LocalTime.of(18,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(10,00),LocalTime.of(18,00));
     }
     @When("The shop modifies its operating hours to be open monday between from {int} am and  {int} pm")
     public void the_shop_wants_to_change_the_shop_hours_for_monday(int open,int close) {
         when(mailSender.sendMail(any(), any())).thenReturn(true);
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(open,00),LocalTime.of(close+12,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(open,00),LocalTime.of(close+12,00));
     }
     @Then("the shop can change the shop hours for Monday")
     public void the_shop_can_change_the_shop_hours_for_monday() {
-        assertEquals(shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours(), LocalTime.of(8, 00));
-        assertEquals(shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours(), LocalTime.of(20, 00));
+        assertEquals(shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours(), LocalTime.of(8, 00));
+        assertEquals(shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours(), LocalTime.of(20, 00));
     }
     @When("The shop modifies its operating hours to be open monday between from {int} pm and  {int} am")
     public void the_shop_modifies_its_operating_hours_to_be_open_monday_between_from_3pm_and_am(int open,int close) {
         when(mailSender.sendMail(any(), any())).thenReturn(true);
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(open+12,00),LocalTime.of(close,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(open+12,00),LocalTime.of(close,00));
     }
     @Then("the shop cannot change its operating hours to be open monday between from {int} pm and  {int} am")
     public void the_shop_cannot_change_the_shop_hours_for_monday(int open,int close) {
-        assertNotEquals(shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours(), LocalTime.of(open, 00));
-        assertNotEquals(shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours(), LocalTime.of(close, 00));
+        assertNotEquals(shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours(), LocalTime.of(open, 00));
+        assertNotEquals(shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours(), LocalTime.of(close, 00));
     }
     @When("The shop include an additional workday")
     public void the_shop_include_an_additional_workday() {
-        shopManager.modifyPlanning(shop,WeekDay.Tuesday,LocalTime.of(9,00),LocalTime.of(11,00));
+        shopManager.modifyPlanning(shop,WeekDay.TUESDAY,LocalTime.of(9,00),LocalTime.of(11,00));
     }
     @Then("the shop can  include an additional workday")
     public void the_shop_can_include_an_additional_workday() {
-      assertEquals(shopManager.findPlanningByDay(shop,WeekDay.Tuesday).get().getOpeningHours(), LocalTime.of(9, 00));
-      assertEquals(shopManager.findPlanningByDay(shop,WeekDay.Tuesday).get().getClosingHours(), LocalTime.of(11, 00));
+      assertEquals(shopManager.findPlanningByDay(shop,WeekDay.TUESDAY).get().getOpeningHours(), LocalTime.of(9, 00));
+      assertEquals(shopManager.findPlanningByDay(shop,WeekDay.TUESDAY).get().getClosingHours(), LocalTime.of(11, 00));
     }
 
 

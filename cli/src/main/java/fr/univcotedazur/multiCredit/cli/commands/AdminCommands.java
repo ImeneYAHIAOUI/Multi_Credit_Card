@@ -28,9 +28,7 @@ import java.util.UUID;
 >>>>>>> Stashed changes:cli/src/main/java/fr/univcotedazur/multiCredit/cli/commands/AdminCommands.java
 @ShellComponent
 public class AdminCommands {
-
     public static final String BASE_URI = "/admin";
-
     @Autowired
     RestTemplate restTemplate;
     private final CliContext cliContext;
@@ -119,7 +117,7 @@ public class AdminCommands {
     ////////////////////////////////////////
     @ShellMethod("List all shopkeepers")
     public String shopKeepers() {
-        return cliContext.printAdminAccounts();
+        return cliContext.printShopKeepers();
     }
     @ShellMethod("Register a shop in the multi-credit backend (register SHOP_NAME SHOP_ADDRESS )")
     public String addShop(String name, String address) {

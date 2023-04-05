@@ -1,12 +1,12 @@
-package fr.univcotedazur.multiCredit.components;
+package fr.univcotedazur.simpletcfs.components;
 
-import fr.univcotedazur.multiCredit.entities.*;
-import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingGiftException;
-import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
-import fr.univcotedazur.multiCredit.interfaces.MailSender;
-import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
-import fr.univcotedazur.multiCredit.repositories.GiftRepository;
-import fr.univcotedazur.multiCredit.repositories.ShopRepository;
+import fr.univcotedazur.simpletcfs.entities.*;
+import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
+import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
+import fr.univcotedazur.simpletcfs.interfaces.MailSender;
+import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
+import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
+import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,75 +70,75 @@ public class ShopManagerTests {
     }
     @Test
     public void testModifyPlanning(){
-        shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(15,00));
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
+        shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(15,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         Planning planning =shop.getPlanningList()
                 .stream().filter(plan-> plan.getDayWorking()
-                .equals(WeekDay.Saturday)).findFirst().get();
+                .equals(WeekDay.SATURDAY)).findFirst().get();
         assertEquals(LocalTime.of(10,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(15,00), planning.getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Friday,LocalTime.of(11,00),LocalTime.of(16,00));
+        shopManager.modifyPlanning(shop,WeekDay.FRIDAY,LocalTime.of(11,00),LocalTime.of(16,00));
          planning =shop.getPlanningList()
                  .stream().filter(plan-> plan.getDayWorking()
-                .equals(WeekDay.Friday)).findFirst().get();
+                .equals(WeekDay.FRIDAY)).findFirst().get();
         assertEquals(LocalTime.of(11,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(16,00), planning.getClosingHours());
     }
     @Test
     public void testModifyPlanning2()  {
-        shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
+        shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(14,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertTrue(shop.getPlanningList()
                 .stream().filter(plan-> plan.getDayWorking()
-                .equals(WeekDay.Wednesday)).findFirst().isEmpty());
+                .equals(WeekDay.WEDNESDAY)).findFirst().isEmpty());
 
-        shopManager.modifyPlanning(shop,WeekDay.Wednesday,LocalTime.of(11,00),LocalTime.of(19,00));
+        shopManager.modifyPlanning(shop,WeekDay.WEDNESDAY,LocalTime.of(11,00),LocalTime.of(19,00));
         Planning planning =shop.getPlanningList()
                 .stream().filter(plan-> plan.getDayWorking()
-                .equals(WeekDay.Wednesday)).findFirst().get();
+                .equals(WeekDay.WEDNESDAY)).findFirst().get();
         assertEquals(LocalTime.of(11,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());
     }
     @Test
     public void testModifyPlanning3()  {
-        shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
+        shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(14,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
-        assertTrue(shopManager.findPlanningByDay(shop,WeekDay.Monday).isPresent());
-        Planning planning =shopManager.findPlanningByDay(shop,WeekDay.Monday).get();
+        assertTrue(shopManager.findPlanningByDay(shop,WeekDay.MONDAY).isPresent());
+        Planning planning =shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get();
         assertEquals(LocalTime.of(9,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Monday,null,null);
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,null,null);
         assertEquals(LocalTime.of(9,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(19,00),LocalTime.of(9,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(19,00),LocalTime.of(9,00));
         assertEquals(LocalTime.of(9,00), planning.getOpeningHours());
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());
     }
     @Test
     @Transactional
     public void testModifyPlanning4()  {
-        shopManager.modifyPlanning(shop,WeekDay.Saturday,LocalTime.of(10,00),LocalTime.of(14,00));
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(9,00),LocalTime.of(19,00));
+        shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(14,00));
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
-        assertTrue(shopManager.findPlanningByDay(shop,WeekDay.Monday).isPresent());
-        Planning planning =shopManager.findPlanningByDay(shop,WeekDay.Monday).get();
-        assertEquals(LocalTime.of(9,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
-        assertEquals(LocalTime.of(19,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Monday,null,LocalTime.of(20,00));
-        assertEquals(LocalTime.of(9,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
-        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(7,00),null);
-        assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
-        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Monday,LocalTime.of(21,00),null);
-        assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
-        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
-        shopManager.modifyPlanning(shop,WeekDay.Monday,null,LocalTime.of(5,00));
-        assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getOpeningHours());
-        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.Monday).get().getClosingHours());
+        assertTrue(shopManager.findPlanningByDay(shop,WeekDay.MONDAY).isPresent());
+        Planning planning =shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get();
+        assertEquals(LocalTime.of(9,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours());
+        assertEquals(LocalTime.of(19,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours());
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,null,LocalTime.of(20,00));
+        assertEquals(LocalTime.of(9,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours());
+        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours());
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(7,00),null);
+        assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours());
+        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours());
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(21,00),null);
+        assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours());
+        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours());
+        shopManager.modifyPlanning(shop,WeekDay.MONDAY,null,LocalTime.of(5,00));
+        assertEquals(LocalTime.of(7,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getOpeningHours());
+        assertEquals(LocalTime.of(20,00),shopManager.findPlanningByDay(shop,WeekDay.MONDAY).get().getClosingHours());
     }
 
 }

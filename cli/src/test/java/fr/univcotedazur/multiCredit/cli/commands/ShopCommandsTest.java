@@ -30,7 +30,6 @@ public class ShopCommandsTest {
     CliContext cliContext;
     @Autowired
     private MockRestServiceServer server;
-
     @Test
     public  void getShopTest()throws JsonProcessingException {
 
@@ -43,7 +42,6 @@ public class ShopCommandsTest {
         server.expect(requestTo(BASE_URI_SHOPS + "/" + savedshop.getId()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
-
         assertEquals("{\"id\":10,\"name\":\"sephsssdsora\",\"address\":\"adresse\"}", client.getShop(savedshop.getId()));
         server.verify();
     }
