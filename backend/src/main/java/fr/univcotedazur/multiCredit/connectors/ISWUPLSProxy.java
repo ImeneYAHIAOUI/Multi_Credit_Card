@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 @Component
@@ -24,6 +25,7 @@ public class ISWUPLSProxy implements ISWUPLS {
 
     @Override
     public boolean startParkingTimer(String carRegistrationNumber,int parkingSpotNumber) {
+
         try {
             ResponseEntity<ISWUPLSDTO> result = restTemplate.postForEntity(
                     iswuplsHostandPort + "/parking",

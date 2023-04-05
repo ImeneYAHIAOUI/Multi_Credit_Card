@@ -66,11 +66,8 @@ public class ParkingController {
             parkingManager.useParkingTime(memberAccount,parkingDTO.getCarRegistrationNumber(), parkingDTO.getParkingSpotNumber());
 
             ISWUPLSDTO iswuplsdto = parkingManager.getParkingInformation(parkingDTO.getCarRegistrationNumber())[0];
-            System.out.println(iswuplsdto.getParking_date_time());
-            LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(iswuplsdto.getParking_date_time()), TimeZone
-                    .getDefault().toZoneId());
-            LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochMilli(iswuplsdto.getParking_end_date_time()), TimeZone
-                    .getDefault().toZoneId());
+            LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochSecond(iswuplsdto.getParking_date_time()), TimeZone.getTimeZone("Europe/Paris").toZoneId());
+            LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochSecond(iswuplsdto.getParking_end_date_time()), TimeZone.getTimeZone("Europe/Paris").toZoneId());
             parkingDTO.setStartTime(start.toString());
             parkingDTO.setEndTime(end.toString());
             return ResponseEntity.status(HttpStatus.CREATED)

@@ -50,10 +50,11 @@ public class CliMember extends CliAccount{
 
     @Override
     public String toString() {
-        String str = "member :\nid="+getId()+"\nname=" + getName() + "\nmail=" + getMail() + "\npassword=" + getPassword() + "\nbirthDate=" + getBirthDate();
+        String str = "member { id="+getId()+", name=" + getName() + ", mail=" + getMail() + ", password=" + getPassword() + ", birthDate=" + getBirthDate();
         if(membershipCardNumber != null){
-            str += "\nmembershipCardNumber=" + membershipCardNumber+"\npoints=" + points + "\nbalance=" + balance + "\nstatus=" + status;
+            str += ", membershipCardNumber=" + membershipCardNumber+", points=" + points + ", balance=" + balance + ", status=" + status;
         }
+        str += " }";
         return str;
     }
 

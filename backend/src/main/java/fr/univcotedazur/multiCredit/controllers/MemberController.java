@@ -62,9 +62,9 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail()).orElse(null)));
         } catch (MissingInformationException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0,"missing information","","",""));
         } catch (UnderAgeException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).build();
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0,"under age","","",""));
         }
     }
 
@@ -127,7 +127,7 @@ public class MemberController {
     }
 
 
-    @PutMapping(path="archive",consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(path="archive")
     public ResponseEntity<String> archiveMember(@RequestBody @Valid String mail){
         mail  = mail.replaceAll("\"", "");
         MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
@@ -160,7 +160,7 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberDTO> getMemberByMail(@PathVariable("id") Long id) {
+    public ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") Long id) {
         MemberAccount memberAccount = memberManager.findById(id).orElse(null);
         if(memberAccount == null)
         {
