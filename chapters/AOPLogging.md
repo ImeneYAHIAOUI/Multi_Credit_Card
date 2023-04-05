@@ -85,7 +85,7 @@ More configuration options are available in a configuration file (and XML file n
     </root>
 
     <!-- LOG TCFS elements at TRACE level -->
-    <logger name="fr.univcotedazur.simpletcfs" level="trace" additivity="false">
+    <logger name="fr.univcotedazur.multiCredit" level="trace" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>
@@ -166,7 +166,7 @@ public class ControllerLogger {
         private static final Logger LOG = LoggerFactory.getLogger(ControllerLogger.class);
         private static final String PREFIX = "TCFS:Rest-Controller:";
 
-        @Pointcut("execution(public * fr.univcotedazur.simpletcfs.controllers..*(..))")
+        @Pointcut("execution(public * fr.univcotedazur.multiCredit.controllers..*(..))")
         private void allControllerMethods() {} // This enables to attach the pointcut to a method name we can reuse below
 
         @Before("allControllerMethods()")

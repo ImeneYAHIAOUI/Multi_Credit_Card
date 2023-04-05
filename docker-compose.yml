@@ -10,7 +10,7 @@ services:
       - ISWUPLS_WITH_PORT=iswupls:8085
       - MAILSERVICE_WITH_PORT=mailservice:8090
       - POSTGRES_HOST=postgres:5432
-    entrypoint: "bash -c '/opt/app/wait-for-it.sh $${POSTGRES_HOST} -- java -jar /opt/app/app.jar --bank.host.baseurl=http://$${BANK_WITH_PORT} --iswupls.host.baseurl=http://$${ISWUPLS_WITH_PORT}'"
+    entrypoint: "bash -c '/opt/app/wait-for-it.sh $${POSTGRES_HOST} -- java -jar /opt/app/app.jar --bank.host.baseurl=http://$${BANK_WITH_PORT} --iswupls.host.baseurl=http://$${ISWUPLS_WITH_PORT} ----mailproxy.host.baseurl=http://$${MAILSERVICE_WITH_PORT}'"
     depends_on:
       - bank-system
       - postgres
@@ -39,6 +39,7 @@ services:
       - tcf-server
     volumes:
       - ./cli/demo.txt:/opt/app/demo.txt
+      - ./end2endTests:/opt/app/end2endTests
     stdin_open: true
     tty: true
 
