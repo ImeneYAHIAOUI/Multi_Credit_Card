@@ -49,8 +49,6 @@ pipeline {
                 echo 'Testing Bank:'
                 sh 'npm --prefix bank test'
 
-                sh 'npm install socat -y'
-
                 echo 'Testing E2E:'
                 sh 'end2endTests/memberTest.sh'
             }
