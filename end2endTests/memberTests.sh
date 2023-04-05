@@ -27,7 +27,7 @@ function assertEquals(){
 
 
 #tests
-echo "Starting tests"
+echo "Starting member tests"
 
 echo "test 1: register member"
 result=$(runCommand "register-member \"john doe\" john.doe@mail.com password 26/05/1995")
