@@ -12,4 +12,5 @@ done
   echo "CLI has started!"
   printf '\n'
 
-./memberTests.sh
+./end2endTests/memberTests.sh
+./end2endTests/transcationTests.sh
