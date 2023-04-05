@@ -50,6 +50,21 @@ pipeline {
                 sh 'npm --prefix bank test'
             }
         }
+        stage('Test End to End') {
+            agent {
+                label 'Host'
+            }
+            steps {
+                echo 'Running End to End Tests...'
+
+                sh 'docker compose up --build'
+
+                echo 'Testing E2E:'
+                sh 'chmod +x end2endTests/main.sh && end2endTests/main.sh'
+
+                sh 'docker compose down'
+            }
+        }
         stage('Code Analysis') {
             when {
                 not {
@@ -104,21 +119,6 @@ pipeline {
                     echo 'Pushing CLI Container'
                     sh 'docker push sswaz/multicard-cli:latest'
                 }
-            }
-        }
-        stage('Test End to End') {
-            agent {
-                label 'Host'
-            }
-            steps {
-                echo 'Running End to End Tests...'
-
-                sh 'docker compose up -d --build'
-
-                echo 'Testing E2E:'
-                sh 'chmod +x end2endTests/main.sh && end2endTests/main.sh'
-
-                sh 'docker compose down'
             }
         }
     }
