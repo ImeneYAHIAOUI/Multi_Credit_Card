@@ -57,12 +57,12 @@ pipeline {
             steps {
                 echo 'Running End to End Tests...'
 
-                sh 'docker compose up --build'
+                sh 'docker-compose up -d --build'
 
                 echo 'Testing E2E:'
                 sh 'chmod +x end2endTests/main.sh && end2endTests/main.sh'
 
-                sh 'docker compose down'
+                sh 'docker-compose down'
             }
         }
         stage('Code Analysis') {
