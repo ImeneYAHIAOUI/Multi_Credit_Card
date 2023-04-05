@@ -28,7 +28,7 @@ async fn main() -> io::Result<()> {
             .service(mail::delete)
 
     })
-        .bind("localhost:8090")?
+        .bind("0.0.0.0:8090")?
         .run()
         .await
 

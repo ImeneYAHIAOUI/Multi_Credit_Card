@@ -29,7 +29,7 @@ async fn main() -> io::Result<()> {
 
 
     })
-        .bind("localhost:8085")?
+        .bind("0.0.0.0:8085")?
         .run()
         .await
 
