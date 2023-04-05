@@ -79,12 +79,14 @@ public class ShopController {
         if (openingHours != null && closingHours!= null && openingHours.isAfter(closingHours)) {
             return ResponseEntity.badRequest().body("Invalid opening/closing hours parameters");
         }
-        shopManager.modifyPlanning(shop.get(), WeekDay.valueOf(planning.getDayWorking()), openingHours, closingHours);
+        System.out.println("======================="+planning.getDayWorking());
+        System.out.println("======================="+ WeekDay.valueOf(planning.getDayWorking().toUpperCase()));
+
+        shopManager.modifyPlanning(shop.get(), WeekDay.valueOf(planning.getDayWorking().toUpperCase()), openingHours, closingHours);
         return ResponseEntity.ok("Shop planning for " + planning.getDayWorking() + " updated successfully");
     }
     @GetMapping("/shopKeepers/{shopKeeperId}")
     public ResponseEntity<String> getShopKeeperById(@PathVariable("shopKeeperId") Long shopKeepersId) {
-        System.out.println("heerreeeeeeeeeeeeee"+shopKeepersId);
         Optional<ShopKeeperAccount> shop = shopManager.findShopkeeperAccountById(shopKeepersId);
         if(shop.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop keeper not found");

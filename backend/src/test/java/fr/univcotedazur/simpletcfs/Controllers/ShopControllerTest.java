@@ -167,8 +167,6 @@ public class ShopControllerTest {
             when(mailSender.sendMail(any(), any())).thenReturn(true);
 
             PlanningDTO planningDTO=new PlanningDTO();
-
-
             mockMvc.perform(MockMvcRequestBuilders.put(ShopController.BASE_URI + "/1/planning")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(planningDTO)))
@@ -191,7 +189,7 @@ public class ShopControllerTest {
                             .content(objectMapper.writeValueAsString(planningDTO)))
                     .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-            planningDTO.setDayWorking("Monday");
+            planningDTO.setDayWorking("MONDAY");
             planningDTO.setClosingHours("08:00");
             planningDTO.setOpeningHours("10:00");
             mockMvc.perform(MockMvcRequestBuilders.put(ShopController.BASE_URI + "/"+savedshop.getId()+"/planning")

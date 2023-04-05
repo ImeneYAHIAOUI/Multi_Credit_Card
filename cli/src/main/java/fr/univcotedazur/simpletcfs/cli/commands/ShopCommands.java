@@ -18,19 +18,13 @@ import java.util.Map;
 @ShellComponent
 public class ShopCommands {
     public static final String BASE_URI = "/shops";
-    public static final String SHOPKEEPER_BASE_URI = "/shopKeepers";
-
     @Autowired
     RestTemplate restTemplate;
-
     @Autowired
     private final CliContext cliContext;
-
     public ShopCommands(CliContext cliContext) {
         this.cliContext = cliContext;
     }
-
-
     @ShellMethod("update shop address (update SHOP_id SHOP_ADDRESS )")
     public String updateShopAddress( Long id, String address) {
         if (id < 0) {
