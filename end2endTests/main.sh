@@ -1,7 +1,5 @@
 #!/bin/bash
 
-apt install socat -y
-
 printf '\n'
 waitFor="Started CliApplication in"
 while ! docker inspect -f '{{.State.Status}}' cli | grep -q "running";
