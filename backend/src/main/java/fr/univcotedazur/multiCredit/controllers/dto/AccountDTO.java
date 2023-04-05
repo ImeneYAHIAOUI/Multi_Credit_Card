@@ -29,7 +29,7 @@ public class AccountDTO {
 
     private String password;
 
-    @NotEmpty(message = "BirthDate should not be empty")
+    @Pattern(regexp = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/((19|20)\\d\\d)$", message = "birth date should be valid")
 
     private String birthDate;
 

@@ -1,1 +1,0 @@
-register-member "john doe" "john.doe@mail.com" "password" "26/05/1995"

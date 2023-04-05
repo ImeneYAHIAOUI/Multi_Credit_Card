@@ -56,7 +56,7 @@ public class MemberCommands {
         return "Member archived";
     }
 
-    @ShellMethod("archive a member(archive-member MEMBER_MAIL)")
+    @ShellMethod("restore a member(archive-member MEMBER_MAIL)")
     public String restoreMember(String mail){
         restTemplate.put(BASE_URI + "/restore",mail);
         return "Member restored";
@@ -91,7 +91,7 @@ public class MemberCommands {
 
     @ShellMethod("renew membership (renew-membership id)")
     public CliMember renewMembership(long id) {
-        CliMember res = restTemplate.postForObject(BASE_URI + "/ /"+id, null, CliMember.class);
+        CliMember res = restTemplate.postForObject(BASE_URI + "/renew/"+id, null, CliMember.class);
         return res;
     }
 
@@ -102,7 +102,7 @@ public class MemberCommands {
     }
 
     @ShellMethod("charge membership card: (charge-membership-card MEMBER_ID AMOUNT CREDIT_CARD_NUMBER)")
-    public String chargeMembershipCard(long member, int amount, String CreditCardNumber) {
+    public String chargeMembershipCard(long member, double amount, String CreditCardNumber) {
         restTemplate.put(BASE_URI + "/charge", new CliChargeCard(member, amount, CreditCardNumber));
         return "Membership card charged";
     }

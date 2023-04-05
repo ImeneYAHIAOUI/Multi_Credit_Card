@@ -227,7 +227,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping(path="/renew/{id}",consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path="/renew/{id}")
     public ResponseEntity<MemberDTO> renewAccount(@PathVariable("id") Long id)
     {
         MemberAccount memberAccount = memberManager.findById(id).orElse(null);
