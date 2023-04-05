@@ -93,13 +93,13 @@ pipeline {
                     echo '{$DOCKER_USERNAME} logged in to DockerHub'
 
                     echo 'Building Backend Container'
-                    sh 'docker build -t sswaz/multicard-backend:latest -f project/backend/Dockerfile backend'
+                    sh 'docker build -t sswaz/multicard-backend:latest -f backend/Dockerfile backend'
 
                     echo 'Pushing Backend Container'
                     sh 'docker push sswaz/multicard-backend:latest'
 
                     echo 'Building CLI Container'
-                    sh 'docker build -t sswaz/multicard-cli:latest -f project/cli/Dockerfile cli'
+                    sh 'docker build -t sswaz/multicard-cli:latest -f cli/Dockerfile cli'
 
                     echo 'Pushing CLI Container'
                     sh 'docker push sswaz/multicard-cli:latest'
