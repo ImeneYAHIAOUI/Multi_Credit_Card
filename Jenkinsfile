@@ -57,7 +57,7 @@ pipeline {
             steps {
                 echo 'Running End to End Tests...'
 
-                sh 'chmod +x ./**/*.sh'
+                sh 'chmod +x ./*.sh && chmod +x ./**/*.sh'
                 sh './build-all.sh'
 
                 sh 'docker-compose up -d --build'
