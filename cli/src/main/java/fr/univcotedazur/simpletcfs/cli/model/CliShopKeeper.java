@@ -15,6 +15,5 @@ public class CliShopKeeper  extends CliAccount{
     public String toString() {
         return "Shop id : "+ShopId +", name : "+this.getName()+", mail : "+getMail()
         +", birthDate : "+getBirthDate();
-
     }
 }

@@ -38,6 +38,18 @@ public class CliContext {
                 .map(key -> key + "=" + adminAccounts.get(key))
                 .collect(Collectors.joining(", ", "{", "}"));
     }
+    public String printShops(){
+
+        return shops.keySet().stream()
+                .map(key -> key + "=" + shops.get(key))
+                .collect(Collectors.joining(", ", "{", "}"));
+    }
+    public String printShopKeepers(){
+
+        return shopKeepers.keySet().stream()
+                .map(key -> key + "=" + shopKeepers.get(key))
+                .collect(Collectors.joining(", ", "{", "}"));
+    }
     public Map<String, CliShop> getShops() {
         return shops;
     }
