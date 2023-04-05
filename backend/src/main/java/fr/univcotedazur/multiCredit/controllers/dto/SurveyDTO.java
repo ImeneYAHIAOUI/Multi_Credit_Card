@@ -1,6 +1,6 @@
-package fr.univcotedazur.simpletcfs.controllers.dto;
+package fr.univcotedazur.multiCredit.controllers.dto;
 
-import fr.univcotedazur.simpletcfs.entities.Question;
+import fr.univcotedazur.multiCredit.entities.Question;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package fr.univcotedazur.simpletcfs.controllers.dto;
+package fr.univcotedazur.multiCredit.controllers.dto;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

@@ -1,11 +1,11 @@
-package fr.univcotedazur.simpletcfs.cucumber.Shop;
+package fr.univcotedazur.multiCredit.cucumber.Shop;
 
-import fr.univcotedazur.simpletcfs.components.ShopManager;
-import fr.univcotedazur.simpletcfs.connectors.MailProxy;
-import fr.univcotedazur.simpletcfs.entities.*;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
-import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
+import fr.univcotedazur.multiCredit.components.ShopManager;
+import fr.univcotedazur.multiCredit.connectors.MailProxy;
+import fr.univcotedazur.multiCredit.entities.*;
+import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
+import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
+import fr.univcotedazur.multiCredit.repositories.ShopRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;

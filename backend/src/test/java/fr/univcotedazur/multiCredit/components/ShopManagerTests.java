@@ -1,12 +1,12 @@
-package fr.univcotedazur.simpletcfs.components;
+package fr.univcotedazur.multiCredit.components;
 
-import fr.univcotedazur.simpletcfs.entities.*;
-import fr.univcotedazur.simpletcfs.exceptions.AlreadyExistingGiftException;
-import fr.univcotedazur.simpletcfs.exceptions.MissingInformationException;
-import fr.univcotedazur.simpletcfs.interfaces.MailSender;
-import fr.univcotedazur.simpletcfs.interfaces.ShopRegistration;
-import fr.univcotedazur.simpletcfs.repositories.GiftRepository;
-import fr.univcotedazur.simpletcfs.repositories.ShopRepository;
+import fr.univcotedazur.multiCredit.entities.*;
+import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingGiftException;
+import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
+import fr.univcotedazur.multiCredit.interfaces.MailSender;
+import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
+import fr.univcotedazur.multiCredit.repositories.GiftRepository;
+import fr.univcotedazur.multiCredit.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package fr.univcotedazur.simpletcfs.cli.model;
+package fr.univcotedazur.multiCredit.cli.model;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,4 +1,4 @@
-package fr.univcotedazur.simpletcfs.cli.model;
+package fr.univcotedazur.multiCredit.cli.model;
 public class CliMail {
     private String sender;
     private String mailContent;

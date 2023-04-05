@@ -1,14 +1,12 @@
 package fr.univcotedazur.multiCredit.cli;
 
-<<<<<<< Updated upstream:cli/src/main/java/fr/univcotedazur/simpletcfs/cli/CliContext.java
-import fr.univcotedazur.simpletcfs.cli.model.*;
 import org.springframework.context.annotation.Bean;
-=======
 import fr.univcotedazur.multiCredit.cli.model.CliAdmin;
 import fr.univcotedazur.multiCredit.cli.model.CliMember;
 import fr.univcotedazur.multiCredit.cli.model.CliShop;
 import fr.univcotedazur.multiCredit.cli.model.CliShopKeeper;
->>>>>>> Stashed changes:cli/src/main/java/fr/univcotedazur/multiCredit/cli/CliContext.java
+import fr.univcotedazur.multiCredit.cli.model.CliMail;
+import fr.univcotedazur.multiCredit.cli.model.CliSurvey;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

@@ -1,14 +1,7 @@
 package fr.univcotedazur.multiCredit.cli.commands;
 
-<<<<<<< Updated upstream:cli/src/main/java/fr/univcotedazur/simpletcfs/cli/commands/AdminCommands.java
-import fr.univcotedazur.simpletcfs.cli.CliContext;
-import fr.univcotedazur.simpletcfs.cli.model.*;
-=======
 import fr.univcotedazur.multiCredit.cli.CliContext;
-import fr.univcotedazur.multiCredit.cli.model.CliAdmin;
-import fr.univcotedazur.multiCredit.cli.model.CliShop;
-import fr.univcotedazur.multiCredit.cli.model.CliShopKeeper;
->>>>>>> Stashed changes:cli/src/main/java/fr/univcotedazur/multiCredit/cli/commands/AdminCommands.java
+import fr.univcotedazur.multiCredit.cli.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -19,13 +12,10 @@ import org.springframework.shell.standard.ShellOption;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-<<<<<<< Updated upstream:cli/src/main/java/fr/univcotedazur/simpletcfs/cli/commands/AdminCommands.java
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-=======
->>>>>>> Stashed changes:cli/src/main/java/fr/univcotedazur/multiCredit/cli/commands/AdminCommands.java
 @ShellComponent
 public class AdminCommands {
     public static final String BASE_URI = "/admin";
