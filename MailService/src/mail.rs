@@ -22,6 +22,7 @@ use uuid::Uuid;
 
 lazy_static! {
     static ref MAILSERVICE: Mutex<HashMap<String, MailService >> = Mutex::new(HashMap::new());
+    static ref SURVEYSERVICE: Mutex<HashMap<String, SurveyService >> = Mutex::new(HashMap::new());
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -29,33 +30,72 @@ pub struct MailService {
     pub id: String,
     pub sender: String,
     pub receivers: Vec<String>,
-    pub subject: String
+    pub subject: String,
+    pub mail_content: String
 }
 
 impl MailService {
-    pub fn new(sender: String, receivers: Vec<String>, subject: String) -> Self {
+    pub fn new(sender: String, receivers: Vec<String>, subject: String, mail_content: String) -> Self {
         Self {
-            id: Uuid::new_v4().to_string(),
+            id : Uuid::new_v4().to_string(),
             sender,
             receivers,
-            subject
+            subject,
+            mail_content
+        }
+    }
+
+}#[derive(Debug, Serialize, Deserialize, Clone)]
+
+pub struct SurveyService {
+    pub id: String,
+    pub sender: String,
+    pub receivers: Vec<String>,
+    pub questions: Vec<String>,
+}
+
+impl SurveyService {
+    pub fn new(sender: String, receivers: Vec<String>, questions: Vec<String>) -> Self {
+        Self {
+            id:Uuid::new_v4().to_string(),
+            sender,
+            receivers,
+            questions
         }
     }
 }
+
+
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct MailSenderRequest {
     pub sender: Option<String>,
     pub receivers: Option<Vec<String>>,
     pub subject: Option<String>,
-
+    pub mail_content: Option<String>
 }
 
 impl MailSenderRequest {
     pub fn to_mail_sender(&self) -> Option<MailService> {
-        match (self.sender.clone(), self.receivers.clone(), self.subject.clone()) {
-            (Some(sender), Some(receivers), Some(subject)) => {
-                Some(MailService::new(sender, receivers, subject))
+        match (self.sender.clone(), self.receivers.clone(), self.subject.clone(), self.mail_content.clone()) {
+            (Some(sender), Some(receivers), Some(subject), Some(mail_content)) => {
+                Some(MailService::new(sender, receivers, subject, mail_content))
+            }
+            _ => None,
+        }
+    }
+}#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct SurveySenderRequest {
+    pub sender: Option<String>,
+    pub receivers: Option<Vec<String>>,
+    pub questions: Option<Vec<String>>
+}
+
+impl SurveySenderRequest {
+    pub fn to_survey_sender(&self) -> Option<SurveyService> {
+        match (self.sender.clone(), self.receivers.clone(), self.questions.clone()) {
+            (Some(sender), Some(receivers), Some(questions)) => {
+                Some(SurveyService::new(sender, receivers, questions))
             }
             _ => None,
         }
@@ -67,6 +107,7 @@ pub enum MailError {
     MissingSender,
     MissingReceivers,
     MissingSubject,
+    MissingMailContent,
     MailCreationFailure,
 }
 
@@ -74,9 +115,33 @@ impl ResponseError for MailError {
     fn status_code(&self) -> StatusCode {
         match self {
             MailError::MissingReceivers => StatusCode::NOT_FOUND,
-            MailError::MissingSubject => StatusCode::NOT_FOUND,
             MailError::MissingSender => StatusCode::NOT_FOUND,
+            MailError::MissingSubject => StatusCode::NOT_FOUND,
+            MailError::MissingMailContent => StatusCode::NOT_FOUND,
             MailError::MailCreationFailure => StatusCode::BAD_REQUEST
+        }
+    }
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::build(self.status_code())
+            .content_type("application/json")
+            .body(self.to_string())
+    }
+
+}#[derive(Debug, Display)]
+pub enum SurveyError {
+    MissingSender,
+    MissingReceivers,
+    MissingQuestions,
+    SurveyCreationFailure,
+}
+
+impl ResponseError for SurveyError {
+    fn status_code(&self) -> StatusCode {
+        match self {
+            SurveyError::MissingReceivers => StatusCode::NOT_FOUND,
+            SurveyError::MissingSender => StatusCode::NOT_FOUND,
+            SurveyError::MissingQuestions => StatusCode::NOT_FOUND,
+            SurveyError::SurveyCreationFailure => StatusCode::BAD_REQUEST
         }
     }
     fn error_response(&self) -> HttpResponse {
@@ -86,13 +151,14 @@ impl ResponseError for MailError {
     }
 }
 
-#[post("/mail")]
-pub async fn create_mail(request: Json<MailSenderRequest>)
-                         -> Result<Json<MailService>, MailError>{
+#[post("/admin/mail")]
+pub async fn send_mail(request: Json<MailSenderRequest>)
+                       -> Result<Json<MailService>, MailError>{
     let mail_sender_request = MailSenderRequest {
         sender: request.sender.clone(),
         receivers: request.receivers.clone(),
         subject: request.subject.clone(),
+        mail_content: request.mail_content.clone()
     };
     let mail_sender_option = mail_sender_request.to_mail_sender();
     match mail_sender_option {
@@ -101,6 +167,24 @@ pub async fn create_mail(request: Json<MailSenderRequest>)
             Ok(Json(mail))
         }
         None => Err(MailError::MailCreationFailure)
+    }
+}
+
+#[post("/admin/survey")]
+pub async fn send_survey(request: Json<SurveySenderRequest>)
+                         -> Result<Json<SurveyService>, SurveyError>{
+    let survey_sender_request = SurveySenderRequest {
+        sender: request.sender.clone(),
+        receivers: request.receivers.clone(),
+        questions: request.questions.clone()
+    };
+    let survey_sender_option = survey_sender_request.to_survey_sender();
+    match survey_sender_option {
+        Some(survey) => {
+            SURVEYSERVICE.lock().unwrap().insert(survey.id.clone(), survey.clone());
+            Ok(Json(survey))
+        }
+        None => Err(SurveyError::SurveyCreationFailure)
     }
 }
 

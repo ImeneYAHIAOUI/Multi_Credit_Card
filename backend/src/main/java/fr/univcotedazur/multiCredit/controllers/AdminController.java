@@ -82,7 +82,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping(path="/mails/send", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path="/mail", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> sendMail(@RequestBody @Valid MailDTO mailDTO){
         try {
             adminManager.sendMail(mailDTO.getSender(),mailDTO.getSubject(),mailDTO.getMailContent());
@@ -92,12 +92,10 @@ public class AdminController {
         }
     }
 
-    @PostMapping(path="/surveys/send", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path="/survey", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> sendSurvey(@RequestBody @Valid SurveyDTO surveyDTO){
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-            LocalDate endDate=LocalDate.parse(surveyDTO.getEndDate(),formatter);
-            adminManager.sendSurvey(surveyDTO.getSender(), endDate, surveyDTO.getQuestions());
+            adminManager.sendSurvey(surveyDTO.getSender(), surveyDTO.getQuestions());
             return ResponseEntity.status(HttpStatus.OK).body("Survey sent successfully");
         }catch (ResourceAccessException e){
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Survey service unavailable");
