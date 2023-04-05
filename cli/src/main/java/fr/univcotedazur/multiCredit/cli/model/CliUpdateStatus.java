@@ -24,4 +24,10 @@ public class CliUpdateStatus {
     public void setStatus(String status) {
         this.status = status;
     }
+    public String toString() {
+        return "CliUpdateStatus{" +
+                "mail='" + mail + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
