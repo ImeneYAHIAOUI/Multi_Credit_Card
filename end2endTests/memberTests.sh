@@ -5,7 +5,6 @@ NC='\033[0m'
 GREEN='\033[0;32m'
 BOLD='\033[1m'
 
-
 function runCommand() {
     echo "$1" | socat - exec:"docker attach cli",pty
     sleep 1

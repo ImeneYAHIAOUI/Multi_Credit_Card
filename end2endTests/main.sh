@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get install socat -y
+apt install socat -y
 
 printf '\n'
 waitFor="Started CliApplication in"
