@@ -4,7 +4,7 @@ apt-get install socat -y
 
 printf '\n'
 waitFor="Started CliApplication in"
-while ! docker logs cli --tail=1 | grep -q "$waitFor";
+while ! docker inspect -f '{{.State.Status}}' cli | grep -q "running";
  do
       echo "Waiting for CLI to start ..."
       sleep 5
