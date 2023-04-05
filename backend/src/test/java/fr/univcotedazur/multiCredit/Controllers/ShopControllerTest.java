@@ -58,7 +58,7 @@ public class ShopControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isConflict());
     }
     @Test
-    public void registerShopTest2() throws Exception {
+     void registerShopTest2() throws Exception {
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress(null);
@@ -107,7 +107,7 @@ public class ShopControllerTest {
     }
 
     @Test
-    public void updateShopAddressTest()throws Exception{
+     void updateShopAddressTest()throws Exception{
         mockMvc.perform(MockMvcRequestBuilders.put(ShopController.BASE_URI + "/1/address")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString("address")))
@@ -134,7 +134,7 @@ public class ShopControllerTest {
                         .contentType(MediaType.APPLICATION_JSON));
     }
     @Test
-    public void deleteShopByIdTest()throws Exception{
+     void deleteShopByIdTest()throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adress");

@@ -86,7 +86,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void getTransactionsTest() throws Exception {
+     void getTransactionsTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(TransactionController.BASE_URI)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -95,7 +95,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointsMemberNotFound() throws Exception {
+     void UsePointsMemberNotFound() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0,LocalDate.now().format(formatter),2L,1L,0,1L);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointsShopNotFound() throws Exception
+     void UsePointsShopNotFound() throws Exception
     {
         UsePointDTO usePointDTO = new UsePointDTO(0,LocalDate.now().format(formatter),1L,2L,0,1L);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
@@ -118,7 +118,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointsGiftNotFound() throws Exception {
+     void UsePointsGiftNotFound() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 3L);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +129,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointWithoutPurchases() throws Exception {
+     void UsePointWithoutPurchases() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0,LocalDate.now().format(formatter),1L,1L,0,1L);
         memberAccount.setPoints(100);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
@@ -144,7 +144,7 @@ public class TransactionControllerTest {
 
 
     @Test
-    public void UsePointsInsuffisantePoints() throws Exception {
+     void UsePointsInsuffisantePoints() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 1L);
         Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
         purchase.setShop(shop);
@@ -158,7 +158,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointsNotVFP() throws Exception {
+     void UsePointsNotVFP() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 2L);
         memberAccount.setPoints(100);
         Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
@@ -173,7 +173,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointsRegularGift() throws Exception {
+     void UsePointsRegularGift() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 1L);
         memberAccount.setPoints(100);
         Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
@@ -188,7 +188,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void UsePointsVFPGift() throws Exception {
+     void UsePointsVFPGift() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 2L);
         memberAccount.setPoints(100);
         Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
@@ -204,7 +204,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void PurchaseWithCreditCardTest() throws Exception
+     void PurchaseWithCreditCardTest() throws Exception
     {
         long[] items = {product1.getId(),product2.getId()};
         int[] quantities = {2,4};
@@ -218,7 +218,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void PurchaseWithCash() throws Exception
+     void PurchaseWithCash() throws Exception
     {
         long[] items = {product1.getId(),product2.getId()};
         int[] quantities = {2,4};
@@ -232,7 +232,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void PurchaseWithMembershipCard() throws Exception {
+     void PurchaseWithMembershipCard() throws Exception {
         long[] items = {product1.getId(),product2.getId()};
         int[] quantities = {2,4};
         PurchaseDTO purchaseDTO = new PurchaseDTO(0l,LocalDate.now().format(formatter),1,1,0,0,null,items,quantities,"REGULAR");
@@ -253,10 +253,4 @@ public class TransactionControllerTest {
 
 
     }
-
-
-
-
-
-
 }

@@ -68,7 +68,7 @@ public class MemberManagerTests {
         assertThrows(UnderAgeException.class, () -> memberHandler.createAccount("John Doe", "John2.Doe@mail.com", "password", LocalDate.parse("11/04/2010", formatter)));
     }
     @Test
-    public void testArchiveAccount() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+     void testArchiveAccount() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account = new MemberAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
         assertThrows( AccountNotFoundException.class, () -> memberHandler.archiveAccount(account));
@@ -84,7 +84,7 @@ public class MemberManagerTests {
         assertEquals(account2.getStatus(), AccountStatus.EXPIRED);
     }
     @Test
-    public void testRestoreAccount() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+     void testRestoreAccount() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account = new MemberAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
         assertThrows( AccountNotFoundException.class, () -> memberHandler.restoreAccount(account));
@@ -101,7 +101,7 @@ public class MemberManagerTests {
         assertEquals(account2.getStatus(), AccountStatus.REGULAR);
     }
     @Test
-    public void testDeleteAccount() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException, AccountNotFoundException, AccountNotFoundException {
+     void testDeleteAccount() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException, AccountNotFoundException, AccountNotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account;
         try {

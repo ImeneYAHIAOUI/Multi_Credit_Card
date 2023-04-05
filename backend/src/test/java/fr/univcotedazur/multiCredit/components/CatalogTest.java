@@ -68,7 +68,7 @@ public class CatalogTest {
         gift2=new Gift(10,"cookie", AccountStatus.VFP);
     }
     @Test
-    public  void addGiftTest()throws AlreadyExistingGiftException {
+      void addGiftTest()throws AlreadyExistingGiftException {
         assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
         assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
         assertTrue(shop.getGiftList().contains(gift1));
@@ -81,7 +81,7 @@ public class CatalogTest {
         assertEquals(shop, gift2.getShop());
     }
     @Test
-    public  void addGiftTest2()throws AlreadyExistingGiftException {
+      void addGiftTest2()throws AlreadyExistingGiftException {
         assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
         assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
         assertTrue(shop.getGiftList().contains(gift1));
@@ -89,7 +89,7 @@ public class CatalogTest {
         assertThrows(AlreadyExistingGiftException.class,()->catalog.addGift(shop,gift));
     }
     @Test
-    public  void RemoveGiftTest() {
+      void RemoveGiftTest() {
         assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
         assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
         assertTrue(shop.getGiftList().contains(gift1));
@@ -97,7 +97,7 @@ public class CatalogTest {
         assertThrows(GiftNotFoundException.class,()->catalog.removeGift(shop,gift2));
     }
     @Test
-    public  void RemoveGiftTest1()throws GiftNotFoundException {
+      void RemoveGiftTest1()throws GiftNotFoundException {
         assertTrue(giftRepository.findById(gift.getGiftId()).isPresent());
         assertTrue(giftRepository.findById(gift1.getGiftId()).isPresent());
         assertTrue(shop.getGiftList().contains(gift1));
@@ -107,7 +107,7 @@ public class CatalogTest {
         assertFalse(shop.getGiftList().contains(gift));
     }
     @Test
-    public void  editTest() throws AlreadyExistingProductException, ProductNotFoundException {
+     void  editTest() throws AlreadyExistingProductException, ProductNotFoundException {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
@@ -118,7 +118,7 @@ public class CatalogTest {
         assertTrue(catalog.findProductById(product.getId()).isEmpty());
     }
     @Test
-    public void  editTest1() throws AlreadyExistingProductException, ProductNotFoundException {
+     void  editTest1() throws AlreadyExistingProductException, ProductNotFoundException {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
@@ -132,7 +132,7 @@ public class CatalogTest {
 
     }
     @Test
-    public void editShopCatalogTest() throws AlreadyExistingProductException, ProductNotFoundException{
+     void editShopCatalogTest() throws AlreadyExistingProductException, ProductNotFoundException{
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());
@@ -149,7 +149,7 @@ public class CatalogTest {
         assertTrue(catalog.findProductById(product.getId()).isEmpty());
     }
     @Test
-    public void editShopCatalogTest1() throws AlreadyExistingProductException, ProductNotFoundException {
+     void editShopCatalogTest1() throws AlreadyExistingProductException, ProductNotFoundException {
         assertTrue(catalog.findProductById(product.getId()).isPresent());
         assertTrue(catalog.findProductById(product1.getId()).isPresent());
         assertTrue(catalog.findProductById(product2.getId()).isPresent());

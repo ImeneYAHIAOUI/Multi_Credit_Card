@@ -51,7 +51,7 @@ public class MemberControllerTests {
     }
 
     @Test
-    public void validMemberTest() throws Exception {
+     void validMemberTest() throws Exception {
         MemberDTO validMember = new MemberDTO(0,"John Doe", "John.Doe@mail.com", "password", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ public class MemberControllerTests {
     }
 
     @Test
-    public void inValidMemberTest() throws Exception {
+     void inValidMemberTest() throws Exception {
         MemberDTO badMailAddress = new MemberDTO(0,"John Doe", "John.doe", "password", "11/04/2001");
         mockMvc.perform(MockMvcRequestBuilders.post(MemberController.BASE_URI + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -147,7 +147,7 @@ public class MemberControllerTests {
     }
 
     @Test
-    public void restoreAccountTests() throws Exception {
+     void restoreAccountTests() throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         String mail = "John.Doe@mail.com";
         memberHandler.createAccount("John Doe", mail, "password", LocalDate.parse("11/04/2001",formatter));

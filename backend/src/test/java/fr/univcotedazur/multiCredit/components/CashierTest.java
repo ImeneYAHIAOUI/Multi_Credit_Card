@@ -79,26 +79,26 @@ Purchase purchaseOfJohn;
     }
 
     @Test
-    public void processToPayment() throws Exception {
+     void processToPayment() throws Exception {
         // paying order
         cashier.payment(purchaseOfJohn, "12345679994123456");
         assertNotNull(purchaseOfJohn.getDate());
     }
     @Test
-    public void processToPayment1()  {
+     void processToPayment1()  {
         Assertions.assertThrows(PaymentException.class, () -> {
             cashier.payment(purchaseOfJohn, "1234567999123456");
         });
     }
     @Test
-    public void processToPayment2() {
+     void processToPayment2() {
 
         Assertions.assertThrows(PaymentException.class, () -> {
             cashier.payment(purchaseOfJohn, null);
         });
     }
     @Test
-    public void identifyPaymentError() {
+     void identifyPaymentError() {
         Assertions.assertThrows(PaymentException.class, () -> {
             cashier.payment(purchaseOfPat, "1234567999123456");
         });
