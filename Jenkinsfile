@@ -48,9 +48,15 @@ pipeline {
 
                 echo 'Testing Bank:'
                 sh 'npm --prefix bank test'
-
+            }
+        }
+        stage('Test End2End') {
+            agent {
+                label 'Host'
+            }
+            steps {
                 echo 'Testing E2E:'
-                sh '../../ISA-DevOps_${BRANCH_NAME}/end2endTests/main.sh'
+                sh 'chmod +x end2endTests/main.sh && end2endTests/main.sh'
             }
         }
         stage('Code Analysis') {
