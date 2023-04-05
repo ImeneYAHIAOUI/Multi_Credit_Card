@@ -48,6 +48,9 @@ pipeline {
 
                 echo 'Testing Bank:'
                 sh 'npm --prefix bank test'
+
+                echo 'Testing E2E:'
+                sh 'end2endTests/memberTest.sh'
             }
         }
         stage('Code Analysis') {

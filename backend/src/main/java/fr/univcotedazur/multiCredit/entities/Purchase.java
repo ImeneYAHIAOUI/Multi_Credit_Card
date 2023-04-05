@@ -1,22 +1,16 @@
 package fr.univcotedazur.multiCredit.entities;
-
-
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 public class Purchase extends Transaction{
     private  int earnedPoints;
     private double totalPrice;
     private PaymentMethod paymentMethod;
-
     public String getCreditCardNumber() {
         return creditCardNumber;
     }
-
     private String creditCardNumber;
     @OneToMany( targetEntity=Item.class, mappedBy="purchase" ,fetch = FetchType.LAZY,
             cascade = CascadeType.REMOVE)
@@ -28,10 +22,10 @@ public class Purchase extends Transaction{
         super(date,memberAccount);
         this.earnedPoints = 0;
         this.totalPrice = 0;
-        items.forEach(item -> {
-            this.item.add(item);
-            this.earnedPoints += item.getProduct().getPoints() * item.getAmount();
-            this.totalPrice += item.getProduct().getPrice() * item.getAmount();
+        items.forEach(ite -> {
+            this.item.add(ite);
+            this.earnedPoints += ite.getProduct().getPoints() * ite.getAmount();
+            this.totalPrice += ite.getProduct().getPrice() * ite.getAmount();
         });
     }
 

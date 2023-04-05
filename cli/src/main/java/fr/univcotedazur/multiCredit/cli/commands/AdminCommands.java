@@ -64,7 +64,7 @@ public class AdminCommands {
     @ShellMethod("Send a mail")
     public String sendMail(String adminMail, String mailContent, String subject) {
         try {
-            CliMail res = restTemplate.postForObject(BASE_URI + "/mails/send", new CliMail(adminMail, mailContent, subject), CliMail.class);
+            CliMail res = restTemplate.postForObject(BASE_URI + "/mail", new CliMail(adminMail, mailContent, subject), CliMail.class);
             cliContext.getMails().put(res.getSender(), res);
             return res.toString();
         }catch (HttpClientErrorException ex) {
@@ -78,8 +78,8 @@ public class AdminCommands {
         }
     }
 
-    @ShellMethod("Send a survey (sendSurvey ADMIN_MAIL END_DATE --questions QUESTION1:ANSWER1,ANSWER2,ANSWER3;QUESTION2:ANSWER1,ANSWER2)")
-    public String sendSurvey(String adminMail, String endDate, @ShellOption(value = {"--questions"}, defaultValue = "") String questionList){
+    @ShellMethod("Send a survey (sendSurvey ADMIN_MAIL QUESTION1:ANSWER1,ANSWER2,ANSWER3;QUESTION2:ANSWER1,ANSWER2)")
+    public String sendSurvey(String adminMail, String questionList){
         List<String> questions = List.of(questionList.split(";"));
         List<CliQuestion> cliQuestions = new ArrayList<>();
         for (String question : questions) {
@@ -88,7 +88,7 @@ public class AdminCommands {
             cliQuestions.add(new CliQuestion(val.get(0), answers));
         }
         try {
-            CliSurvey res = restTemplate.postForObject(BASE_URI + "/surveys/send", new CliSurvey(adminMail, endDate, cliQuestions), CliSurvey.class);
+            CliSurvey res = restTemplate.postForObject(BASE_URI + "/survey", new CliSurvey(adminMail, cliQuestions), CliSurvey.class);
             cliContext.getSurveys().put(res.getSender(), res);
             return res.toString();
         }catch (HttpClientErrorException ex) {

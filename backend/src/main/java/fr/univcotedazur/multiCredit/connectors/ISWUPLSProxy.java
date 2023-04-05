@@ -47,8 +47,7 @@ public class ISWUPLSProxy implements ISWUPLS {
     @Override
     public ISWUPLSDTO[] getParkingInformation(String carRegistrationNumber) {
 
-        ISWUPLSDTO[] res= restTemplate.exchange(iswuplsHostandPort + "/parking", HttpMethod.GET, new HttpEntity<>(carRegistrationNumber), ISWUPLSDTO[].class).getBody();
-        return res;
+       return restTemplate.exchange(iswuplsHostandPort + "/parking", HttpMethod.GET, new HttpEntity<>(carRegistrationNumber), ISWUPLSDTO[].class).getBody();
     }
 
 

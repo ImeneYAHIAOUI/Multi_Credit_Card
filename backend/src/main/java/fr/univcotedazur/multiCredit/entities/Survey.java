@@ -11,31 +11,19 @@ public class Survey {
     @NotBlank
     private String sender;
 
-    @NotBlank
-    private LocalDate endDate;
-
     @OneToMany(targetEntity = Question.class)
     private List<Question> questions;
     @Id
     @GeneratedValue
     private Long id;
 
-    public Survey(String sender, LocalDate endDate, List<Question> questions) {
+    public Survey(String sender, List<Question> questions) {
         this.sender = sender;
-        this.endDate = endDate;
         this.questions = questions;
     }
 
     public Survey() {
 
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     public List<Question> getQuestions() {

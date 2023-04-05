@@ -67,7 +67,7 @@ public class CatalogControllerTest {
 
     }
     @Test
-    public void addProductTest1() throws Exception{
+     void addProductTest1() throws Exception{
         ProductDTO productDTO=new ProductDTO("cookie",10,2.3,0.0);
          mockMvc.perform(MockMvcRequestBuilders.post(CatalogController.BASE_URI + "/add/1"+"/Products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ public class CatalogControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
     @Test
-    public void addPGiftTest() throws Exception{
+     void addPGiftTest() throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
@@ -141,7 +141,7 @@ public class CatalogControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
     @Test
-    public void addGiftTest1() throws Exception{
+     void addGiftTest1() throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
@@ -177,14 +177,14 @@ public class CatalogControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isConflict());
     }
     @Test
-    public void getGiftByIdTest()throws Exception{
+     void getGiftByIdTest()throws Exception{
         mockMvc.perform(MockMvcRequestBuilders.get(CatalogController.BASE_URI + "/get/Gifts/"+1052125555555L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
     @Test
-    public void getGiftByIdTest1()throws Exception{
+     void getGiftByIdTest1()throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
@@ -222,14 +222,14 @@ public class CatalogControllerTest {
         assertEquals(json,objectMapper.writeValueAsString(gift));
     }
     @Test
-    public void getProductByIdTest()throws Exception{
+     void getProductByIdTest()throws Exception{
         mockMvc.perform(MockMvcRequestBuilders.get(CatalogController.BASE_URI + "/get/Products/"+1052125555555L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
     @Test
-    public void getProductByIdTest1()throws Exception{
+     void getProductByIdTest1()throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
@@ -268,7 +268,7 @@ public class CatalogControllerTest {
 
     }
     @Test
-    public void deleteProductByIdTest()throws Exception{
+     void deleteProductByIdTest()throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");
@@ -304,7 +304,7 @@ public class CatalogControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
     @Test
-    public void deleteGiftByIdTest()throws Exception{
+     void deleteGiftByIdTest()throws Exception{
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
         shop.setAddress("adresse");

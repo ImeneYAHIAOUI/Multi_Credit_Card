@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface MailHandler {
-    void sendSurvey(String sender, LocalDate endDate, List<Question> questions);
+    void sendSurvey(String sender, List<Question> questions);
     void sendMail(String sender, String mailContent, String subject);
 
 

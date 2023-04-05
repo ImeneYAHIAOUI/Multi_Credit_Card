@@ -55,10 +55,6 @@ public class CliPurchase extends CliTransaction
         return items;
     }
 
-    public void setItems(long[] items) {
-        this.items = items;
-    }
-
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -87,10 +83,6 @@ public class CliPurchase extends CliTransaction
 
     public int[] getQuantities() {
         return quantities;
-    }
-
-    public void setQuantities(int[] quantities) {
-        this.quantities = quantities;
     }
 
     public CliPurchase(long memberId,long shop, long[] items, int[] quantitie)

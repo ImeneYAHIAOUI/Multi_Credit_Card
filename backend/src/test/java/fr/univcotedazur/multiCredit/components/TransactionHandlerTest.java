@@ -78,7 +78,7 @@ public class TransactionHandlerTest {
 
     }
     @Test
-    public void removePointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+     void removePointsTest()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
         setUp("John.Doe@mail.com","John");
         account.setPoints(100);
         UsePoints transaction=new UsePoints(LocalDate.now(),account);
@@ -87,7 +87,7 @@ public class TransactionHandlerTest {
         assertEquals(50, account.getPoints());
     }
     @Test
-    public void removePointsTest1() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+     void removePointsTest1() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
         setUp("John.Doe@mail.com","John");
         account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         account.setPoints(10);
@@ -98,7 +98,7 @@ public class TransactionHandlerTest {
     }
 
     @Test
-    public void addPointsTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+     void addPointsTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
         setUp("John.Doe@mail.com","John");
         account=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         account.setPoints(100);
@@ -108,7 +108,7 @@ public class TransactionHandlerTest {
         assertEquals(120, account.getPoints());
     }
     @Test
-    public void processPointsUsageTest() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+     void processPointsUsageTest() throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
          setUp("John.Doe@mail.com","John");
         account.setPoints(100);
         UsePoints transaction=new UsePoints(LocalDate.now(),account);
@@ -145,7 +145,7 @@ public class TransactionHandlerTest {
 
     }
     @Test
-    public void  getStatisticsOnClientUsageTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+     void  getStatisticsOnClientUsageTest() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
         setUp("John.Doe@mail.com","John");
         assertTrue(transactionHandler.getStatisticsOnClientUsage(account).isEmpty());
         account.setPoints(100);
@@ -179,7 +179,7 @@ public class TransactionHandlerTest {
         assertEquals(2, transactionHandler.getStatisticsOnClientUsage(account).stream().count());
     }
     @Test
-    public void  getStatisticsOnClientUsageTest2() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+     void  getStatisticsOnClientUsageTest2() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
         setUp("John.Doe@mail.com","John");
         assertTrue(transactionHandler.getStatisticsOnClientUsage(account).isEmpty());
         account.setPoints(100);
@@ -204,7 +204,7 @@ public class TransactionHandlerTest {
         assertEquals(1, transactionHandler.getStatisticsOnClientUsage(account).stream().count());
     }
     @Test
-    public void  getStatisticsOnClientUsageAtShopTest3() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
+     void  getStatisticsOnClientUsageAtShopTest3() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException {
         setUp("John.Doe@mail.com","John");
         Shop shop=new Shop("A", "1 rue de la paix");
         shopRepository.save(shop);
@@ -244,7 +244,7 @@ public class TransactionHandlerTest {
         assertEquals(1, transactionHandler.getStatisticsOnClientUsageAtShop(shop1,account).stream().count());
     }
     @Test
-    public void processPointsUsageTest1()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+     void processPointsUsageTest1()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
 
          setUp("joel.Doe@mail.com","joel");
         account.setPoints(10);
@@ -277,7 +277,7 @@ public class TransactionHandlerTest {
         assertNull(transaction.getId());
     }
     @Test
-    public void processPointsUsageTest2()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
+     void processPointsUsageTest2()throws AlreadyExistingMemberException, MissingInformationException, UnderAgeException{
 
         setUp("joel.Doe@mail.com","joel");
         account.setPoints(150);
@@ -312,14 +312,14 @@ public class TransactionHandlerTest {
     }
 
     @Test
-    public void processPointsUsageTest3(){
+     void processPointsUsageTest3(){
         account = new MemberAccount("john","mail","pass",LocalDate.of(2001,11,04),0,0);
         UsePoints transaction=new UsePoints(LocalDate.now(),account);
         transaction.setUsedPoints(100);
         assertThrows(AccountNotFoundException.class,()-> transactionHandler.processPointsUsage(account,transaction));
     }
     @Test
-    public void processPurchaseTest()throws Exception{
+     void processPurchaseTest()throws Exception{
         Product product3=new Product("ring",1.0,10,0.0);
         Shop shop=new Shop("A", "1 rue de la paix");
         product3.setShop(shop);
@@ -348,7 +348,7 @@ public class TransactionHandlerTest {
     }
 
     @Test
-    public void attributeVFPStatus() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, PaymentException {
+     void attributeVFPStatus() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, PaymentException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account =  memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
 
@@ -383,7 +383,7 @@ public class TransactionHandlerTest {
 
     }
     @Test
-    public void processPurchaseTest1()throws Exception{
+     void processPurchaseTest1()throws Exception{
         Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
@@ -395,12 +395,12 @@ public class TransactionHandlerTest {
         assertNotEquals(purchaseOfPat.getEarnedPoints(), pat.getPoints());
     }
     @Test
-    public void processPurchaseTest2(){
+     void processPurchaseTest2(){
         assertThrows(AccountNotFoundException.class,()-> transactionHandler.processPurchaseWithCreditCard( new MemberAccount("john","mail","pass",LocalDate.of(2001,11,04),0,0), purchaseOfPat,"1234567999123456"));
     }
 
     @Test
-    public void processPurchaseWithCash() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+     void processPurchaseWithCash() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
@@ -412,7 +412,7 @@ public class TransactionHandlerTest {
     }
 
     @Test
-    public void processPurchaseWithMembershipCard() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+     void processPurchaseWithMembershipCard() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));

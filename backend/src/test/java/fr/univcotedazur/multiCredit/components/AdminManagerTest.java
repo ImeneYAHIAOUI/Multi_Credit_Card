@@ -140,7 +140,7 @@ private MemberFinder memberFinder;
                 new Form("name","sachatouille@gmail.com", "1234", birthday),100l));
     }
     @Test
-    public void deleteShopKeeperAccountTest() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
+     void deleteShopKeeperAccountTest() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2002, 3, 24);
@@ -152,7 +152,8 @@ private MemberFinder memberFinder;
         assertFalse(shopKeeperAccountRepository.existsById(s.getId()));
         assertFalse(shopRepository.existsById(shop.getId()));
     }
-    public void removeShopTest() throws MissingInformationException {
+      @Test
+       void removeShopTest() throws MissingInformationException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
         shopRegistration.removeShop(shop);

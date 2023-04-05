@@ -55,21 +55,21 @@ public class ShopManagerTests {
     }
 
     @Test
-    public void testModifyAddress() {
+     void testModifyAddress() {
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");
         shopManager.modifyAddress(shop,"2 rue de la liberté");
         assertEquals(shop.getAddress(),"2 rue de la liberté");
     }
     @Test
-    public void testModifyAddress2(){
+     void testModifyAddress2(){
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
         assertEquals("1 rue de la paix",shop.getAddress(),"1 rue de la paix");
         shopManager.modifyAddress(shop,null);
         assertEquals(shop.getAddress(),"1 rue de la paix");
     }
     @Test
-    public void testModifyPlanning(){
+     void testModifyPlanning(){
         shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(15,00));
         shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
@@ -86,7 +86,7 @@ public class ShopManagerTests {
         assertEquals(LocalTime.of(16,00), planning.getClosingHours());
     }
     @Test
-    public void testModifyPlanning2()  {
+     void testModifyPlanning2()  {
         shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(14,00));
         shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
@@ -102,7 +102,7 @@ public class ShopManagerTests {
         assertEquals(LocalTime.of(19,00), planning.getClosingHours());
     }
     @Test
-    public void testModifyPlanning3()  {
+     void testModifyPlanning3()  {
         shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(14,00));
         shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());
@@ -119,7 +119,7 @@ public class ShopManagerTests {
     }
     @Test
     @Transactional
-    public void testModifyPlanning4()  {
+     void testModifyPlanning4()  {
         shopManager.modifyPlanning(shop,WeekDay.SATURDAY,LocalTime.of(10,00),LocalTime.of(14,00));
         shopManager.modifyPlanning(shop,WeekDay.MONDAY,LocalTime.of(9,00),LocalTime.of(19,00));
         assertTrue(shopManager.findShopById(shop.getId()).isPresent());

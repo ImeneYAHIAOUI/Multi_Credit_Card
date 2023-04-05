@@ -42,7 +42,7 @@ public class ParkingManagerTest {
 
 
     @Test
-    public void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, NotVFPException {
+     void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, NotVFPException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account;
         try {

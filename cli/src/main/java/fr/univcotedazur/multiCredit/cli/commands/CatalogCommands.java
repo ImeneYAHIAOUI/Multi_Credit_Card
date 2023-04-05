@@ -30,8 +30,7 @@ public class  CatalogCommands {
 
         try {
             CliProduct p = restTemplate.postForObject(BASE_URI + "/add/" + id + "/" + "Products", new CliProduct(name, points, price, discount), CliProduct.class);
-         return "Product added successfully : " + p.toString();
-
+            return "Product added successfully : " + p;
         }catch (HttpClientErrorException ex) {
             if (ex.getStatusCode() == HttpStatus.CONFLICT)
                 return "Failed to add product :Product already exists";

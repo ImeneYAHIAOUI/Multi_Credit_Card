@@ -24,7 +24,8 @@ async fn main() -> io::Result<()> {
             .service(mail::list)
             .service(mail::get)
             //.service(mail::create_survey)
-            .service(mail::create_mail)
+            .service(mail::send_mail)
+            .service(mail::send_survey)
             .service(mail::delete)
 
     })

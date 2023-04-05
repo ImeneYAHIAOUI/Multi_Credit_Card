@@ -122,8 +122,8 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         }
 
         @Override
-        public void sendSurvey(String sender, LocalDate endDate, List<Question> questions) {
-            Survey surveyToSend = new Survey(sender, endDate, questions);
+        public void sendSurvey(String sender, List<Question> questions) {
+            Survey surveyToSend = new Survey(sender, questions);
             if(!mailSender.sendSurvey(memberRepository.findAll(), surveyToSend)){
                 System.out.println("Error while sending survey");
                 throw new RuntimeException();
