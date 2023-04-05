@@ -90,7 +90,7 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    echo '{$DOCKER_USERNAME} logged in to DockerHub'
+                    echo '$DOCKER_USERNAME logged in to DockerHub'
 
                     echo 'Building Backend Container'
                     sh 'docker build -t sswaz/multicard-backend:latest -f backend/Dockerfile backend'
