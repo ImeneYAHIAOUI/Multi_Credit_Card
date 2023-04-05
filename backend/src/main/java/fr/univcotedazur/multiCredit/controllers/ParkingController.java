@@ -10,25 +10,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import fr.univcotedazur.multiCredit.components.ParkingManager;
 import fr.univcotedazur.multiCredit.exceptions.NotVFPException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.validation.Valid;
-
-
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;

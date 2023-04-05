@@ -32,6 +32,8 @@ public class TransactionController {
     private final CatalogFinder catalogFinder;
 
     private final ShopFinder shopFinder;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
 
     @Autowired
     public TransactionController(MemberManager memberManager, TransactionHandler transactionHandler, CatalogFinder catalogFinder, ShopFinder shopFinder) {
@@ -67,7 +69,6 @@ public class TransactionController {
     @PostMapping(path="/UsePoints", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionDTO> UsePoints(@RequestBody UsePointDTO usePointDTO)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         Optional<MemberAccount> memberAccount = memberManager.findById(usePointDTO.getMemberAccount());
         if(memberAccount.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new UsePointDTO(0, "Member Not Found", 0, 0, 0,0));
@@ -96,7 +97,6 @@ public class TransactionController {
     @PostMapping("/purchase/creditCard")
     public ResponseEntity<TransactionDTO> purchaseWithCreditCard(@RequestBody PurchaseDTO purchaseDTO)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         Optional<MemberAccount> memberAccount = memberManager.findById(purchaseDTO.getMemberAccount());
         if(memberAccount.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new PurchaseDTO(0, "Member Not Found", 0, 0, 0, 0,"", null, null,null));
@@ -127,7 +127,6 @@ public class TransactionController {
     @PostMapping("/purchase/cash")
     public ResponseEntity<TransactionDTO> purchaseWithCash(@RequestBody PurchaseDTO purchaseDTO)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         Optional<MemberAccount> memberAccount = memberManager.findById(purchaseDTO.getMemberAccount());
         if(memberAccount.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new PurchaseDTO(0, "Member Not Found", 0, 0, 0, 0,"", null, null,null));
@@ -156,7 +155,6 @@ public class TransactionController {
     @PostMapping("/purchase/membershipCard")
     public ResponseEntity<TransactionDTO> purchaseWithMembershipCard(@RequestBody PurchaseDTO purchaseDTO)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         Optional<MemberAccount> memberAccount = memberManager.findById(purchaseDTO.getMemberAccount());
         if(memberAccount.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new PurchaseDTO(0, "Member Not Found", 0, 0, 0, 0,"", null, null,null));
@@ -188,7 +186,7 @@ public class TransactionController {
 
     private TransactionDTO convertToDTO(Transaction transaction)
     {
-        if(transaction instanceof Purchase) {
+        if( transaction instanceof  Purchase) {
             long[] items = new long[((Purchase) transaction).getItem().size()];
             int[] quantities = new int[((Purchase) transaction).getItem().size()];
             int i = 0;
@@ -197,8 +195,6 @@ public class TransactionController {
                 quantities[i] = item.getAmount();
                 i++;
             }
-            System.out.println(((Purchase) transaction).getPaymentMethod().toString());
-
             return new PurchaseDTO(transaction.getId(), transaction.getDate().toString(),
                     transaction.getMemberAccount().getId(),transaction.getShop().getId(),
                     ((Purchase) transaction).getEarnedPoints(),

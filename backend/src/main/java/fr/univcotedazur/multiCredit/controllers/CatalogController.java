@@ -115,8 +115,8 @@ public class CatalogController {
             }
     }
     @GetMapping("/get/Products/{ProductId}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable("ProductId") Long ProductId) {
-        Optional<Product> product = catalog.findProductById(ProductId);
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable("ProductId") Long productId) {
+        Optional<Product> product = catalog.findProductById(productId);
         if(product.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         return ResponseEntity.ok().body(convertProductToDto(product.get()));

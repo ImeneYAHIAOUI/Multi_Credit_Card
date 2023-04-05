@@ -123,7 +123,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
         addPoints(memberAccount,purchase);
         memberAccount.getTransactions().add(purchase);
         if(memberAccount.getTransactions().stream()
-                .filter(t -> t instanceof Purchase)
+                .filter( Purchase.class::isInstance)
                 .filter(t2 -> t2.getDate().isAfter(LocalDate.now().minusWeeks(1)))
                 .count() == Integer.parseInt(Objects.requireNonNull(env.getProperty("VFP.MinPurchasesNumber"))))
             memberHandler.updateAccountStatus(memberAccount, AccountStatus.VFP);

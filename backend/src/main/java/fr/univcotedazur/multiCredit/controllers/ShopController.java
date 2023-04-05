@@ -73,9 +73,6 @@ public class ShopController {
         if (openingHours != null && closingHours!= null && openingHours.isAfter(closingHours)) {
             return ResponseEntity.badRequest().body("Invalid opening/closing hours parameters");
         }
-        System.out.println("======================="+planning.getDayWorking());
-        System.out.println("======================="+ WeekDay.valueOf(planning.getDayWorking().toUpperCase()));
-
         shopManager.modifyPlanning(shop.get(), WeekDay.valueOf(planning.getDayWorking().toUpperCase()), openingHours, closingHours);
         return ResponseEntity.ok("Shop planning for " + planning.getDayWorking() + " updated successfully");
     }
