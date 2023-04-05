@@ -23,8 +23,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RestClientTest(ShopCommands.class)
 public class ShopCommandsTest {
     public static final String BASE_URI_SHOPS = "/shops";
-    public static final String BASE_URI_SHOPKEEPER = "/shopkeepers";
-
     private static final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
     @Autowired
     private ShopCommands client;

@@ -67,7 +67,6 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
             throw new AlreadyExistingAdminException();
         }
         AdminAccount adminAccount = new AdminAccount(form.getName(), form.getMail(), form.getPassword(), form.getBirthDate());
-
         adminAccountRepository.save(adminAccount);
         return adminAccount;
     }
@@ -97,7 +96,7 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
     }
 
     @Override
-    public ShopKeeperAccount createShopKeeperAccount(Form form, long id) throws MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
+    public ShopKeeperAccount createShopKeeperAccount(Form form, Long id) throws MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
         Optional<Shop> shop = shopManager.findShopById(id);
         if (shop.isEmpty() || form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
             throw new MissingInformationException();

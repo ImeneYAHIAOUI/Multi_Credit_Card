@@ -50,7 +50,8 @@ public class AdminController {
         // Note that there is no validation at all on the CustomerDto mapped
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-            Form form = new Form(adminDTO.getName(), adminDTO.getMail(), adminDTO.getPassword(),  LocalDate.parse(adminDTO.getBirthDate(),formatter));
+            Form form = new Form(adminDTO.getName(), adminDTO.getMail(), adminDTO.getPassword(),
+                    LocalDate.parse(adminDTO.getBirthDate(),formatter));
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(convertAdminAccountToDto(adminManager.createAdminAccount(form)));
         } catch (AlreadyExistingAdminException e) {
@@ -69,9 +70,10 @@ public class AdminController {
         else{
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-                adminManager.createShopKeeperAccount(new Form(shopKeeperDTO.getName(),shopKeeperDTO.getMail(),shopKeeperDTO.getPassword(),
-                        LocalDate.parse(shopKeeperDTO.getBirthDate(),formatter)),shopKeeperDTO.getShopId());
-                return ResponseEntity.status(HttpStatus.CREATED).body(null);
+                ShopKeeperAccount shopKeeperAccount=adminManager.createShopKeeperAccount(new Form(shopKeeperDTO.getName(),shopKeeperDTO.getMail(),shopKeeperDTO.getPassword(),
+                        LocalDate.parse(shopKeeperDTO.getBirthDate(),formatter)),
+                        shopKeeperDTO.getShopId());
+                return ResponseEntity.status(HttpStatus.CREATED).body(convertShopKeeperToDto(shopKeeperAccount));
             }catch ( MissingInformationException | UnderAgeException  e){
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                         .body(null);
@@ -153,6 +155,11 @@ public class AdminController {
     }
     private ShopDTO convertShopToDto(Shop shop) { // In more complex cases, we could use ModelMapper
         return new ShopDTO( shop.getId(),shop.getName(), shop.getAddress());
+    }
+    private ShopKeeperDTO convertShopKeeperToDto(ShopKeeperAccount shop) { // In more complex cases, we could use ModelMapper
+        ShopKeeperDTO s=new  ShopKeeperDTO( shop.getId(),shop.getName(), shop.getMail(),shop.getPassword(),shop.getBirthDate().toString());
+        s.setShopId(shop.getShop().getId());
+        return s;
     }
 
 }

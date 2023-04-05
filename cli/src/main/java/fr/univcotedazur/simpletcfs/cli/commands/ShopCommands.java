@@ -62,7 +62,7 @@ public class ShopCommands {
         }
     }
     @ShellMethod(" get shopkeeper (get SHOP_id )")
-    public String getShopKeeper( Long id) {
+    public String getShopKeeper(Long id) {
         try {
             String p = restTemplate.getForObject(BASE_URI + "/shopKeepers/" + id.toString(), String.class);
             return p;
