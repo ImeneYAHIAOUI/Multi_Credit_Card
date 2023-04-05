@@ -50,7 +50,7 @@ pipeline {
                 sh 'npm --prefix bank test'
 
                 echo 'Testing E2E:'
-                sh 'end2endTests/main.sh'
+                sh 'chmod +x end2endTests/main.sh && end2endTests/main.sh'
             }
         }
         stage('Code Analysis') {
