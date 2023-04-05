@@ -50,7 +50,7 @@ pipeline {
                 sh 'npm --prefix bank test'
 
                 echo 'Testing E2E:'
-                sh '../../ISA-DevOps_${BRANCH_NAME}/end2endTests/memberTest.sh'
+                sh '../../ISA-DevOps_${BRANCH_NAME}/end2endTests/main.sh'
             }
         }
         stage('Code Analysis') {
