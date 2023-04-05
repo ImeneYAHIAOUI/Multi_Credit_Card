@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 @Component
 public class CliContext {
     private Map<String, CliMember> memberAccounts;
-    private Map<String, CliAdmin> adminAccounts;
-    private Map<String, CliShop> shops;
-    private Map<String, CliShopKeeper> shopKeepers;
+    private Map<Long, CliAdmin> adminAccounts;
+    private Map<Long, CliShop> shops;
+    private Map<Long, CliShopKeeper> shopKeepers;
     private Map<String, CliMail> mails;
     private Map<String, CliSurvey> surveys;
     public CliContext()
@@ -50,13 +50,13 @@ public class CliContext {
                 .map(key -> key + "=" + shopKeepers.get(key))
                 .collect(Collectors.joining(", ", "{", "}"));
     }
-    public Map<String, CliShop> getShops() {
+    public Map<Long, CliShop> getShops() {
         return shops;
     }
     public Map<String, CliMember> getMemberAccounts() {
         return memberAccounts;
     }
-    public Map<String, CliShopKeeper> getShopKeepers(){
+    public Map<Long, CliShopKeeper> getShopKeepers(){
         return  shopKeepers;
     }
     public Map<String, CliMail> getMails() {
@@ -65,7 +65,7 @@ public class CliContext {
     public Map<String, CliSurvey> getSurveys() {
         return surveys;
     }
-    public Map<String, CliAdmin> getAdminAccounts() {
+    public Map<Long, CliAdmin> getAdminAccounts() {
         return adminAccounts;
     }
 }

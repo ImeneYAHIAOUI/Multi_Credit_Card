@@ -34,8 +34,8 @@ public class AdminCommands {
         }
         try {
             ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/admin/" + id, HttpMethod.DELETE, null, String.class);
+            cliContext.getAdminAccounts().remove(id);
             return "Admin deleted successfully";
-
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
                 return "404 Failed to delete admin : admin not found";
@@ -47,7 +47,7 @@ public class AdminCommands {
     public String registerAdmin( String name, String mail, String password, String birthDate) {
         try {
             CliAdmin res = restTemplate.postForObject(BASE_URI + "/register", new CliAdmin( name,mail,password,birthDate), CliAdmin.class);
-            cliContext.getAdminAccounts().put(res.getName(), res);
+            cliContext.getAdminAccounts().put(res.getId(), res);
             return res.toString();
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.CONFLICT.equals(ex.getStatusCode())){
@@ -115,7 +115,7 @@ public class AdminCommands {
     public String addShop(String name, String address) {
         try {
             CliShop res = restTemplate.postForObject(BASE_URI + "/shops/save", new CliShop(name, address), CliShop.class);
-            cliContext.getShops().put(res.getName(), res);
+            cliContext.getShops().put(res.getId(), res);
             return res.toString();
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.CONFLICT.equals(ex.getStatusCode())){
@@ -133,7 +133,7 @@ public class AdminCommands {
             CliShopKeeper s=new CliShopKeeper(name,mail ,password,birthDate);
             s.setShopId(Shopid);
             CliShopKeeper res = restTemplate.postForObject(BASE_URI + "/shopKeepers/save", s, CliShopKeeper.class);
-            cliContext.getShopKeepers().put(res.getName(), res);
+            cliContext.getShopKeepers().put(res.getId(), res);
             return res.toString();
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())) {
@@ -155,6 +155,7 @@ public class AdminCommands {
         }
         try {
             ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/shops/" + id, HttpMethod.DELETE, null, String.class);
+            cliContext.getShops().remove(id);
             return "Shop deleted successfully";
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
@@ -170,8 +171,8 @@ public class AdminCommands {
         }
         try {
             ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/shopKeepers/" + id, HttpMethod.DELETE, null, String.class);
+            cliContext.getShopKeepers().remove(id);
             return "Shop keeper deleted successfully";
-
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.NOT_FOUND.equals(ex.getStatusCode())){
                 return "404 Failed to delete shop : shop not found";
