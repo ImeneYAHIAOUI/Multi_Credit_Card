@@ -2,12 +2,12 @@
 
 docker-compose down
 
-docker rm server
-docker rm cli
-docker rm db
-docker rm bank
-docker rm mailservice
-docker rm iswupls
+#docker rm server
+#docker rm cli
+#docker rm db
+#docker rm bank
+#docker rm mailservice
+#docker rm iswupls
 
 
 docker-compose up -d --build
@@ -36,9 +36,9 @@ done
 
 docker-compose down
 
-docker rm server
-docker rm cli
-docker rm db
-docker rm bank
-docker rm mailservice
-docker rm iswupls
+#docker rm server
+#docker rm cli
+#docker rm db
+#docker rm bank
+#docker rm mailservice
+#docker rm iswupls
