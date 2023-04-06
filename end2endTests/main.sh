@@ -18,3 +18,10 @@ done
 ./end2endTests/parkingTests.sh
 
 docker-compose down
+
+docker rm server
+docker rm cli
+docker rm db
+docker rm bank
+docker rm mailservice
+docker rm iswupls
