@@ -60,6 +60,10 @@ pipeline {
                 sh 'chmod +x ./*.sh && chmod +x ./**/*.sh'
                 sh './build-all.sh'
 
+                echo 'We down and up the containers to make sure they are not already running'
+                
+                sh 'docker-compose down'
+
                 sh 'docker-compose up -d --build'
 
                 echo 'Testing E2E:'
