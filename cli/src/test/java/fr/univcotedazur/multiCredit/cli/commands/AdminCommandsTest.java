@@ -3,6 +3,7 @@ package fr.univcotedazur.multiCredit.cli.commands;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.multiCredit.cli.CliContext;
+import fr.univcotedazur.multiCredit.cli.model.CliAdmin;
 import fr.univcotedazur.multiCredit.cli.model.CliShop;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,16 @@ public class AdminCommandsTest {
                 );
         String result=client.deleteShop(2L);
         assertEquals("Error while deleting shop", result);
+        server.verify();
+    }
+    @Test
+    public void testAddAdmin() throws JsonProcessingException {
+        CliAdmin admin=new CliAdmin("admin","admin","admin","admin");
+        String json = mapper.writeValueAsString(admin);
+        server.expect(requestTo(  "/admin/register"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+        assertEquals(admin.toString(),client.registerAdmin("admin","admin","admin","admin"));
         server.verify();
     }
 

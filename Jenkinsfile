@@ -60,12 +60,8 @@ pipeline {
                 sh 'chmod +x ./*.sh && chmod +x ./**/*.sh'
                 sh './build-all.sh'
 
-                sh 'docker-compose up -d --build'
-
                 echo 'Testing E2E:'
                 sh 'end2endTests/main.sh'
-
-                sh 'docker-compose down'
             }
         }
         stage('Code Analysis') {
