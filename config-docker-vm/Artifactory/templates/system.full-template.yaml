@@ -79,9 +79,9 @@ shared:
     #haEnabled: true
 
     ## One of
-    ## 'any' - allow running any kind of background job on this node such as the Artifactory Garbage Collector,
+    ## 'any' - allow running any kind of background.sh job on this node such as the Artifactory Garbage Collector,
     ## Scheduled Replication, Backup, etc.
-    ## 'none' - no background jobs are allowed to run on this node (except for a select group of system jobs)
+    ## 'none' - no background.sh jobs are allowed to run on this node (except for a select group of system jobs)
     ## This attribute and the 'primary' attribute are mutually exclusive. When both are set, only the Primary node can
     ## execute jobs in the cluster.
     ## Default any
