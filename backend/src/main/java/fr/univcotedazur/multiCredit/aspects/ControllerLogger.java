@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class ControllerLogger {
-
     private static final Logger LOG = LoggerFactory.getLogger(ControllerLogger.class);
-    private static final String PREFIX = "TCFS:Rest-Controller:";
+    private static final String PREFIX = "\033[1;36mTCFS\033[0m\033[1;31m:Rest-Controller\033[0m\033[1;33m:";
 
     @Pointcut("execution(public * fr.univcotedazur.multiCredit.controllers..*(..))")
     private void allControllerMethods() {
@@ -19,17 +18,17 @@ public class ControllerLogger {
 
     @Before("allControllerMethods()")
     public void logMethodNameAndParametersAtEntry(JoinPoint joinPoint) {
-        LOG.info(PREFIX + joinPoint.getThis() + ":Called {}", joinPoint.getSignature().getName() + " " + joinPoint.getArgs());
+        LOG.info("\033[1;34m" + PREFIX + joinPoint.getThis() + "\033[0m:Called \033[1;32m{}\033[0m \033[1;35m{}\033[0m"+"\n", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     @AfterReturning(pointcut = "allControllerMethods()", returning = "resultVal")
     public void logMethodReturningProperly(JoinPoint joinPoint, Object resultVal) {
-        LOG.info(PREFIX + joinPoint.getThis() + ":Returned {}", joinPoint.getSignature().getName() + " with value " + resultVal);
+        LOG.info("\033[1;34m" + PREFIX + joinPoint.getThis() + "\033[0m:Returned \033[1;32m{}\033[0m with value \033[1;32m{}\033[0m"+"\n", joinPoint.getSignature().getName(), resultVal);
     }
 
     @AfterThrowing(pointcut = "allControllerMethods()", throwing = "exception")
     public void logMethodException(JoinPoint joinPoint, Exception exception) {
-        LOG.warn(PREFIX + joinPoint.getThis() + ":Exception from {}", joinPoint.getSignature().getName() + " with exception " + exception);
+        LOG.warn("\033[1;31m" + PREFIX + joinPoint.getThis() + "\033[0m:Exception from \033[1;32m{}\033[0m with exception \033[1;31m{}\033[0m"+"\n", joinPoint.getSignature().getName(), exception);
     }
 
 }
