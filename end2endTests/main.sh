@@ -20,7 +20,7 @@ while ! docker inspect -f '{{.State.Status}}' cli | grep -q "running" && [ $i -l
 &&  ! docker inspect -f '{{.State.Status}}' bank | grep -q "running" \
 &&  ! docker inspect -f '{{.State.Status}}' db | grep -q "running" \
 &&  ! docker inspect -f '{{.State.Status}}' mailservice | grep -q "running" \
-&&  ! docker inspect -f '{{.State.Status}}' iswupls | grep -q "running"
+&&  ! docker inspect -f '{{.State.Status}}' iswupls | grep -q "running";
 
  do
       echo "Waiting for CLI to start ..."
