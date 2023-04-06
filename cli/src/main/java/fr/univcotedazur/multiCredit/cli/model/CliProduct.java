@@ -68,8 +68,8 @@ public class CliProduct {
     public String toString(){
 
         if(shop!=null)
-            return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage+" Shop : "+shop.toString();
+            return "id : "+id+ " Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage+" Shop : "+shop.toString();
         else
-            return "Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
+            return "id : "+id+ " Name : "+name+" Price : "+price+" Points : "+points+" Discount : "+discountPercentage;
     }
 }

@@ -13,4 +13,4 @@ done
   printf '\n'
 
 ./end2endTests/memberTests.sh
-./end2endTests/transactionTests.sh
+./end2endTests/parkingTests.sh
