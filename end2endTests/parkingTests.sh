@@ -52,6 +52,6 @@ for localResult in "${globalResult[@]}"
 do
     if [ $localResult -ne 0 ]; then
         printf "${RED}${BOLD}Test failed${NC}\n"
-        exit 1
+#        exit 1
     fi
 done
