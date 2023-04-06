@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker-compose up -d --build
+
 printf '\n'
 waitFor="Started CliApplication in"
 i=0
@@ -14,3 +16,5 @@ done
 
 ./end2endTests/memberTests.sh
 ./end2endTests/parkingTests.sh
+
+docker-compose down
