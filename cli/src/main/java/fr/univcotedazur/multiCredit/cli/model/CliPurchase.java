@@ -97,7 +97,7 @@ public class CliPurchase extends CliTransaction
         return "purchase{" +
                 "memberId=" + getMemberAccount() +
                 ", shop=" + getShop() +
-                "earnedPoints=" + earnedPoints +
+                ", earnedPoints=" + earnedPoints +
                 ", totalPrice=" + totalPrice +
                 ", creditCardNumber='" + creditCardNumber + '\'' +
                 ", items=" + List.of(items) +

@@ -60,7 +60,7 @@ public class TransactionCommands {
         return restTemplate.postForObject("/transactions/purchase/membershipCard", cliPurchase, CliPurchase.class);
     }
 
-    @ShellMethod("spend points for a gift (MemberId, shopID, usedPoints, giftId)")
+    @ShellMethod("spend points for a gift (MemberId, shopID, giftId)")
     public CliUsePoints spendPointsForGift(long memberId,long shopId, long giftId)
     {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
