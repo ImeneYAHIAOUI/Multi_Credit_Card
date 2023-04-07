@@ -136,11 +136,13 @@ public class AdminController {
                     .body(null);
         }
     }
-    @DeleteMapping("/Admin/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAdminById(@PathVariable("id") Long id) {
         Optional<AdminAccount> adminAccount = adminManager.findAdminById(id);
         if (adminAccount.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("Admin keeper not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("Admin keeper not found");
         }
         adminManager.deleteAdminAccount(adminAccount.get());
         return ResponseEntity.ok("Admin account deleted successfully");

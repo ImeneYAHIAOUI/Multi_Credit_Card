@@ -36,8 +36,6 @@ public class MemberCommands {
         cliContext.getMemberAccounts().put(res.getName(), res);
         return res;
     }
-
-
     @ShellMethod("delete a member (delete-member MEMBER_MAIL)")
     public String deleteMember(String mail) {
     	restTemplate.exchange(BASE_URI + "/delete", HttpMethod.DELETE, new HttpEntity<>(mail), String.class);
@@ -61,16 +59,11 @@ public class MemberCommands {
         restTemplate.put(BASE_URI + "/restore",mail);
         return "Member restored";
     }
-
     @ShellMethod("update a member (update-status MEMBER_MAIL NEW_STATUS)")
     public CliUpdateStatus updateStatus(String mail, String status) {
          restTemplate.put(BASE_URI + "/status", new CliUpdateStatus(mail, status), CliUpdateStatus.class);
          return new CliUpdateStatus(mail, status);
     }
-
-
-
-
     @ShellMethod("Get member information (get-member-info id)")
     public CliMember getMemberInfo(Long id) {
         CliMember res = restTemplate.getForObject(BASE_URI+"/"+id, CliMember.class );

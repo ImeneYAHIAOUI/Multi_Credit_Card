@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.multiCredit.cli.CliContext;
 import fr.univcotedazur.multiCredit.cli.model.CliShop;
+import fr.univcotedazur.multiCredit.cli.model.CliShopKeeper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -127,5 +128,39 @@ public class ShopCommandsTest {
         assertEquals( "Failed to modify planning : Invalid time format (must be HH:mm)", result);
         server.verify();
     }
+    @Test
+    public void TestGetShopkeer() throws JsonProcessingException {
+        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper","password", "02/03/1999");
+        String json = mapper.writeValueAsString(shopKeeper);
 
+        server.expect(requestTo(BASE_URI_SHOPS + "/shopKeepers/2"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+        String result=client.getShopKeeper(2L);
+        assertEquals(json, result);
+        server.verify();
+    }
+    @Test
+    public void TestGetShopkeerNotFound() throws JsonProcessingException {
+        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper","password", "02/03/1999");
+
+        server.expect(requestTo(BASE_URI_SHOPS + "/shopKeepers/2"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND));
+        String result=client.getShopKeeper(2L);
+        assertEquals(" 404 Invalid shop id : shop keeper not found", result);
+        server.verify();
+    }
+    @Test
+    public void TestGetShopkeerError() throws JsonProcessingException {
+        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper","password", "02/03/1999");
+
+        server.expect(requestTo(BASE_URI_SHOPS + "/shopKeepers/2"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.REQUEST_TIMEOUT));
+        String result=client.getShopKeeper(2L);
+        assertEquals("Error while getting shop keeper account", result);
+        server.verify();
+    }
 }
+

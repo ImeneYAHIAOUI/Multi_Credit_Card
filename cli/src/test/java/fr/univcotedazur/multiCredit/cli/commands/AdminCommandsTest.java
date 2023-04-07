@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.univcotedazur.multiCredit.cli.CliContext;
 import fr.univcotedazur.multiCredit.cli.model.CliAdmin;
 import fr.univcotedazur.multiCredit.cli.model.CliShop;
+import fr.univcotedazur.multiCredit.cli.model.CliShopKeeper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -16,6 +17,8 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
@@ -30,7 +33,6 @@ public class AdminCommandsTest {
     CliContext cliContext;
     @Autowired
     private MockRestServiceServer server;
-
     @Test
     public void addShopTest() throws JsonProcessingException {
         String name = "sephora";
@@ -87,5 +89,135 @@ public class AdminCommandsTest {
         assertEquals(admin.toString(),client.registerAdmin("admin","admin","admin","admin"));
         server.verify();
     }
+    @Test
+    public void testAddAdminConflict() throws JsonProcessingException {
+        CliAdmin admin=new CliAdmin("admin","admin","admin","admin");
+        String json = mapper.writeValueAsString(admin);
+        server.expect(requestTo(  "/admin/register"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.CONFLICT));
+        assertEquals("409 Failed to add admin account : account already exists",client.registerAdmin("admin","admin","admin","admin"));
+        server.verify();
+    }
+    @Test
+    public void testAddAdminUnprocessable() throws JsonProcessingException {
+        CliAdmin admin=new CliAdmin("admin","admin","admin","admin");
+        String json = mapper.writeValueAsString(admin);
+        server.expect(requestTo(  "/admin/register"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.UNPROCESSABLE_ENTITY));
+        assertEquals("422 Failed tto add admin account : invalid parameters",client.registerAdmin("admin","admin","admin","admin"));
+        server.verify();
+    }
+    @Test
+    public void testAddAdminError() throws JsonProcessingException {
+        CliAdmin admin=new CliAdmin("admin","admin","admin","admin");
+        String json = mapper.writeValueAsString(admin);
+        server.expect(requestTo(  "/admin/register"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.REQUEST_TIMEOUT));
+        assertEquals("Error while adding admin account ",client.registerAdmin("admin","admin","admin","admin"));
+        server.verify();
+    }
+    @Test
+    public void testDeleteAdmin() throws JsonProcessingException {
+        server.expect(requestTo(  BASE_URI+"/1"))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.OK));;
+        assertEquals("Admin deleted successfully",client.deleteAdmin(1L));
+        server.verify();
+    }
+    @Test
+    public void testDeleteAdminError() throws JsonProcessingException {
+        CliAdmin admin=new CliAdmin("admin","admin","admin","admin");
+        String json = mapper.writeValueAsString(admin);
+        server.expect(requestTo(  "/admin/1"))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.REQUEST_TIMEOUT));
+        assertEquals("Error while deleting admin",client.deleteAdmin(1L));
+        server.verify();
+    }
+    @Test
+    public void testDeleteAdminNotFound() throws JsonProcessingException {
+        CliAdmin admin=new CliAdmin("admin","admin","admin","admin");
+        String json = mapper.writeValueAsString(admin);
+        server.expect(requestTo(  "/admin/1"))
+                .andExpect(method(HttpMethod.DELETE))
+                        .andRespond(withStatus(HttpStatus.NOT_FOUND)
+                                        .contentType(MediaType.APPLICATION_JSON));
+        assertEquals("404 Failed to delete admin : admin not found",client.deleteAdmin(1L));
+        server.verify();
+    }
+    @Test
+    public void addShopKeeperTest() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        String json = mapper.writeValueAsString(expectedShop);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/save"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
+        assertEquals(expectedShop.toString(), client.addShopKeeper(1L,"Sephora","mail@gmail.com","password","11/04/2001"));
+    }
+    @Test
+    public void addShopKeeperNotFoundTest() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        String json = mapper.writeValueAsString(expectedShop);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/save"))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("shop not found"));
+        assertEquals("404 Failed to add shop keeper : shop not found", client.addShopKeeper(1L,"Sephora","mail@gmail.com","password","11/04/2001"));
+    }
 
+    @Test
+    public void addShopKeeperConflictTest() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        String json = mapper.writeValueAsString(expectedShop);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/save"))
+                .andRespond(withStatus(HttpStatus.CONFLICT)
+                        .contentType(MediaType.APPLICATION_JSON));
+        assertEquals("409 Failed to add shop keeper : shop keeper account already exists", client.addShopKeeper(1L,"Sephora","mail@gmail.com","password","11/04/2001"));
+    }
+    @Test
+    public void addShopKeeperUnprocessableEntityTest() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        String json = mapper.writeValueAsString(expectedShop);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/save"))
+                .andRespond(withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+                        .contentType(MediaType.APPLICATION_JSON));
+        assertEquals("422 Failed to add shop keeper :  invalid parameters", client.addShopKeeper(1L,"Sephora","mail@gmail.com","password","11/04/2001"));
+    }
+    @Test
+    public void DeleteShopKeeper() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/1"))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.OK));;
+        String result=client.deleteShopKeeper(1L);
+        assertEquals("Shop keeper deleted successfully", result);
+    }
+    @Test
+    public void DeleteShopKeeperError() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/1"))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.REQUEST_TIMEOUT));
+        String result=client.deleteShopKeeper(1L);
+        assertEquals("Error while deleting shop", result);
+    }
+    @Test
+    public void DeleteShopKeeperNotFound() throws JsonProcessingException {
+        CliShopKeeper expectedShop =new CliShopKeeper("Sephora","mail@gmail.com","password","11/04/2001");
+        expectedShop.setShopId(1);
+        server.expect(requestTo(BASE_URI + "/shopKeepers/1"))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND));
+        String result=client.deleteShopKeeper(1L);
+        assertEquals("404 Failed to delete shop : shop not found", result);
+    }
 }

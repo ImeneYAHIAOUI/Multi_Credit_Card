@@ -31,7 +31,7 @@ public class AdminCommands {
             return "Invalid admin ID";
         }
         try {
-            ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/admin/" + id, HttpMethod.DELETE, null, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/" + id, HttpMethod.DELETE, null, String.class);
             cliContext.getAdminAccounts().remove(id);
             return "Admin deleted successfully";
         }catch (HttpClientErrorException ex) {
@@ -152,7 +152,7 @@ public class AdminCommands {
             return "Invalid shop ID";
         }
         try {
-            ResponseEntity<String> response = restTemplate.exchange(BASE_URI + "/shops/" + id, HttpMethod.DELETE, null, String.class);
+            restTemplate.exchange(BASE_URI + "/shops/" + id, HttpMethod.DELETE, null, String.class);
             cliContext.getShops().remove(id);
             return "Shop deleted successfully";
         }catch (HttpClientErrorException ex) {
