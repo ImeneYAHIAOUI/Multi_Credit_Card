@@ -403,6 +403,11 @@ public class TransactionHandlerTest {
      void processPurchaseWithCash() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
+        Shop shop=new Shop("A", "1 rue de la paix");
+        product.setShop(shop);
+        shopRepository.save(shop);
+        catalogRepository.save(product);
+        purchaseOfPat.setShop(shop);
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findById(pat.getId()));
         transactionHandler.processPurchaseWithCash(pat,purchaseOfPat);
@@ -415,6 +420,11 @@ public class TransactionHandlerTest {
      void processPurchaseWithMembershipCard() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
         Product product=new Product("cake",1.0,10,0.0);
         purchaseOfPat=new Purchase(LocalDate.now(),account,List.of(new Item(product,5)));
+        Shop shop=new Shop("A", "1 rue de la paix");
+        product.setShop(shop);
+        shopRepository.save(shop);
+        catalogRepository.save(product);
+        purchaseOfPat.setShop(shop);
         pat = memberHandler.createAccount("pat", "pat.d@gmail.com", "password", LocalDate.parse("11/04/2001", formatter));
         assertNotNull(memberFinder.findById(pat.getId()));
         assertThrows(PaymentException.class, () -> transactionHandler.processPurchaseWithMemberCard(pat,purchaseOfPat));

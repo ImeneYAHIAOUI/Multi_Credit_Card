@@ -122,6 +122,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
         purchase.setDate(LocalDate.now());
         addPoints(memberAccount,purchase);
         memberAccount.getTransactions().add(purchase);
+        purchase.getShop().getTransactions().add(purchase);
         if(memberAccount.getTransactions().stream()
                 .filter( Purchase.class::isInstance)
                 .filter(t2 -> t2.getDate().isAfter(LocalDate.now().minusWeeks(1)))
@@ -145,6 +146,7 @@ public class TransactionHandler implements TransactionProcessor, TransactionExpl
             }else{
                 removePoints(memberAccount,usePoint);
                 memberAccount.getTransactions().add(usePoint);
+                usePoint.getShop().getTransactions().add(usePoint);
                 return usePointsRepository.save(usePoint);
             }
 

@@ -49,7 +49,6 @@ public class MemberAccount extends Account {
     public void setMembershipCard(MembershipCard membershipCard) {
         this.membershipCard = membershipCard;
     }
-
     public int getPoints() {
         return points;
     }

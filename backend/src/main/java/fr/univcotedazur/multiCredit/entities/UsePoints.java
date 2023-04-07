@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class UsePoints extends Transaction{
 
     int usedPoints;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn( name="Gift_id" )
     Gift gift;
 

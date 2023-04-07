@@ -5,7 +5,9 @@ import fr.univcotedazur.multiCredit.controllers.AdminController;
 import fr.univcotedazur.multiCredit.controllers.ShopController;
 import fr.univcotedazur.multiCredit.controllers.dto.PlanningDTO;
 import fr.univcotedazur.multiCredit.controllers.dto.ShopDTO;
+import fr.univcotedazur.multiCredit.entities.Shop;
 import fr.univcotedazur.multiCredit.interfaces.MailSender;
+import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
 import fr.univcotedazur.multiCredit.repositories.ShopRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,8 @@ public class ShopControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private ShopRepository shopRepository;
+    @Autowired
+    private ShopRegistration shopRegistration;
     @MockBean
     private MailSender mailSender;
     @BeforeEach
@@ -147,12 +151,13 @@ public class ShopControllerTest {
 
         String json = result.getResponse().getContentAsString();
         ObjectMapper mapper = new ObjectMapper();
-        ShopDTO savedshop = mapper.readValue(json, ShopDTO.class);
-        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+savedshop.getId())
+        Shop savedshop = shopRegistration.addShop(shop.getName(),shop.getAddress());
+        long id=savedshop.getId();
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops"+savedshop.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(AdminController.BASE_URI + "/shops/"+id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(null)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());

@@ -30,6 +30,17 @@ public class Shop {
     @OneToOne(mappedBy = "shop", cascade = CascadeType.REMOVE)
     private ShopKeeperAccount shopKeeperAccount;
 
+    @OneToMany( targetEntity=Transaction.class, mappedBy="shop" ,cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
     public Shop(String name, String address) {
         this.name = name;
         this.address = address;
