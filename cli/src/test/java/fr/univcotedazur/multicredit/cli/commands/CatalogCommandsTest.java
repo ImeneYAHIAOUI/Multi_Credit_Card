@@ -21,82 +21,92 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RestClientTest(CatalogCommands.class)
-public class CatalogCommandsTest {
-    public static final String BASE_URI = "/catalog";
+class CatalogCommandsTest {
+    static final String BASE_URI = "/catalog";
     private static final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-    @Autowired
-    private CatalogCommands client;
     @MockBean
     CliContext cliContext;
     @Autowired
+    private CatalogCommands client;
+    @Autowired
     private MockRestServiceServer server;
+
     @Test
-    public void addProductTest() {
+    void addProductTest() {
         server.expect(requestTo(BASE_URI + "/add/1/Products"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON));
-        assertEquals("Failed to add product : Shop not found", client.addProduct(1L,"product", 1.2,0,0.0));
+        assertEquals("Failed to add product : Shop not found", client.addProduct(1L, "product", 1.2, 0, 0.0));
         server.verify();
     }
+
     @Test
-    public void addProductTestConflict() {
+    void addProductTestConflict() {
         server.expect(requestTo(BASE_URI + "/add/1/Products"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.CONFLICT)
                         .contentType(MediaType.APPLICATION_JSON));
-        assertEquals("Failed to add product :Product already exists", client.addProduct(1L,"product", 1.2,0,0.0));
+        assertEquals("Failed to add product :Product already exists", client.addProduct(1L, "product", 1.2, 0, 0.0));
         server.verify();
     }
+
     @Test
-    public void addProductTestNotFound() {
+    void addProductTestNotFound() {
         server.expect(requestTo(BASE_URI + "/add/1/Products"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON));
-        assertEquals("Failed to add product : Shop not found", client.addProduct(1L,"product", 1.2,0,0.0));
+        assertEquals("Failed to add product : Shop not found", client.addProduct(1L, "product", 1.2, 0, 0.0));
         server.verify();
     }
+
     @Test
-    public void addGiftTestNotFound() {
+    void addGiftTestNotFound() {
         server.expect(requestTo(BASE_URI + "/add/1/Gifts"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON));
-        assertEquals("Failed to add gift : Shop not found",client.addGift(1L,2,"gift", "VFP"));
+        assertEquals("Failed to add gift : Shop not found", client.addGift(1L, 2, "gift", "VFP"));
         server.verify();
     }
+
     @Test
-    public void addGiftTest() {
+    void addGiftTest() {
         server.expect(requestTo(BASE_URI + "/add/1/Gifts"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON));
-        assertEquals("Failed to add gift : Shop not found", client.addGift(1L,2,"gift", "VFP"));
+        assertEquals("Failed to add gift : Shop not found", client.addGift(1L, 2, "gift", "VFP"));
         server.verify();
     }
+
     @Test
-    public void addGiftTestConflict() {
+    void addGiftTestConflict() {
         server.expect(requestTo(BASE_URI + "/add/1/Gifts"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.CONFLICT)
                         .contentType(MediaType.APPLICATION_JSON));
-        assertEquals("Failed to add gift : Gift already exists", client.addGift(1L,2,"gift", "VFP")  );
+        assertEquals("Failed to add gift : Gift already exists", client.addGift(1L, 2, "gift", "VFP"));
         server.verify();
     }
+
     @Test
-    public void addGiftTestErrorStatus() {
-        assertEquals("Failed to add gift : Invalid status", client.addGift(1L,2,"gift", "status"));
+    void addGiftTestErrorStatus() {
+        assertEquals("Failed to add gift : Invalid status", client.addGift(1L, 2, "gift", "status"));
     }
-    @Test public void getGiftTestNotFound() {
+
+    @Test
+    void getGiftTestNotFound() {
         server.expect(requestTo(BASE_URI + "/Gifts/1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON));
         assertEquals("Gift id 1 unknown", client.getGift(1L));
         server.verify();
     }
+
     @Test
-    public void getProductTestNotFound() {
+    void getProductTestNotFound() {
         server.expect(requestTo(BASE_URI + "/Products/1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
@@ -104,10 +114,11 @@ public class CatalogCommandsTest {
         assertEquals("Product id 1 unknown", client.getProduct(1L));
         server.verify();
     }
+
     @Test
-    public void getProductTest() throws JsonProcessingException {
+    void getProductTest() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        CliProduct p = new CliProduct("product", 1,1.0,0.0);
+        CliProduct p = new CliProduct("product", 1, 1.0, 0.0);
         p.setId(1L);
         String json = mapper.writeValueAsString(p);
         server.expect(requestTo(BASE_URI + "/Products/1"))
@@ -116,10 +127,11 @@ public class CatalogCommandsTest {
         assertEquals(p.toString(), client.getProduct(1L));
         server.verify();
     }
+
     @Test
-    public void getGiftTest() throws JsonProcessingException {
+    void getGiftTest() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        CliGift p = new CliGift(5,"gift", "REGULAR");
+        CliGift p = new CliGift(5, "gift", "REGULAR");
         p.setGiftId(1L);
         String json = mapper.writeValueAsString(p);
         server.expect(requestTo(BASE_URI + "/Gifts/1"))
@@ -128,32 +140,36 @@ public class CatalogCommandsTest {
         assertEquals(p.toString(), client.getGift(1L));
         server.verify();
     }
-     @Test
-    public void deleteGiftTestNotFound(){
+
+    @Test
+    void deleteGiftTestNotFound() {
         server.expect(requestTo(BASE_URI + "/Gifts/1"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON));
         assertEquals("Failed to delete gift : Gift id 1 unknown", client.deleteGift(1L));
         server.verify();
-     }
+    }
+
     @Test
-    public void deleteGiftTest(){
+    void deleteGiftTest() {
         server.expect(requestTo(BASE_URI + "/Gifts/1"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withStatus(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON));
         assertEquals("gift deleted successfully", client.deleteGift(1L));
         server.verify();
     }
+
     @Test
-    public void deleteProductTest(){
+    void deleteProductTest() {
         server.expect(requestTo(BASE_URI + "/Products/1"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withStatus(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON));
         assertEquals("product deleted successfully", client.deleteProduct(1L));
         server.verify();
     }
+
     @Test
-    public void deleteProductTestNotFound(){
+    void deleteProductTestNotFound() {
         server.expect(requestTo(BASE_URI + "/Products/1"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)

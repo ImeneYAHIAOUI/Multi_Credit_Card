@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -22,17 +21,18 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RestClientTest(ShopCommands.class)
-public class ShopCommandsTest {
-    public static final String BASE_URI_SHOPS = "/shops";
+class ShopCommandsTest {
+    static final String BASE_URI_SHOPS = "/shops";
     private static final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-    @Autowired
-    private ShopCommands client;
     @MockBean
     CliContext cliContext;
     @Autowired
+    private ShopCommands client;
+    @Autowired
     private MockRestServiceServer server;
+
     @Test
-    public  void getShopTest()throws JsonProcessingException {
+    void getShopTest() throws JsonProcessingException {
 
         String name = "sephsssdsora";
         String address = "adresse";
@@ -46,10 +46,11 @@ public class ShopCommandsTest {
         assertEquals("{\"id\":10,\"name\":\"sephsssdsora\",\"address\":\"adresse\"}", client.getShop(savedshop.getId()));
         server.verify();
     }
-    @Test
-    public  void getShopTestNotFound()throws JsonProcessingException {
 
-        server.expect(requestTo(BASE_URI_SHOPS + "/10" ))
+    @Test
+    void getShopTestNotFound() throws JsonProcessingException {
+
+        server.expect(requestTo(BASE_URI_SHOPS + "/10"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -60,105 +61,112 @@ public class ShopCommandsTest {
 
 
     @Test
-    public void testupdateShopAddress() {
+    void testupdateShopAddress() {
         server.expect(requestTo(BASE_URI_SHOPS + "/2/address"))
                 .andExpect(method(HttpMethod.PUT))
                 .andRespond(withStatus(HttpStatus.OK)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .body("Shop address updated successfully"));
-        String result=client.updateShopAddress(2L,"newAddress");
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body("Shop address updated successfully"));
+        String result = client.updateShopAddress(2L, "newAddress");
         assertEquals("Shop address updated successfully", result);
         server.verify();
     }
 
     @Test
-    public void testupdateShopAddressNotFound() {
-        server.expect(requestTo(BASE_URI_SHOPS + "/2/address"     ))
+    void testupdateShopAddressNotFound() {
+        server.expect(requestTo(BASE_URI_SHOPS + "/2/address"))
                 .andExpect(method(HttpMethod.PUT))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("shop not found"));
-        String result=client.updateShopAddress(2L,"newAddress");
+        String result = client.updateShopAddress(2L, "newAddress");
         assertEquals("Invalid shop id : shop not found", result);
         server.verify();
     }
+
     @Test
-    public void testmodifyPlanning() {
+    void testmodifyPlanning() {
         server.expect(requestTo(BASE_URI_SHOPS + "/2/planning"))
                 .andExpect(method(HttpMethod.PUT))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("Shop planning for friday updated successfully"));
-        String result=client.modifyPlanning(2L,"Friday","10:00","12:00");
+        String result = client.modifyPlanning(2L, "Friday", "10:00", "12:00");
         assertEquals("Planning successfully modified.", result);
         server.verify();
     }
+
     @Test
-    public void testmodifyPlanningNotFound() {
+    void testmodifyPlanningNotFound() {
         server.expect(requestTo(BASE_URI_SHOPS + "/2/planning"))
                 .andExpect(method(HttpMethod.PUT))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("shop not found"));
-        String result=client.modifyPlanning(2L,"Friday","10:00","12:00");
+        String result = client.modifyPlanning(2L, "Friday", "10:00", "12:00");
         assertEquals("Failed to modify planning : shop not found", result);
         server.verify();
     }
 
     @Test
-    public void testmodifyPlanningError1() {
+    void testmodifyPlanningError1() {
         server.expect(requestTo(BASE_URI_SHOPS + "/2/planning"))
                 .andExpect(method(HttpMethod.PUT))
                 .andRespond(withStatus(HttpStatus.BAD_REQUEST)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("Invalid opening/closing hours parameters"));
-        String result=client.modifyPlanning(2L,"Friday","14:00","12:00");
-        assertEquals( "Failed to modify planning : Invalid opening/closing hours parameters", result);
+        String result = client.modifyPlanning(2L, "Friday", "14:00", "12:00");
+        assertEquals("Failed to modify planning : Invalid opening/closing hours parameters", result);
         server.verify();
     }
+
     @Test
-    public void testmodifyPlanningError2() {
-        String result=client.modifyPlanning(2L,"Home","10:00","12:00");
-        assertEquals( "Failed to modify planning : Invalid day of week", result);
+    void testmodifyPlanningError2() {
+        String result = client.modifyPlanning(2L, "Home", "10:00", "12:00");
+        assertEquals("Failed to modify planning : Invalid day of week", result);
         server.verify();
     }
+
     @Test
-    public void testmodifyPlanningError3() {
-        String result=client.modifyPlanning(2L,"Friday","4444","12:00");
-        assertEquals( "Failed to modify planning : Invalid time format (must be HH:mm)", result);
+    void testmodifyPlanningError3() {
+        String result = client.modifyPlanning(2L, "Friday", "4444", "12:00");
+        assertEquals("Failed to modify planning : Invalid time format (must be HH:mm)", result);
         server.verify();
     }
+
     @Test
-    public void TestGetShopkeer() throws JsonProcessingException {
-        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper","password", "02/03/1999");
+    void TestGetShopkeer() throws JsonProcessingException {
+        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper", "password", "02/03/1999");
         String json = mapper.writeValueAsString(shopKeeper);
 
         server.expect(requestTo(BASE_URI_SHOPS + "/shopKeepers/2"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
-        String result=client.getShopKeeper(2L);
+        String result = client.getShopKeeper(2L);
         assertEquals(json, result);
         server.verify();
     }
+
     @Test
-    public void TestGetShopkeerNotFound() throws JsonProcessingException {
-        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper","password", "02/03/1999");
+    void TestGetShopkeerNotFound() {
+        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper", "password", "02/03/1999");
 
         server.expect(requestTo(BASE_URI_SHOPS + "/shopKeepers/2"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.NOT_FOUND));
-        String result=client.getShopKeeper(2L);
+        String result = client.getShopKeeper(2L);
         assertEquals(" 404 Invalid shop id : shop keeper not found", result);
         server.verify();
     }
+
     @Test
-    public void TestGetShopkeerError() throws JsonProcessingException {
-        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper","password", "02/03/1999");
+    void TestGetShopkeerError() {
+        CliShopKeeper shopKeeper = new CliShopKeeper("shopkeeper", "shopkeeper", "password", "02/03/1999");
 
         server.expect(requestTo(BASE_URI_SHOPS + "/shopKeepers/2"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.REQUEST_TIMEOUT));
-        String result=client.getShopKeeper(2L);
+        String result = client.getShopKeeper(2L);
         assertEquals("Error while getting shop keeper account", result);
         server.verify();
     }
