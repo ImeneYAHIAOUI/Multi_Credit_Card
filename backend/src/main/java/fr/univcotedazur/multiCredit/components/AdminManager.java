@@ -1,15 +1,14 @@
 package fr.univcotedazur.multiCredit.components;
 import fr.univcotedazur.multiCredit.entities.*;
-import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingAdminException;
-import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingMemberException;
-import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
-import fr.univcotedazur.multiCredit.exceptions.UnderAgeException;
+import fr.univcotedazur.multiCredit.exceptions.*;
 import fr.univcotedazur.multiCredit.interfaces.*;
 import fr.univcotedazur.multiCredit.repositories.AdminAccountRepository;
 import fr.univcotedazur.multiCredit.repositories.MemberRepository;
 import fr.univcotedazur.multiCredit.repositories.ShopKeeperAccountRepository;
 import fr.univcotedazur.multiCredit.repositories.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -79,26 +78,32 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
     }
 
     @Override
-    public Shop addShop(String name, String address) throws MissingInformationException{
+    public Shop addShop(String name, String address) throws MissingInformationException,AlreadyExistingShopException{
         if (name == null || address == null) {
             throw new MissingInformationException();
         }
-        Shop shop = new Shop(name, address);
-        shopRepository.save(shop);
-        return shop;
+        else if(shopManager.findShopByAddress(address).isEmpty()){
+            Shop shop = new Shop(name, address);
+            shopRepository.save(shop);
+            return shop;
+        }else
+            throw new AlreadyExistingShopException();
+
     }
 
     @Override
-    public void removeShop(Shop shop) {
-        if(shopManager.findShopById(shop.getId()).isPresent()){
-            shopRepository.deleteById(shop.getId());
-        }
+    public void removeShop(Long id ) throws  ShopNotFoundException{
+        if(shopManager.findShopById(id).isPresent()){
+            shopRepository.deleteById(id);
+        }else throw  new ShopNotFoundException();
     }
 
     @Override
-    public ShopKeeperAccount createShopKeeperAccount(Form form, long id) throws MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
-        Optional<Shop> shop = shopManager.findShopById(id);
-            if (shop.isEmpty() || form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
+    public ShopKeeperAccount createShopKeeperAccount(Form form, long id) throws ShopNotFoundException , MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
+        Optional<Shop> shop=shopManager.findShopById(id);
+             if(shop.isEmpty())
+                throw new ShopNotFoundException();
+            if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
                 throw new MissingInformationException();
             }
             ShopKeeperAccount shopKeeperAccount = shopManager.findShopkeeperAccountByMail(form.getMail());
@@ -115,10 +120,12 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         }
 
         @Override
-        public void deleteShopKeeperAccount(ShopKeeperAccount account) {
-            if(account!=null && shopManager.findShopkeeperAccountById(account.getId()).isPresent()){
-                shopKeeperAccountRepository.deleteById(account.getId());
-            }
+        public void deleteShopKeeperAccount(Long id)throws ShopKeeperNotFoundException {
+                if(shopManager.findShopkeeperAccountById(id).isPresent())
+                     shopKeeperAccountRepository.deleteById(id);
+                else
+                    throw new ShopKeeperNotFoundException();
+
         }
 
         @Override
@@ -131,12 +138,12 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
             }
         }
         @Override
-        public void sendMail(String sender, String mailContent, String subject) {
+        public void sendMail(String sender, String mailContent, String subject)throws MailException {
             Mail mailToSend = new Mail(sender, mailContent, subject);
             List<String> mails = memberRepository.findAll().stream().map(MemberAccount::getMail).toList();
             if(!mailSender.sendMail(mails, mailToSend)){
                 System.out.println("Error while sending mail");
-                throw new RuntimeException();
+                throw new MailException();
             }
         }
     }

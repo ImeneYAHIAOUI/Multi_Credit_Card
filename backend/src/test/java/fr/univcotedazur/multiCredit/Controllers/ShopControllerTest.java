@@ -139,17 +139,10 @@ public class ShopControllerTest {
     }
     @Test
      void deleteShopByIdTest()throws Exception{
+        shopRepository.deleteAll();
         ShopDTO shop=new ShopDTO();
         shop.setName("Sephora");
-        shop.setAddress("adress");
-        MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post(AdminController.BASE_URI + "/shops/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(shop)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
-
-        String json = result.getResponse().getContentAsString();
+        shop.setAddress("adddddress");
         ObjectMapper mapper = new ObjectMapper();
         Shop savedshop = shopRegistration.addShop(shop.getName(),shop.getAddress());
         long id=savedshop.getId();

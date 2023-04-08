@@ -58,9 +58,9 @@ public class EarnsPointsDefs {
         }
     }
     @When("the client makes a valid purchase")
-    public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
+    public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException, AlreadyExistingShopException {
         Product product3=new Product("phone",1.0,20,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
+        Shop shop=shopRegistration.addShop("A", "1 rue hadi chaker");
         product3.setShop(shop);
         catalogRepository.save(product3);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
@@ -73,10 +73,10 @@ public class EarnsPointsDefs {
        assertEquals(40,memberAccount.getPoints());
     }
     @When("the client makes an invalid purchase")
-    public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException {
+    public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException, AlreadyExistingShopException {
         assertEquals(0,memberAccount.getPoints());
         Product product3=new Product("phone",1.0,20,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
+        Shop shop=shopRegistration.addShop("A", "1 rue de la sqpaix");
         product3.setShop(shop);
         catalogRepository.save(product3);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));

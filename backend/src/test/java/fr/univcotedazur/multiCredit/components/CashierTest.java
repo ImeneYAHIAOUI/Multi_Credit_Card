@@ -32,13 +32,10 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @Transactional
 class CashierTest {
-
     @Autowired
     MemberRepository memberRepository;
-
     @Autowired
     private Payment cashier;
-
     @MockBean
     private Bank bankMock;
     @Autowired

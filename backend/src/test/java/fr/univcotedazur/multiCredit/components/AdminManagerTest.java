@@ -95,7 +95,7 @@ private MemberFinder memberFinder;
         });
     }
     @Test
-    void addShopTest2() throws MissingInformationException {
+    void addShopTest2() throws MissingInformationException, AlreadyExistingShopException {
         Shop shop=shopRegistration.addShop("nom","adresse");
         assertNotNull(shop);
     }
@@ -103,7 +103,7 @@ private MemberFinder memberFinder;
 
 
     @Test
-    void createShopKeeperAccount() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
+    void createShopKeeperAccount() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException, ShopNotFoundException, AlreadyExistingShopException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2002, 3, 24);
@@ -113,7 +113,7 @@ private MemberFinder memberFinder;
         assertThrows(AlreadyExistingMemberException.class,()->shopkeeperRegistration.createShopKeeperAccount(form,shop.getId()));
     }
     @Test
-    void createShopKeeperAccount1() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
+    void createShopKeeperAccount1() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException, AlreadyExistingShopException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2019, 3, 24);
@@ -121,7 +121,7 @@ private MemberFinder memberFinder;
         assertThrows(UnderAgeException.class,()->shopkeeperRegistration.createShopKeeperAccount(form,shop.getId()));
     }
     @Test
-    void createShopKeeperAccount2() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
+    void createShopKeeperAccount2() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException, AlreadyExistingShopException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2019, 3, 24);
@@ -136,11 +136,11 @@ private MemberFinder memberFinder;
                 new Form("Sacha", "sachatouille@gmail.com", "sdsd", null),shop.getId()));
         assertThrows(MissingInformationException.class,()->shopkeeperRegistration.createShopKeeperAccount(
                 new Form(null, null,null, null),shop.getId()));
-        assertThrows(MissingInformationException.class,()->shopkeeperRegistration.createShopKeeperAccount(
+        assertThrows(ShopNotFoundException.class,()->shopkeeperRegistration.createShopKeeperAccount(
                 new Form("name","sachatouille@gmail.com", "1234", birthday),100l));
     }
     @Test
-     void deleteShopKeeperAccountTest() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
+     void deleteShopKeeperAccountTest() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException, ShopNotFoundException, ShopKeeperNotFoundException, AlreadyExistingShopException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2002, 3, 24);
@@ -148,15 +148,15 @@ private MemberFinder memberFinder;
         ShopKeeperAccount s=shopkeeperRegistration.createShopKeeperAccount(form,shop.getId());
         assertNotNull(s);
         assertTrue(shopKeeperAccountRepository.existsById(s.getId()));
-       shopkeeperRegistration.deleteShopKeeperAccount(s);
+       shopkeeperRegistration.deleteShopKeeperAccount(s.getId());
         assertFalse(shopKeeperAccountRepository.existsById(s.getId()));
         assertFalse(shopRepository.existsById(shop.getId()));
     }
       @Test
-       void removeShopTest() throws MissingInformationException {
+       void removeShopTest() throws MissingInformationException, AlreadyExistingShopException, ShopNotFoundException {
         Shop shop=shopRegistration.addShop("sephora","adresse");
         assertNotNull(shop);
-        shopRegistration.removeShop(shop);
+        shopRegistration.removeShop(shop.getId());
         assertTrue(shopRepository.findById(shop.getId()).isEmpty());
     }
 

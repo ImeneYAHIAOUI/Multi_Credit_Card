@@ -5,6 +5,7 @@ import fr.univcotedazur.multiCredit.connectors.externaldto.externaldto.ISWUPLSDT
 import fr.univcotedazur.multiCredit.controllers.dto.ErrorDTO;
 import fr.univcotedazur.multiCredit.controllers.dto.ParkingDTO;
 import fr.univcotedazur.multiCredit.entities.MemberAccount;
+import fr.univcotedazur.multiCredit.interfaces.MemberFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,8 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(path = ParkingController.BASE_URI, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ParkingController {
     public static final String BASE_URI = "/parking";
-
     @Autowired
-    private MemberManager memberManager;
+    private MemberFinder memberManager;
     @Autowired
     private ParkingManager parkingManager;
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)

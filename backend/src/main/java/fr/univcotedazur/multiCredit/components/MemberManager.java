@@ -32,8 +32,6 @@ public class MemberManager implements MemberHandler, MemberFinder {
         this.env = env;
         this.bank = bank;
     }
-
-
     @Override
     public MemberAccount createAccount(String name, String mail, String password, LocalDate birthDate) throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException {
         if (name == null || mail == null || password == null || birthDate == null) {

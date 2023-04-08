@@ -30,8 +30,6 @@ public class CatalogController {
     public static final String BASE_URI = "/catalog";
     @Autowired
     Catalog catalog;
-    @Autowired
-    ShopManager shopManager;
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     // The 422 (Unprocessable Entity) status code means the server understands the content type of the request entity
     // (hence a 415(Unsupported Media Type) status code is inappropriate), and the syntax of the request entity is
@@ -48,38 +46,29 @@ public class CatalogController {
     public ResponseEntity<ProductDTO> addProduct(@PathVariable("shopId") Long shopId,@RequestBody @Valid ProductDTO product) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
-        Optional<Shop> shop=shopManager.findShopById(shopId);
-        if(shop.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        else{
+        try{
             Product p=new Product(product.getName(),product.getPrice(),product.getPoints(),product.getDiscountPercentage());
-            try{
-                catalog.addProductToCatalog(shop.get(),p);
-                return ResponseEntity.status(HttpStatus.CREATED).body(convertProductToDto(p));
-            }catch (AlreadyExistingProductException e){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-            }
+            catalog.addProductToCatalog(shopId,p);
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertProductToDto(p));
+        }catch (AlreadyExistingProductException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-
+        catch (ShopNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
     }
     @PostMapping(path = "/add/{shopId}/Gifts", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<GiftDTO> addGift(@PathVariable("shopId") Long shopId,@RequestBody  GiftDTO gift) {
         // Note that there is no validation at all on the shop mapped
         // from the request body. This is because the @Valid annotation
-        Optional<Shop> shop=shopManager.findShopById(shopId);
-        if(shop.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        else{
+        try{
             Gift p=new Gift(gift.getPointsNeeded(),gift.getDescription(), AccountStatus.valueOf(gift.getStatus().toUpperCase()));
-            try{
-                catalog.addGift(shop.get(),p);
-                return ResponseEntity.status(HttpStatus.CREATED).body(convertGiftToDto( p));
-            }catch (AlreadyExistingGiftException e){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-            }
+            catalog.addGift(shopId,p);
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertGiftToDto( p));
+        }catch (AlreadyExistingGiftException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
+        catch (ShopNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
     }
     @GetMapping(path="/Gifts/{giftId}")
     public ResponseEntity<GiftDTO> getGiftById(@PathVariable("giftId") Long giftId) {

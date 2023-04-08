@@ -2,7 +2,9 @@ package fr.univcotedazur.multiCredit.components;
 
 import fr.univcotedazur.multiCredit.entities.*;
 import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingGiftException;
+import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingShopException;
 import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
+import fr.univcotedazur.multiCredit.exceptions.ShopNotFoundException;
 import fr.univcotedazur.multiCredit.interfaces.MailSender;
 import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
 import fr.univcotedazur.multiCredit.repositories.GiftRepository;
@@ -40,15 +42,15 @@ public class ShopManagerTests {
     @MockBean
     private MailSender mailSender;
     @BeforeEach
-    public void setUp() throws MissingInformationException , AlreadyExistingGiftException {
+    public void setUp() throws MissingInformationException, AlreadyExistingGiftException, ShopNotFoundException, AlreadyExistingShopException {
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
         gift=new Gift(150,"ring", AccountStatus.VFP);
         gift1=new Gift(10,"cake", AccountStatus.REGULAR);
         gift.setShop(shop);
         gift1.setShop(shop);
-        catalog.addGift(shop,gift);
-        catalog.addGift(shop,gift1);
+        catalog.addGift(shop.getId(),gift);
+        catalog.addGift(shop.getId(),gift1);
         gift2=new Gift(10,"cookie", AccountStatus.VFP);
         when(mailSender.sendMail(any(), any())).thenReturn(true);
 

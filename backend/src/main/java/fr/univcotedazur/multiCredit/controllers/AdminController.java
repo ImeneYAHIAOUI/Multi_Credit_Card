@@ -26,9 +26,6 @@ public class AdminController {
     public static final String BASE_URI = "/admin";
     @Autowired
     private AdminManager adminManager;
-    @Autowired
-    private ShopManager shopManager;
-
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     // The 422 (Unprocessable Entity) status code means the server understands the content type of the request entity
     // (hence a 415(Unsupported Media Type) status code is inappropriate), and the syntax of the request entity is
@@ -61,24 +58,23 @@ public class AdminController {
     }
     @PostMapping(path = "/shopKeepers/save", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<ShopKeeperDTO> registerShopKeeper(@RequestBody @Valid ShopKeeperDTO shopKeeperDTO) {
-        Optional<Shop> shop=shopManager.findShopById(shopKeeperDTO.getShopId());
-        if(shop.isEmpty())
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+            ShopKeeperAccount shopKeeperAccount=adminManager.createShopKeeperAccount(new Form(shopKeeperDTO.getName(),shopKeeperDTO.getMail(),shopKeeperDTO.getPassword(),
+                            LocalDate.parse(shopKeeperDTO.getBirthDate(),formatter)),
+                    shopKeeperDTO.getShopId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertShopKeeperToDto(shopKeeperAccount));
+        }catch ( MissingInformationException | UnderAgeException  e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body(null);
+        }
+        catch (AlreadyExistingMemberException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(null);
+        }
+        catch (ShopNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        else{
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-                ShopKeeperAccount shopKeeperAccount=adminManager.createShopKeeperAccount(new Form(shopKeeperDTO.getName(),shopKeeperDTO.getMail(),shopKeeperDTO.getPassword(),
-                        LocalDate.parse(shopKeeperDTO.getBirthDate(),formatter)),
-                        shopKeeperDTO.getShopId());
-                return ResponseEntity.status(HttpStatus.CREATED).body(convertShopKeeperToDto(shopKeeperAccount));
-            }catch ( MissingInformationException | UnderAgeException  e){
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                        .body(null);
-            }
-            catch (AlreadyExistingMemberException e){
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(null);
-            }
+
         }
     }
 
@@ -87,7 +83,7 @@ public class AdminController {
         try {
             adminManager.sendMail(mailDTO.getSender(),mailDTO.getSubject(),mailDTO.getMailContent());
             return ResponseEntity.status(HttpStatus.OK).body("Mail sent successfully");
-        }catch (ResourceAccessException e){
+        }catch ( MailException e){
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Mail service unavailable");
         }
     }
@@ -105,35 +101,38 @@ public class AdminController {
     // method to delete a shop by id
     @DeleteMapping("/shops/{id}")
     public ResponseEntity<String> deleteShopById(@PathVariable("id") Long shopId) {
-        Optional<Shop> shop = shopManager.findShopById(shopId);
-        if (shop.isEmpty()) {
+        try {
+            adminManager.removeShop(shopId);
+            return ResponseEntity.ok("Shop deleted successfully");
+        }catch(ShopNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop not found");
         }
-        adminManager.removeShop(shop.get());
-        return ResponseEntity.ok("Shop deleted successfully");
+
     }
     @DeleteMapping("/shopKeepers/{id}")
     public ResponseEntity<String> deleteShopKeeperById(@PathVariable("id") Long shopId) {
-        Optional<ShopKeeperAccount> shop = shopManager.findShopkeeperAccountById(shopId);
-        if (shop.isEmpty()) {
+        try {
+            adminManager.deleteShopKeeperAccount(shopId);
+            return ResponseEntity.ok("Shop keeper deleted successfully");
+        }catch(ShopKeeperNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop keeper not found");
         }
-        adminManager.deleteShopKeeperAccount(shop.get());
-        return ResponseEntity.ok("Shop keeper deleted successfully");
+
     }
     @PostMapping(path = "/shops/save", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<ShopDTO> registerShop(@RequestBody @Valid ShopDTO shopDTO) {
         try {
-            if (shopManager.findShopByAddress(shopDTO.getAddress()).isEmpty()) {
                 Shop shop = adminManager.addShop(shopDTO.getName(), shopDTO.getAddress());
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body(convertShopToDto(shop));
-            }else{
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-            }
+
         }catch (MissingInformationException e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                     .body(null);
+        }
+        catch (AlreadyExistingShopException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+
         }
     }
     @DeleteMapping("/{id}")

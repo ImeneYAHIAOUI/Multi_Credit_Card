@@ -6,10 +6,7 @@ import fr.univcotedazur.multiCredit.exceptions.*;
 import fr.univcotedazur.multiCredit.interfaces.MemberFinder;
 import fr.univcotedazur.multiCredit.interfaces.MemberHandler;
 import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
-import fr.univcotedazur.multiCredit.repositories.CatalogRepository;
-import fr.univcotedazur.multiCredit.repositories.GiftRepository;
-import fr.univcotedazur.multiCredit.repositories.MemberRepository;
-import fr.univcotedazur.multiCredit.repositories.TransactionRepository;
+import fr.univcotedazur.multiCredit.repositories.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -48,19 +45,23 @@ public class UsePointsDefs {
     @Autowired
     GiftRepository giftRepository;
     UsePoints transaction;
+    @Autowired
+    ShopRepository shopRepository;
+
 
     @Autowired
     TransactionRepository transactionRepository;
     Purchase tran;
     @Given("a client has an account")
     @Transactional
-    public void a_client_has_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException {
+    public void a_client_has_an_account() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, AlreadyExistingShopException {
         try {
             memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         }catch (AlreadyExistingMemberException e){
             memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com").get());
             memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         }
+        shopRepository.deleteAll();
         memberAccount=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
@@ -69,7 +70,7 @@ public class UsePointsDefs {
         transaction.setUsedPoints(100);
         transaction.setGift(gift);
         Product product3=new Product("phone",1.0,0,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
+        Shop shop=shopRegistration.addShop("A", "111 bd de la paaaaaaaaaix");
         product3.setShop(shop);
         gift.setShop(shop);
         catalogRepository.save(product3);

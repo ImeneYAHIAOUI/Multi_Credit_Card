@@ -3,6 +3,7 @@ package fr.univcotedazur.multiCredit.cucumber.Shop;
 import fr.univcotedazur.multiCredit.components.ShopManager;
 import fr.univcotedazur.multiCredit.connectors.MailProxy;
 import fr.univcotedazur.multiCredit.entities.*;
+import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingShopException;
 import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
 import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
 import fr.univcotedazur.multiCredit.repositories.ShopRepository;
@@ -33,7 +34,7 @@ public class ChangeShopHoursDefs {
 
 
     @Given("a shop who wants to change his planning")
-    public void a_shop_who_wants_to_change_his_planning()throws MissingInformationException {
+    public void a_shop_who_wants_to_change_his_planning() throws MissingInformationException, AlreadyExistingShopException {
         shopRepository.deleteAll();
         shop=shopRegistration.addShop("A", "1 rue de la paix");
         when(mailSender.sendMail(any(), any())).thenReturn(true);

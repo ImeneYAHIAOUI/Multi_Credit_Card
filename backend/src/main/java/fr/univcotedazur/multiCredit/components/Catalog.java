@@ -3,12 +3,10 @@ package fr.univcotedazur.multiCredit.components;
 import fr.univcotedazur.multiCredit.entities.Gift;
 import fr.univcotedazur.multiCredit.entities.Product;
 import fr.univcotedazur.multiCredit.entities.Shop;
-import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingGiftException;
-import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingProductException;
-import fr.univcotedazur.multiCredit.exceptions.GiftNotFoundException;
-import fr.univcotedazur.multiCredit.exceptions.ProductNotFoundException;
+import fr.univcotedazur.multiCredit.exceptions.*;
 import fr.univcotedazur.multiCredit.interfaces.CatalogEditor;
 import fr.univcotedazur.multiCredit.interfaces.CatalogFinder;
+import fr.univcotedazur.multiCredit.interfaces.ShopFinder;
 import fr.univcotedazur.multiCredit.repositories.CatalogRepository;
 
 import fr.univcotedazur.multiCredit.repositories.GiftRepository;
@@ -23,9 +21,12 @@ public class Catalog implements CatalogEditor, CatalogFinder {
     private CatalogRepository catalogRepository;
     private GiftRepository giftRepository;
     @Autowired
-    public Catalog(CatalogRepository catalogRepository, GiftRepository giftRepository) {
+    private ShopFinder shopFinder;
+    @Autowired
+    public Catalog(CatalogRepository catalogRepository, GiftRepository giftRepository,ShopFinder shopFinder) {
         this.catalogRepository = catalogRepository;
         this.giftRepository = giftRepository;
+        this.shopFinder=shopFinder;
     }
     @Override
     public Optional<Product> findProductById(Long id){
@@ -36,10 +37,10 @@ public class Catalog implements CatalogEditor, CatalogFinder {
         return giftRepository.findById(id);
     }
     @Override
-    public void editShopCatalog(Shop shop, List<Product> addedProducts, List<Product> removedProducts)throws AlreadyExistingProductException , ProductNotFoundException {
+    public void editShopCatalog(Shop shop, List<Product> addedProducts, List<Product> removedProducts)throws AlreadyExistingProductException ,ShopNotFoundException, ProductNotFoundException {
         if(addedProducts!=null)
             for (Product product : addedProducts) {
-                addProductToCatalog(shop,product);
+                addProductToCatalog(shop.getId(),product);
             }
         if(removedProducts!=null)
             for (Product product : removedProducts) {
@@ -48,8 +49,11 @@ public class Catalog implements CatalogEditor, CatalogFinder {
     }
 
     @Override
-    public void addGift(Shop shop, Gift gift)throws AlreadyExistingGiftException {
+    public void addGift(Long id, Gift gift)throws AlreadyExistingGiftException ,ShopNotFoundException{
+        if(shopFinder.findShopById(id).isEmpty())
+            throw  new ShopNotFoundException();
         if(gift!=null && giftRepository.findAll().stream().noneMatch(p-> p.equals(gift))) {
+            Shop shop=shopFinder.findShopById(id).get();
             gift.setShop(shop);
             shop.addGift(gift);
             giftRepository.save(gift);
@@ -68,13 +72,15 @@ public class Catalog implements CatalogEditor, CatalogFinder {
     }
 
     @Override
-    public void addProductToCatalog(Shop shop,Product product) throws AlreadyExistingProductException {
+    public void addProductToCatalog(Long id,Product product) throws AlreadyExistingProductException,ShopNotFoundException {
+        if(shopFinder.findShopById(id).isEmpty())
+            throw  new ShopNotFoundException();
         if(catalogRepository.findAll().stream().noneMatch(p-> p.equals(product))) {
+            Shop shop=shopFinder.findShopById(id).get();
             product.setShop(shop);
             shop.addProduct(product);
             catalogRepository.save(product);
         }else{
-            System.out.println("product already exists");
             throw new AlreadyExistingProductException();}
     }
     @Override
