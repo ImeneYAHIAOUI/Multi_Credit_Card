@@ -89,7 +89,7 @@
 
     <distributionManagement>
         <repository>
-            <id>artifactoryCentral</id>
+            <id>artifactoryReleases</id>
             <name>8ead0d7e91d8-releases</name>
             <url>http://134.59.213.136:8002/artifactory/libs-release-local</url>
         </repository>

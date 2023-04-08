@@ -65,11 +65,6 @@ pipeline {
             }
         }
         stage('Code Analysis') {
-            when {
-                not {
-                    branch 'main'
-                }
-            }
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo 'Analyzing Backend:'
@@ -86,10 +81,18 @@ pipeline {
             }
             steps {
                 echo 'Packaging Backend:'
-                sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
+                if (env.BRANCH_NAME == 'main') {
+                    sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=artifactoryReleases'
+                } else {
+                    sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
+                }
 
                 echo 'Packaging CLI:'
-                sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
+                if (env.BRANCH_NAME == 'main') {
+                    sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=artifactoryReleases'
+                } else {
+                    sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
+                }
             }
         }
         stage('Deploy') {

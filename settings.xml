@@ -5,11 +5,10 @@
     <server>
       <username>admin</username>
             <password>eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiJJVFdmWEppbzRtd3dUM1dSbW9Bclo2LVVXVm9KQ3hmZWdhR00wazEtaDdjIn0.eyJleHQiOiJ7XCJyZXZvY2FibGVcIjpcInRydWVcIn0iLCJzdWIiOiJqZmFjQDAxZ3NmY2RhY25jcTkxMXlodHR0YjUweTNzXC91c2Vyc1wvYWRtaW4iLCJzY3AiOiJhcHBsaWVkLXBlcm1pc3Npb25zXC9hZG1pbiIsImF1ZCI6IipAKiIsImlzcyI6ImpmZmVAMDAwIiwiaWF0IjoxNjgwMTY0Nzg2LCJqdGkiOiIwN2Y0ZDUzMC05YjRhLTQwNjAtYjZkMy0zYjZkN2EzNTZiNzIifQ.tHNoEN_wBQR9KTA-o1GWdQmliWTVRKsRMfgXLRlHbovkHLyW6z2Lvluaeru2OQOVJluDIbrt8nZ-HWvZeTJa23iMBaF0G3fvhoL84ZgJiDXf6AY9jS5zZfXbNi0DyibvdUo53VKEkxTiTAYVtTD8CyXbdYNxicdGRTmgonO-smMAKZUPE4OJSNwyfh9ZqeNnVkpg7FsWHVrrbnNZzULp3jQZGHfgGppTaRGnYsLd18x-YmPr90CfeXEBzkWmtI__mpe1OVKlaYXavJZ06hv5PdmSqz4VNCdQRUc5Kgh1_gbQy2ZCa1RdlsBEn3WO2Xo3Ai5j2E3BKI67y2mmZj9Svg</password>
-      <id>artifactoryCentral</id>
+      <id>artifactoryReleases</id>
     </server>
     <server>
       <username>admin</username>
-<!--            <password>eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiJJVFdmWEppbzRtd3dUM1dSbW9Bclo2LVVXVm9KQ3hmZWdhR00wazEtaDdjIn0.eyJleHQiOiJ7XCJyZXZvY2FibGVcIjpcInRydWVcIn0iLCJzdWIiOiJqZmFjQDAxZ3NmY2RhY25jcTkxMXlodHR0YjUweTNzXC91c2Vyc1wvamVua2lucyIsInNjcCI6ImFwcGxpZWQtcGVybWlzc2lvbnNcL2FkbWluIiwiYXVkIjoiKkAqIiwiaXNzIjoiamZmZUAwMDAiLCJpYXQiOjE2Nzc3NzU1OTQsImp0aSI6ImVhMWRmNDFlLTIyMWMtNDJiMy1hYWM2LWRmYTY5ZTdlNzMxMSJ9.oO_z3bCli61Bj36XGTL_xx2Zf3mmuYk4CuvirPCoExF6PlENUOi3KP-R-srM6FEURbC1r_JaikRV5R6mWvoRZZ56_7XpMChadSNtn-b1VKhV9fq0cHxdNikD0tcOX3ygDcebmhi3WfHUu-aqzPKG22Q0LK81bzw2c2sd2i1ruQUtU-TxylL5v4g9i1gi9Tag1DCKTUcbQo8GXUdjNKAM6vBAYp09loVr3_TsuzxO2QRGn5VaimoLA1GGtU68EorDnfWIMjdLuxPgGbazX5vJKEsuNRkbno6GE8AUDGStNtQnnpaSVkRPhFmE6UXA-kQsgCjmiQCkPGmPr9bit0cOkA</password>-->
             <password>eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiJJVFdmWEppbzRtd3dUM1dSbW9Bclo2LVVXVm9KQ3hmZWdhR00wazEtaDdjIn0.eyJleHQiOiJ7XCJyZXZvY2FibGVcIjpcInRydWVcIn0iLCJzdWIiOiJqZmFjQDAxZ3NmY2RhY25jcTkxMXlodHR0YjUweTNzXC91c2Vyc1wvYWRtaW4iLCJzY3AiOiJhcHBsaWVkLXBlcm1pc3Npb25zXC9hZG1pbiIsImF1ZCI6IipAKiIsImlzcyI6ImpmZmVAMDAwIiwiaWF0IjoxNjgwMTY0Nzg2LCJqdGkiOiIwN2Y0ZDUzMC05YjRhLTQwNjAtYjZkMy0zYjZkN2EzNTZiNzIifQ.tHNoEN_wBQR9KTA-o1GWdQmliWTVRKsRMfgXLRlHbovkHLyW6z2Lvluaeru2OQOVJluDIbrt8nZ-HWvZeTJa23iMBaF0G3fvhoL84ZgJiDXf6AY9jS5zZfXbNi0DyibvdUo53VKEkxTiTAYVtTD8CyXbdYNxicdGRTmgonO-smMAKZUPE4OJSNwyfh9ZqeNnVkpg7FsWHVrrbnNZzULp3jQZGHfgGppTaRGnYsLd18x-YmPr90CfeXEBzkWmtI__mpe1OVKlaYXavJZ06hv5PdmSqz4VNCdQRUc5Kgh1_gbQy2ZCa1RdlsBEn3WO2Xo3Ai5j2E3BKI67y2mmZj9Svg</password>
       <id>artifactorySnapshots</id>
     </server>
@@ -21,7 +20,7 @@
           <snapshots>
             <enabled>false</enabled>
           </snapshots>
-          <id>artifactoryCentral</id>
+          <id>artifactoryReleases</id>
           <name>libs-release</name>
           <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release</url>
         </repository>
@@ -37,7 +36,7 @@
           <snapshots>
             <enabled>false</enabled>
           </snapshots>
-          <id>artifactoryCentral</id>
+          <id>artifactoryReleases</id>
           <name>libs-release</name>
           <url>http://vmpx06.polytech.unice.fr:8002/artifactory/libs-release</url>
         </pluginRepository>
