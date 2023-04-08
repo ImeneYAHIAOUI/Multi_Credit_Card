@@ -89,7 +89,7 @@ pipeline {
 
                 echo 'Packaging CLI:'
                 sh '''
-                    if [ "${BRANCH_NAME}" == "main" ]; then
+                    if [ ${BRANCH_NAME} == "main" ]; then
                         REPO_ID="artifactoryReleases"
                     else
                         REPO_ID="artifactorySnapshots"
