@@ -77,7 +77,7 @@ pipeline {
         }
         stage('Package') {
             environment {
-              REPO_ID = '${(GIT_BRANCH.split("/").size() > 1 ? GIT_BRANCH.split("/")[1..-1].join("/") : GIT_BRANCH) == "main" ? "artifactoryReleases" : "artifactorySnapshots"}'
+              REPO_ID = (GIT_BRANCH.split("/").size() > 1 ? GIT_BRANCH.split("/")[1..-1].join("/") : GIT_BRANCH) == "main" ? "artifactoryReleases" : "artifactorySnapshots"
             }
             steps {
                 echo 'Packaging to Artifactory... on Repo: ${REPO_ID}'
