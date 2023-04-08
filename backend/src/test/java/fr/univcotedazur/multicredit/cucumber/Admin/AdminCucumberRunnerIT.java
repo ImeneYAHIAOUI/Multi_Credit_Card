@@ -11,5 +11,5 @@ import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features/Admin")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "fr.univcotedazur.multicredit.cucumber.Admin")
-public class AdminCucumberRunnerIT{
+public class AdminCucumberRunnerIT {
 }

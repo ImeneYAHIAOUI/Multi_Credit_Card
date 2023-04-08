@@ -12,7 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @CucumberContextConfiguration
 @SpringBootTest
-@TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *","VFP.MinPurchasesNumber=5"})
+@TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *", "VFP.MinPurchasesNumber=5"})
 public class MemberCucumberConfig {
     @Autowired
     @SpyBean

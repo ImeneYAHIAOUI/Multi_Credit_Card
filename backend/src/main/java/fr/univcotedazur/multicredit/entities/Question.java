@@ -1,10 +1,5 @@
 package fr.univcotedazur.multicredit.entities;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public class Question {
@@ -12,7 +7,6 @@ public class Question {
     private String title;
 
     private List<String> possibleAnswers;
-
 
 
     public Question(String title, List<String> possibleAnswers) {
