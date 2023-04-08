@@ -57,7 +57,9 @@ public class Catalog implements CatalogEditor, CatalogFinder {
         if (shopFinder.findShopById(id).isEmpty())
             throw new ShopNotFoundException();
         if (gift != null && giftRepository.findAll().stream().noneMatch(p -> p.equals(gift))) {
-            Shop shop = shopFinder.findShopById(id).get();
+            Shop shop = shopFinder.findShopById(id).orElse(null);
+            if (shop == null) throw new ShopNotFoundException();
+
             gift.setShop(shop);
             shop.addGift(gift);
             giftRepository.save(gift);
@@ -77,7 +79,9 @@ public class Catalog implements CatalogEditor, CatalogFinder {
         if (shopFinder.findShopById(id).isEmpty())
             throw new ShopNotFoundException();
         if (catalogRepository.findAll().stream().noneMatch(p -> p.equals(product))) {
-            Shop shop = shopFinder.findShopById(id).get();
+            Shop shop = shopFinder.findShopById(id).orElse(null);
+            if (shop == null) throw new ShopNotFoundException();
+
             product.setShop(shop);
             shop.addProduct(product);
             catalogRepository.save(product);

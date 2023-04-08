@@ -5,7 +5,10 @@ import fr.univcotedazur.multicredit.controllers.TransactionController;
 import fr.univcotedazur.multicredit.controllers.dto.PurchaseDTO;
 import fr.univcotedazur.multicredit.controllers.dto.UsePointDTO;
 import fr.univcotedazur.multicredit.entities.*;
-import fr.univcotedazur.multicredit.interfaces.*;
+import fr.univcotedazur.multicredit.interfaces.Bank;
+import fr.univcotedazur.multicredit.interfaces.CatalogFinder;
+import fr.univcotedazur.multicredit.interfaces.MemberFinder;
+import fr.univcotedazur.multicredit.interfaces.ShopFinder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +34,17 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-public class TransactionControllerTest {
+class TransactionControllerTest {
 
+    @MockBean
+    Bank bank;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+    MemberAccount memberAccount;
+    Shop shop;
+    Gift regularGift;
+    Gift vfpGift;
+    Product product1;
+    Product product2;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -43,38 +55,26 @@ public class TransactionControllerTest {
     private ShopFinder shopFinder;
     @SpyBean
     private CatalogFinder catalogFinder;
-    @MockBean
-    Bank bank;
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-
-    MemberAccount memberAccount;
-    Shop shop;
-    Gift regularGift;
-    Gift vfpGift;
-    Product product1;
-    Product product2;
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
 
-        memberAccount = new MemberAccount("john doe", "john.doe@mail.com", "password",LocalDate.parse("11/04/2001",formatter), 0,0);
+        memberAccount = new MemberAccount("john doe", "john.doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter), 0, 0);
         memberAccount.setId(1L);
         memberAccount.setStatus(AccountStatus.REGULAR);
         when(memberFinder.findById(1L)).thenReturn(Optional.of(memberAccount));
-        shop = new Shop("Emily and the cool kids","200 route des lucioles");
+        shop = new Shop("Emily and the cool kids", "200 route des lucioles");
         shop.setId(1L);
         when(shopFinder.findShopById(1L)).thenReturn(Optional.of(shop));
-        regularGift = new Gift(100,"description", AccountStatus.REGULAR);
+        regularGift = new Gift(100, "description", AccountStatus.REGULAR);
         regularGift.setGiftId(1L);
-        vfpGift = new Gift(50,"description", AccountStatus.VFP);
+        vfpGift = new Gift(50, "description", AccountStatus.VFP);
         vfpGift.setGiftId(1L);
         vfpGift.setShop(shop);
         regularGift.setShop(shop);
-        product1 = new Product("chocolate",5, 100, 0);
+        product1 = new Product("chocolate", 5, 100, 0);
         product1.setId(5L);
-        product2 = new Product("cookies",3, 80, 0);
+        product2 = new Product("cookies", 3, 80, 0);
         product2.setId(6L);
         product1.setShop(shop);
         product2.setShop(shop);
@@ -82,11 +82,11 @@ public class TransactionControllerTest {
         when(catalogFinder.findGiftById(2L)).thenReturn(Optional.of(vfpGift));
         when(catalogFinder.findProductById(5L)).thenReturn(Optional.of(product1));
         when(catalogFinder.findProductById(6L)).thenReturn(Optional.of(product2));
-        when(bank.pay(anyString(),anyDouble())).thenReturn(true);
+        when(bank.pay(anyString(), anyDouble())).thenReturn(true);
     }
 
     @Test
-     void getTransactionsTest() throws Exception {
+    void getTransactionsTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(TransactionController.BASE_URI)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -95,8 +95,8 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointsMemberNotFound() throws Exception {
-        UsePointDTO usePointDTO = new UsePointDTO(0,LocalDate.now().format(formatter),2L,1L,0,1L);
+    void UsePointsMemberNotFound() throws Exception {
+        UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 2L, 1L, 0, 1L);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usePointDTO)))
@@ -106,9 +106,8 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointsShopNotFound() throws Exception
-    {
-        UsePointDTO usePointDTO = new UsePointDTO(0,LocalDate.now().format(formatter),1L,2L,0,1L);
+    void UsePointsShopNotFound() throws Exception {
+        UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 2L, 0, 1L);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usePointDTO)))
@@ -118,7 +117,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointsGiftNotFound() throws Exception {
+    void UsePointsGiftNotFound() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 3L);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,8 +128,8 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointWithoutPurchases() throws Exception {
-        UsePointDTO usePointDTO = new UsePointDTO(0,LocalDate.now().format(formatter),1L,1L,0,1L);
+    void UsePointWithoutPurchases() throws Exception {
+        UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 1L);
         memberAccount.setPoints(100);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,11 +141,10 @@ public class TransactionControllerTest {
     }
 
 
-
     @Test
-     void UsePointsInsuffisantePoints() throws Exception {
+    void UsePointsInsuffisantePoints() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 1L);
-        Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
+        Purchase purchase = new Purchase(LocalDate.now(), memberAccount, new ArrayList<>());
         purchase.setShop(shop);
         memberAccount.getTransactions().add(purchase);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
@@ -158,10 +156,10 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointsNotVFP() throws Exception {
+    void UsePointsNotVFP() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 2L);
         memberAccount.setPoints(100);
-        Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
+        Purchase purchase = new Purchase(LocalDate.now(), memberAccount, new ArrayList<>());
         purchase.setShop(shop);
         memberAccount.getTransactions().add(purchase);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
@@ -173,10 +171,10 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointsRegularGift() throws Exception {
+    void UsePointsRegularGift() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 1L);
         memberAccount.setPoints(100);
-        Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
+        Purchase purchase = new Purchase(LocalDate.now(), memberAccount, new ArrayList<>());
         purchase.setShop(shop);
         memberAccount.getTransactions().add(purchase);
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/UsePoints")
@@ -188,10 +186,10 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void UsePointsVFPGift() throws Exception {
+    void UsePointsVFPGift() throws Exception {
         UsePointDTO usePointDTO = new UsePointDTO(0, LocalDate.now().format(formatter), 1L, 1L, 0, 2L);
         memberAccount.setPoints(100);
-        Purchase purchase = new Purchase(LocalDate.now(),memberAccount,new ArrayList<>());
+        Purchase purchase = new Purchase(LocalDate.now(), memberAccount, new ArrayList<>());
         purchase.setShop(shop);
         memberAccount.setStatus(AccountStatus.VFP);
         memberAccount.getTransactions().add(purchase);
@@ -204,11 +202,10 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void PurchaseWithCreditCardTest() throws Exception
-    {
-        long[] items = {product1.getId(),product2.getId()};
-        int[] quantities = {2,4};
-        PurchaseDTO purchaseDTO = new PurchaseDTO(0l,LocalDate.now().format(formatter),1,1,0,0,"123489698356789",items,quantities,"REGULAR");
+    void PurchaseWithCreditCardTest() throws Exception {
+        long[] items = {product1.getId(), product2.getId()};
+        int[] quantities = {2, 4};
+        PurchaseDTO purchaseDTO = new PurchaseDTO(0L, LocalDate.now().format(formatter), 1, 1, 0, 0, "123489698356789", items, quantities, "REGULAR");
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/purchase/creditCard")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(purchaseDTO)))
@@ -218,11 +215,10 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void PurchaseWithCash() throws Exception
-    {
-        long[] items = {product1.getId(),product2.getId()};
-        int[] quantities = {2,4};
-        PurchaseDTO purchaseDTO = new PurchaseDTO(0l,LocalDate.now().format(formatter),1,1,0,0,null,items,quantities,"REGULAR");
+    void PurchaseWithCash() throws Exception {
+        long[] items = {product1.getId(), product2.getId()};
+        int[] quantities = {2, 4};
+        PurchaseDTO purchaseDTO = new PurchaseDTO(0L, LocalDate.now().format(formatter), 1, 1, 0, 0, null, items, quantities, "REGULAR");
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/purchase/cash")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(purchaseDTO)))
@@ -232,10 +228,10 @@ public class TransactionControllerTest {
     }
 
     @Test
-     void PurchaseWithMembershipCard() throws Exception {
-        long[] items = {product1.getId(),product2.getId()};
-        int[] quantities = {2,4};
-        PurchaseDTO purchaseDTO = new PurchaseDTO(0l,LocalDate.now().format(formatter),1,1,0,0,null,items,quantities,"REGULAR");
+    void PurchaseWithMembershipCard() throws Exception {
+        long[] items = {product1.getId(), product2.getId()};
+        int[] quantities = {2, 4};
+        PurchaseDTO purchaseDTO = new PurchaseDTO(0L, LocalDate.now().format(formatter), 1, 1, 0, 0, null, items, quantities, "REGULAR");
         mockMvc.perform(MockMvcRequestBuilders.post(TransactionController.BASE_URI + "/purchase/membershipCard")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(purchaseDTO)))

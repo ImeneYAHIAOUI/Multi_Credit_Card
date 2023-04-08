@@ -8,7 +8,7 @@ import java.time.LocalTime;
 public interface ShopHandler {
     void modifyAddress(Shop shop, String address);
 
-    void modifyPlanning(Shop shop, WeekDay day, LocalTime OpeningHours, LocalTime ClosingHours);
+    void modifyPlanning(Shop shop, WeekDay day, LocalTime openingHours, LocalTime closingHours);
 
     void modifyName(Shop shop, String name);
 }

@@ -8,9 +8,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @EnableScheduling
-public class multiCreditServer {
+public class MultiCreditServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(multiCreditServer.class, args);
+        SpringApplication.run(MultiCreditServer.class, args);
     }
 }

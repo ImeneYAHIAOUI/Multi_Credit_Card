@@ -104,7 +104,7 @@ public class MemberManager implements MemberHandler, MemberFinder {
     public void updateAccountStatus(MemberAccount memberAccount, AccountStatus status) throws AccountNotFoundException {
         if (memberAccount.getId() == null || findById(memberAccount.getId()).isEmpty())
             throw new AccountNotFoundException();
-        findById(memberAccount.getId()).get().setStatus(status);
+        Objects.requireNonNull(memberRepository.findById(memberAccount.getId()).orElse(null)).setStatus(status);
     }
 
     @Override

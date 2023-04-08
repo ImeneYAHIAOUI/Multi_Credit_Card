@@ -15,16 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class MemberAccountRepositoryTest {
+class MemberAccountRepositoryTest {
 
     @Autowired
     MemberRepository memberAccountRepository;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
     MemberAccount memberAccount;
+
     @BeforeEach
     void setup() {
         memberAccountRepository.deleteAll();
-        memberAccount = new MemberAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
+        memberAccount = new MemberAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter), 0, 0);
     }
 
     @Test
@@ -47,12 +48,10 @@ public class MemberAccountRepositoryTest {
     @Test
     void testDeleteOneAccount() {
         memberAccount = memberAccountRepository.save(memberAccount);
-        MemberAccount memberAccount2 = new MemberAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter),0,0);
+        MemberAccount memberAccount2 = new MemberAccount("John Doe2", "John.Doe2@mail.com", "password", LocalDate.parse("11/04/2001", formatter), 0, 0);
         memberAccountRepository.save(memberAccount2);
         assertEquals(2, memberAccountRepository.count());
         memberAccountRepository.deleteById(memberAccount.getId());
         assertEquals(1, memberAccountRepository.count());
     }
-
-
 }

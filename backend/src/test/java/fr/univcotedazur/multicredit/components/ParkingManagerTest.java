@@ -16,21 +16,19 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *","VFP.MinPurchasesNumber=5"})
+@TestPropertySource(properties = {"VFP.updateRate.cron=*/1 * * * * *", "VFP.MinPurchasesNumber=5"})
 @Commit
 @Transactional
-public class ParkingManagerTest {
+class ParkingManagerTest {
     @Autowired
     MemberHandler memberHandler;
     @SpyBean
@@ -42,22 +40,19 @@ public class ParkingManagerTest {
 
 
     @Test
-     void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, NotVFPException {
+    void testStartParkingTime() throws AlreadyExistingMemberException, UnderAgeException, MissingInformationException, AccountNotFoundException, NotVFPException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         MemberAccount account;
         try {
             account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
-        }catch (AlreadyExistingMemberException e){
+        } catch (AlreadyExistingMemberException e) {
             memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com").get());
             account = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         }
         MemberAccount finalAccount = account;
-        assertThrows(NotVFPException.class, () ->parkingHandler.useParkingTime(finalAccount, "123456789",0));
+        assertThrows(NotVFPException.class, () -> parkingHandler.useParkingTime(finalAccount, "123456789", 0));
         account.setStatus(AccountStatus.VFP);
-        when(iswupls.startParkingTimer(anyString(),anyInt())).thenReturn(true);
-        parkingHandler.useParkingTime(account, "123456789",0);
+        when(iswupls.startParkingTimer(anyString(), anyInt())).thenReturn(true);
+        parkingHandler.useParkingTime(account, "123456789", 0);
     }
-
-
-
 }
