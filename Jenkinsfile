@@ -83,10 +83,10 @@ pipeline {
                 echo "Packaging to Artifactory... on Repo: ${REPO_ID}"
 
                 echo 'Packaging Backend:'
-                sh "mvn -f backend/pom.xml -s settings.xml deploy -DrepositoryId.id=${REPO_ID}"
+                sh "mvn -f backend/pom.xml -s settings.xml deploy -DrepositoryId=${REPO_ID}"
 
                 echo 'Packaging CLI:'
-                sh "mvn -f cli/pom.xml -s settings.xml deploy -DrepositoryId.id=${REPO_ID}"
+                sh "mvn -f cli/pom.xml -s settings.xml deploy -DrepositoryId=${REPO_ID}"
             }
         }
         stage('Deploy') {
