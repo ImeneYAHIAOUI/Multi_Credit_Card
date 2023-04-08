@@ -81,18 +81,24 @@ pipeline {
             }
             steps {
                 echo 'Packaging Backend:'
-                if (env.BRANCH_NAME == 'main') {
-                    sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=artifactoryReleases'
-                } else {
-                    sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
-                }
+                sh '''
+                    if [ "${BRANCH_NAME}" == "main" ]; then
+                        REPO_ID="artifactoryReleases"
+                    else
+                        REPO_ID="artifactorySnapshots"
+                    fi
+                    mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}
+                '''
 
                 echo 'Packaging CLI:'
-                if (env.BRANCH_NAME == 'main') {
-                    sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=artifactoryReleases'
-                } else {
-                    sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
-                }
+                sh '''
+                    if [ "${BRANCH_NAME}" == "main" ]; then
+                        REPO_ID="artifactoryReleases"
+                    else
+                        REPO_ID="artifactorySnapshots"
+                    fi
+                    mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}
+                '''
             }
         }
         stage('Deploy') {
