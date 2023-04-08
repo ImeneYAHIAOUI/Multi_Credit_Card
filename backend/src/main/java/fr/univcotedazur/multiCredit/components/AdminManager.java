@@ -124,7 +124,8 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         @Override
         public void sendSurvey(String sender, List<Question> questions) {
             Survey surveyToSend = new Survey(sender, questions);
-            if(!mailSender.sendSurvey(memberRepository.findAll(), surveyToSend)){
+            List<String> mails = memberRepository.findAll().stream().map(MemberAccount::getMail).toList();
+            if(!mailSender.sendSurvey(mails, surveyToSend)){
                 System.out.println("Error while sending survey");
                 throw new RuntimeException();
             }
@@ -132,7 +133,8 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         @Override
         public void sendMail(String sender, String mailContent, String subject) {
             Mail mailToSend = new Mail(sender, mailContent, subject);
-            if(!mailSender.sendMail(memberRepository.findAll(), mailToSend)){
+            List<String> mails = memberRepository.findAll().stream().map(MemberAccount::getMail).toList();
+            if(!mailSender.sendMail(mails, mailToSend)){
                 System.out.println("Error while sending mail");
                 throw new RuntimeException();
             }

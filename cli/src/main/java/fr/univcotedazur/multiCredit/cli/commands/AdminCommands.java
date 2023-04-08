@@ -64,9 +64,8 @@ public class AdminCommands {
     @ShellMethod("Send a mail")
     public String sendMail(String adminMail, String mailContent, String subject) {
         try {
-            CliMail res = restTemplate.postForObject(BASE_URI + "/mail", new CliMail(adminMail, mailContent, subject), CliMail.class);
-            cliContext.getMails().put(res.getSender(), res);
-            return res.toString();
+            String res = restTemplate.postForObject(BASE_URI + "/mail", new CliMail(adminMail, mailContent, subject), String.class);
+            return res;
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.CONFLICT.equals(ex.getStatusCode())){
                 return "409 Failed to send mail : mail already exists";
@@ -88,9 +87,8 @@ public class AdminCommands {
             cliQuestions.add(new CliQuestion(val.get(0), answers));
         }
         try {
-            CliSurvey res = restTemplate.postForObject(BASE_URI + "/survey", new CliSurvey(adminMail, cliQuestions), CliSurvey.class);
-            cliContext.getSurveys().put(res.getSender(), res);
-            return res.toString();
+            String res = restTemplate.postForObject(BASE_URI + "/survey", new CliSurvey(adminMail, cliQuestions), String.class);
+            return res;
         }catch (HttpClientErrorException ex) {
             if(HttpStatus.CONFLICT.equals(ex.getStatusCode())){
                 return "409 Failed to send survey : survey already exists";

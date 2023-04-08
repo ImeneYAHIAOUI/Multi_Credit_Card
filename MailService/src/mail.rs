@@ -51,11 +51,26 @@ pub struct SurveyService {
     pub id: String,
     pub sender: String,
     pub receivers: Vec<String>,
-    pub questions: Vec<String>,
+    pub questions: Vec<Question>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Question {
+    pub title: String,
+    pub possibleAnswers: Vec<String>,
+}
+
+impl Question {
+    pub fn new(title: String, possibleAnswers: Vec<String>) -> Self {
+        Self {
+            title,
+            possibleAnswers
+        }
+    }
 }
 
 impl SurveyService {
-    pub fn new(sender: String, receivers: Vec<String>, questions: Vec<String>) -> Self {
+    pub fn new(sender: String, receivers: Vec<String>, questions: Vec<Question>) -> Self {
         Self {
             id:Uuid::new_v4().to_string(),
             sender,
@@ -88,7 +103,7 @@ impl MailSenderRequest {
 pub struct SurveySenderRequest {
     pub sender: Option<String>,
     pub receivers: Option<Vec<String>>,
-    pub questions: Option<Vec<String>>
+    pub questions: Option<Vec<Question>>
 }
 
 impl SurveySenderRequest {
@@ -102,59 +117,11 @@ impl SurveySenderRequest {
     }
 }
 
-#[derive(Debug, Display)]
-pub enum MailError {
-    MissingSender,
-    MissingReceivers,
-    MissingSubject,
-    MissingMailContent,
-    MailCreationFailure,
-}
 
-impl ResponseError for MailError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            MailError::MissingReceivers => StatusCode::NOT_FOUND,
-            MailError::MissingSender => StatusCode::NOT_FOUND,
-            MailError::MissingSubject => StatusCode::NOT_FOUND,
-            MailError::MissingMailContent => StatusCode::NOT_FOUND,
-            MailError::MailCreationFailure => StatusCode::BAD_REQUEST
-        }
-    }
-    fn error_response(&self) -> HttpResponse {
-        HttpResponse::build(self.status_code())
-            .content_type("application/json")
-            .body(self.to_string())
-    }
-
-}
-#[derive(Debug, Display)]
-pub enum SurveyError {
-    MissingSender,
-    MissingReceivers,
-    MissingQuestions,
-    SurveyCreationFailure,
-}
-
-impl ResponseError for SurveyError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            SurveyError::MissingReceivers => StatusCode::NOT_FOUND,
-            SurveyError::MissingSender => StatusCode::NOT_FOUND,
-            SurveyError::MissingQuestions => StatusCode::NOT_FOUND,
-            SurveyError::SurveyCreationFailure => StatusCode::BAD_REQUEST
-        }
-    }
-    fn error_response(&self) -> HttpResponse {
-        HttpResponse::build(self.status_code())
-            .content_type("application/json")
-            .body(self.to_string())
-    }
-}
 
 #[post("/admin/mail")]
 pub async fn send_mail(request: Json<MailSenderRequest>)
-                       -> Result<Json<MailService>, MailError>{
+                       -> HttpResponse{
     let mail_sender_request = MailSenderRequest {
         sender: request.sender.clone(),
         receivers: request.receivers.clone(),
@@ -165,15 +132,20 @@ pub async fn send_mail(request: Json<MailSenderRequest>)
     match mail_sender_option {
         Some(mail) => {
             MAILSERVICE.lock().unwrap().insert(mail.id.clone(), mail.clone());
-            Ok(Json(mail))
+            HttpResponse::Created()
+                .content_type("application/json")
+                .json(mail)
         }
-        None => Err(MailError::MailCreationFailure)
+        _None => HttpResponse::BadRequest()
+            .content_type("application/json")
+            .await
+            .unwrap(),
     }
 }
 
 #[post("/admin/survey")]
 pub async fn send_survey(request: Json<SurveySenderRequest>)
-                         -> Result<Json<SurveyService>, SurveyError>{
+                         -> HttpResponse{
     let survey_sender_request = SurveySenderRequest {
         sender: request.sender.clone(),
         receivers: request.receivers.clone(),
@@ -183,9 +155,14 @@ pub async fn send_survey(request: Json<SurveySenderRequest>)
     match survey_sender_option {
         Some(survey) => {
             SURVEYSERVICE.lock().unwrap().insert(survey.id.clone(), survey.clone());
-            Ok(Json(survey))
+            HttpResponse::Created()
+                .content_type("application/json")
+                .json(survey)
         }
-        None => Err(SurveyError::SurveyCreationFailure)
+        _None => HttpResponse::BadRequest()
+            .content_type("application/json")
+            .await
+            .unwrap(),
     }
 }
 

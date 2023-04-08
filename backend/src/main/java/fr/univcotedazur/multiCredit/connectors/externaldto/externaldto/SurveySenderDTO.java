@@ -1,14 +1,15 @@
 package fr.univcotedazur.multiCredit.connectors.externaldto.externaldto;
 
+import fr.univcotedazur.multiCredit.entities.Question;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class MailSenderDTO {
+public class SurveySenderDTO {
+
     private String sender;
     private List<String> receivers;
-    private String subject;
-    private String mail_content;
+    private List<QuestionDTO> questions;
 
     private String id;
 
@@ -20,14 +21,15 @@ public class MailSenderDTO {
         this.id = id;
     }
 
-    public MailSenderDTO() {
+    public SurveySenderDTO() {
     }
-
-    public MailSenderDTO(String sender, List<String> receivers, String subject, String mail_content) {
+    public SurveySenderDTO(String sender, List<String> receivers, List<Question> questions) {
         this.sender = sender;
         this.receivers = receivers;
-        this.subject = subject;
-        this.mail_content = mail_content;
+        this.questions = new ArrayList<>();
+        for (Question question : questions) {
+            this.questions.add(new QuestionDTO(question.getTitle(), question.getPossibleAnswers()));
+        }
     }
 
     public String getSender() {
@@ -46,19 +48,13 @@ public class MailSenderDTO {
         this.receivers = receivers;
     }
 
-    public String getSubject() {
-        return subject;
+    public List<QuestionDTO> getQuestions() {
+        return questions;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setQuestions(List<QuestionDTO> questions) {
+        this.questions = questions;
     }
 
-    public String getMail_content() {
-        return mail_content;
-    }
 
-    public void setMail_content(String mail_content) {
-        this.mail_content = mail_content;
-    }
 }
