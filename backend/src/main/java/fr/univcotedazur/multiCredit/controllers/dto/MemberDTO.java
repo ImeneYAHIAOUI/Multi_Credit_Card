@@ -1,11 +1,15 @@
 package fr.univcotedazur.multiCredit.controllers.dto;
 
 
-public class MemberDTO extends AccountDTO{
+public class MemberDTO extends AccountDTO {
     int points;
     double balance;
     String status;
     String membershipCardNumber;
+
+    public MemberDTO(long id, String name, String mail, String password, String birthDate) {
+        super(id, name, mail, password, birthDate);
+    }
 
     public int getPoints() {
         return points;
@@ -38,12 +42,4 @@ public class MemberDTO extends AccountDTO{
     public void setMembershipCardNumber(String membershipCardNumber) {
         this.membershipCardNumber = membershipCardNumber;
     }
-
-    public MemberDTO(long id, String name, String mail, String password, String birthDate) {
-        super(id,name, mail, password, birthDate);
-    }
-
-
-
-
 }

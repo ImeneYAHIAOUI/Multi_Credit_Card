@@ -25,7 +25,6 @@ public class Mail {
     }
 
     public Mail() {
-
     }
 
     public String getMailContent() {
@@ -52,11 +51,11 @@ public class Mail {
         this.sender = sender;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

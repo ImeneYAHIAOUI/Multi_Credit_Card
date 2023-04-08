@@ -1,4 +1,4 @@
 package fr.univcotedazur.multiCredit.exceptions;
 
-public class ShopNotFoundException extends Exception{
+public class ShopNotFoundException extends Exception {
 }

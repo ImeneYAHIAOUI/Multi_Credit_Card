@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -28,6 +28,9 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class MemberController {
 
     public static final String BASE_URI = "/members";
+    public static final String MEMBER_NOT_FOUND = "member not found";
+    public static final String USER_NOT_FOUND = "user not found";
+    public static final String ACCOUNT_NOT_FOUND = "account not found";
     @Autowired
     private MemberManager memberManager;
 
@@ -46,30 +49,26 @@ public class MemberController {
 
     @PostMapping(path = "register", consumes = APPLICATION_JSON_VALUE) // path is a REST CONTROLLER NAME
     public ResponseEntity<AccountDTO> register(@RequestBody @Valid MemberDTO memberDTO) {
-
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(convertMemberAccountToDto(
-                            memberManager.createAccount(memberDTO.getName(), memberDTO.getMail(),
-                                    memberDTO.getPassword(),  LocalDate.parse(memberDTO.getBirthDate(),formatter))
-                    ));
-
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertMemberAccountToDto(
+                    memberManager.createAccount(memberDTO.getName(), memberDTO.getMail(),
+                            memberDTO.getPassword(), LocalDate.parse(memberDTO.getBirthDate(), formatter))
+            ));
         } catch (AlreadyExistingMemberException e) {
             // Note: Returning 409 (Conflict) can also be seen a security/privacy vulnerability, exposing a service for account enumeration
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(convertMemberAccountToDto(memberManager.findByMail(memberDTO.getMail()).orElse(null)));
+            return ResponseEntity.status(HttpStatus.OK).body(convertMemberAccountToDto(Objects.requireNonNull(memberManager.findByMail(memberDTO.getMail()).orElse(null))));
         } catch (MissingInformationException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0,"missing information","","",""));
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, "missing information", "", "", ""));
         } catch (UnderAgeException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0,"under age","","",""));
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, "under age", "", "", ""));
         }
     }
 
 
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteAccount(@RequestBody @Valid  @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid") String mail) {
-        mail  = mail.replaceAll("\"", "");
+    public ResponseEntity<String> deleteAccount(@RequestBody @Valid @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid") String mail) {
+        mail = mail.replace("\"", "");
         MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
         return getDeleteResponseEntity(memberAccount);
     }
@@ -82,24 +81,22 @@ public class MemberController {
 
     private ResponseEntity<String> getDeleteResponseEntity(MemberAccount memberAccount) {
         if (memberAccount == null) {
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(MEMBER_NOT_FOUND);
         }
         try {
             memberManager.deleteAccount(memberAccount);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("member deleted");
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(MEMBER_NOT_FOUND);
 
         }
     }
 
-    @PutMapping(path="status",consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdateStatusDTO> updateStatus(@RequestBody @Valid  UpdateStatusDTO updateStatusDTO) {
+    @PutMapping(path = "status", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UpdateStatusDTO> updateStatus(@RequestBody @Valid UpdateStatusDTO updateStatusDTO) {
         MemberAccount memberAccount = memberManager.findByMail(updateStatusDTO.getMail()).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ","user not found"));
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ", USER_NOT_FOUND));
         }
         try {
             AccountStatus newStatus = switch (updateStatusDTO.getStatus()) {
@@ -108,71 +105,66 @@ public class MemberController {
                 case "EXPIRED" -> AccountStatus.EXPIRED;
                 default -> throw new IllegalStateException("Unexpected value: " + updateStatusDTO.getStatus());
             };
-            memberManager.updateAccountStatus(memberAccount,newStatus);
+            memberManager.updateAccountStatus(memberAccount, newStatus);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(updateStatusDTO);
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ","user not found"));
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ","status not valid"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ", USER_NOT_FOUND));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new UpdateStatusDTO(" ", "status not valid"));
         }
     }
 
-    @PutMapping(path="status")
+    @PutMapping(path = "status")
     public ResponseEntity<String> updateAllMembersStatus() {
-       memberManager.updateAccountsStatus();
+        memberManager.updateAccountsStatus();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("all members status updated");
     }
 
 
-    @PutMapping(path="archive")
-    public ResponseEntity<String> archiveMember(@RequestBody @Valid String mail){
-        mail  = mail.replaceAll("\"", "");
+    @PutMapping(path = "archive")
+    public ResponseEntity<String> archiveMember(@RequestBody @Valid String mail) {
+        mail = mail.replace("\"", "");
         MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ACCOUNT_NOT_FOUND);
         }
         try {
             memberManager.archiveAccount(memberAccount);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account archived");
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ACCOUNT_NOT_FOUND);
         }
     }
 
-    @PutMapping(path="restore",consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> restoreMember(@RequestBody @Valid String mail){
-        mail  = mail.replaceAll("\"", "");
+    @PutMapping(path = "restore", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> restoreMember(@RequestBody @Valid String mail) {
+        mail = mail.replace("\"", "");
         MemberAccount memberAccount = memberManager.findByMail(mail).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ACCOUNT_NOT_FOUND);
         }
         try {
             memberManager.restoreAccount(memberAccount);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account restored");
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("account not found");
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ACCOUNT_NOT_FOUND);
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") Long id) {
         MemberAccount memberAccount = memberManager.findById(id).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, " ", "", "", USER_NOT_FOUND));
         }
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(convertMemberAccountToDto(memberAccount));
     }
 
-    @PostMapping(path = "/{id}",consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<MemberDTO> updateMember(@PathVariable("id") Long id, @RequestBody @Valid FormDTO formDTO) {
         MemberAccount memberAccount = memberManager.findById(id).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, " ", "", "", USER_NOT_FOUND));
         }
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -184,7 +176,7 @@ public class MemberController {
             memberManager.updateAccount(memberAccount, form);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(convertMemberAccountToDto(memberAccount));
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, " ", "", "", USER_NOT_FOUND));
         }
     }
 
@@ -200,7 +192,7 @@ public class MemberController {
 
 
     private MemberDTO convertMemberAccountToDto(MemberAccount member) { // In more complex cases, we could use ModelMapper
-        MemberDTO memberDTO = new MemberDTO(member.getId(),member.getName(), member.getMail(), member.getPassword(), member.getBirthDate().toString());
+        MemberDTO memberDTO = new MemberDTO(member.getId(), member.getName(), member.getMail(), member.getPassword(), member.getBirthDate().toString());
         memberDTO.setStatus(member.getStatus().toString());
         memberDTO.setBalance(member.getBalance());
         memberDTO.setPoints(member.getPoints());
@@ -211,39 +203,32 @@ public class MemberController {
     @PutMapping("/charge")
     public ResponseEntity<String> chargeMemberCard(@RequestBody @Valid ChargeCardDTO chargeCardDTO) {
         MemberAccount memberAccount = memberManager.findById(chargeCardDTO.getMemberId()).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(MEMBER_NOT_FOUND);
         }
         try {
             memberManager.chargeMembershipCard(memberAccount, chargeCardDTO.getAmount(), chargeCardDTO.getCardNumber());
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body("card charged");
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("member not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(MEMBER_NOT_FOUND);
         } catch (PaymentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("payement refused");
         }
     }
 
-    @PostMapping(path="/renew/{id}")
-    public ResponseEntity<MemberDTO> renewAccount(@PathVariable("id") Long id)
-    {
+    @PostMapping(path = "/renew/{id}")
+    public ResponseEntity<MemberDTO> renewAccount(@PathVariable("id") Long id) {
         MemberAccount memberAccount = memberManager.findById(id).orElse(null);
-        if(memberAccount == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+        if (memberAccount == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, " ", "", "", USER_NOT_FOUND));
         }
         try {
             memberManager.renewMembership(memberAccount);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(convertMemberAccountToDto(memberAccount));
         } catch (AccountNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","user not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, " ", "", "", USER_NOT_FOUND));
         } catch (TooEarlyForRenewalException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0," ","","","too early to renew"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(new MemberDTO(0, " ", "", "", "too early to renew"));
         }
     }
-
-
 }
-
-

@@ -7,6 +7,6 @@ import fr.univcotedazur.multiCredit.exceptions.InsufficientPointsException;
 
 public interface PointTrader {
     void removePoints(MemberAccount memberAccount, UsePoints usePoints) throws InsufficientPointsException;
-    void addPoints(MemberAccount memberAccount, Purchase purchase);
 
+    void addPoints(MemberAccount memberAccount, Purchase purchase);
 }

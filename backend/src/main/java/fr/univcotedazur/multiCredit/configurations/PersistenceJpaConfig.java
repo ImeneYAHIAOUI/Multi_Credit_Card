@@ -13,5 +13,4 @@ public class PersistenceJpaConfig {
     // spring.datasource.url
 
     // Easy setup -> 2 persistence.properties file, one in src/main/resources, the other one in test/resources
-
 }

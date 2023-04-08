@@ -15,21 +15,25 @@ public class ParkingManager implements ParkingHandler {
     private final ISWUPLS iswupls;
 
     @Autowired
-    public ParkingManager(ISWUPLS iswupls){
+    public ParkingManager(ISWUPLS iswupls) {
         this.iswupls = iswupls;
     }
+
     @Override
-    public void useParkingTime(MemberAccount memberAccount, String carRegistrationNumber, int parkingSpot) throws NotVFPException
-    {
-        if(! memberAccount.getStatus().equals(AccountStatus.VFP))
-            throw new NotVFPException();
-        boolean result = iswupls.startParkingTimer(carRegistrationNumber,parkingSpot);
-        if (! result)
-            throw new RuntimeException();
+    public void useParkingTime(MemberAccount memberAccount, String carRegistrationNumber, int parkingSpot) throws NotVFPException {
+        if (!memberAccount.getStatus().equals(AccountStatus.VFP)) throw new NotVFPException();
+        boolean result = iswupls.startParkingTimer(carRegistrationNumber, parkingSpot);
+        if (!result) throw new ParkingException("Parking time could not be started.");
     }
 
     @Override
     public ISWUPLSDTO[] getParkingInformation(String carRegistrationNumber) {
         return iswupls.getParkingInformation(carRegistrationNumber);
+    }
+
+    private static class ParkingException extends RuntimeException {
+        public ParkingException(String message) {
+            super(message);
+        }
     }
 }

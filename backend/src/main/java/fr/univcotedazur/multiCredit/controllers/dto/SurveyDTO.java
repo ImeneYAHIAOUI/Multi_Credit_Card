@@ -9,7 +9,7 @@ public class SurveyDTO {
     private String sender;
     private List<Question> questions;
 
-    public SurveyDTO(String sender,List<Question> questions) {
+    public SurveyDTO(String sender, List<Question> questions) {
         this.sender = sender;
         this.questions = questions;
     }

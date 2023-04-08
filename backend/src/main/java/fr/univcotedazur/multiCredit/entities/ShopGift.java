@@ -4,5 +4,4 @@ import javax.persistence.Entity;
 
 @Entity
 public class ShopGift extends Gift {
-
 }

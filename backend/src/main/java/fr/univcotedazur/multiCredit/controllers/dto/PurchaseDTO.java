@@ -7,24 +7,23 @@ public class PurchaseDTO extends TransactionDTO {
     private String creditCardNumber;
     private long[] items;
     private int[] quantities;
+    private String paymentMethod;
+
+    public PurchaseDTO(long id, String date, long memberAccount, long shop, int earnedPoints, double totalPrice, String creditCardNumber, long[] items, int[] quantities, String paymentMethod) {
+        super(id, date, memberAccount, shop);
+        this.earnedPoints = earnedPoints;
+        this.totalPrice = totalPrice;
+        this.creditCardNumber = creditCardNumber;
+        this.items = items;
+        this.quantities = quantities;
+        this.paymentMethod = paymentMethod;
+    }
 
     public String getPaymentMethod() {
         return paymentMethod;
     }
 
     public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    private String paymentMethod;
-
-    public PurchaseDTO(long id, String date, long memberAccount,long shop,int earnedPoints, double totalPrice, String creditCardNumber, long[] items, int[] quantities, String paymentMethod) {
-        super(id, date, memberAccount,shop);
-        this.earnedPoints = earnedPoints;
-        this.totalPrice = totalPrice;
-        this.creditCardNumber = creditCardNumber;
-        this.items = items;
-        this.quantities = quantities;
         this.paymentMethod = paymentMethod;
     }
 

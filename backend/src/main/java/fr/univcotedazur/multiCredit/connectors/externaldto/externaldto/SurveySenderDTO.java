@@ -13,16 +13,9 @@ public class SurveySenderDTO {
 
     private String id;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public SurveySenderDTO() {
     }
+
     public SurveySenderDTO(String sender, List<String> receivers, List<Question> questions) {
         this.sender = sender;
         this.receivers = receivers;
@@ -30,6 +23,14 @@ public class SurveySenderDTO {
         for (Question question : questions) {
             this.questions.add(new QuestionDTO(question.getTitle(), question.getPossibleAnswers()));
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSender() {
@@ -55,6 +56,4 @@ public class SurveySenderDTO {
     public void setQuestions(List<QuestionDTO> questions) {
         this.questions = questions;
     }
-
-
 }

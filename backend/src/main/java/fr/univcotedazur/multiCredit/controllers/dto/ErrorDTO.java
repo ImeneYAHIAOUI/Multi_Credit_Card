@@ -1,9 +1,7 @@
 package fr.univcotedazur.multiCredit.controllers.dto;
 
 
-
 public class ErrorDTO {
-
 
     private String error;
 

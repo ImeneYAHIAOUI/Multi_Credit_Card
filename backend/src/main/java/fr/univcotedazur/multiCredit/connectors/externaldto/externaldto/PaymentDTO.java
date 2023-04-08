@@ -1,18 +1,11 @@
 package fr.univcotedazur.multiCredit.connectors.externaldto.externaldto;
 
 
-
 // External DTO (Data Transfert Object) to POST payment to the external Bank system
 public class PaymentDTO {
 
-
     private String creditCard;
-
-
     private double amount;
-
-    public PaymentDTO() {
-    }
 
     public PaymentDTO(String creditCard, double amount) {
         this.creditCard = creditCard;

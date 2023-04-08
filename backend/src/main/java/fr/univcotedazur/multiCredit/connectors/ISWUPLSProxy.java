@@ -12,43 +12,30 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 @Component
 public class ISWUPLSProxy implements ISWUPLS {
+    private final RestTemplate restTemplate = new RestTemplate();
     @Value("${iswupls.host.baseurl}")
     private String iswuplsHostandPort;
 
-    private RestTemplate restTemplate = new RestTemplate();
-
-
     @Override
-    public boolean startParkingTimer(String carRegistrationNumber,int parkingSpotNumber) {
+    public boolean startParkingTimer(String carRegistrationNumber, int parkingSpotNumber) {
 
         try {
-            ResponseEntity<ISWUPLSDTO> result = restTemplate.postForEntity(
-                    iswuplsHostandPort + "/parking",
-                    new ISWUPLSDTO(carRegistrationNumber,parkingSpotNumber , LocalDateTime.now().toEpochSecond(ZoneOffset.UTC), 1800),
-                    ISWUPLSDTO.class
-            );
-
+            ResponseEntity<ISWUPLSDTO> result = restTemplate.postForEntity(iswuplsHostandPort + "/parking",
+                    new ISWUPLSDTO(carRegistrationNumber, parkingSpotNumber, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                            1800), ISWUPLSDTO.class);
             return (result.getStatusCode().equals(HttpStatus.CREATED));
-        }
-        catch (HttpClientErrorException errorException)
-        {
-            if (errorException.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
-                return false;
-            }
+        } catch (HttpClientErrorException errorException) {
+            if (errorException.getStatusCode().equals(HttpStatus.BAD_REQUEST)) return false;
             throw errorException;
         }
     }
 
     @Override
     public ISWUPLSDTO[] getParkingInformation(String carRegistrationNumber) {
-
-       return restTemplate.exchange(iswuplsHostandPort + "/parking", HttpMethod.GET, new HttpEntity<>(carRegistrationNumber), ISWUPLSDTO[].class).getBody();
+        return restTemplate.exchange(iswuplsHostandPort + "/parking", HttpMethod.GET, new HttpEntity<>(carRegistrationNumber), ISWUPLSDTO[].class).getBody();
     }
-
-
 }

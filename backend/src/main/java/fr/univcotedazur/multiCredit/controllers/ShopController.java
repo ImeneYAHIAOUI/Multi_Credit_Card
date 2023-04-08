@@ -6,7 +6,6 @@ import fr.univcotedazur.multiCredit.controllers.dto.PlanningDTO;
 import fr.univcotedazur.multiCredit.entities.Shop;
 import fr.univcotedazur.multiCredit.entities.ShopKeeperAccount;
 import fr.univcotedazur.multiCredit.entities.WeekDay;
-import fr.univcotedazur.multiCredit.interfaces.ShopRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,11 +38,10 @@ public class ShopController {
     @GetMapping("/{shopId}")
     public ResponseEntity<String> getShopById(@PathVariable("shopId") Long shopId) {
         Optional<Shop> shop = shopManager.findShopById(shopId);
-        if(shop.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop not found");
-        return ResponseEntity.ok()
-                .body(shop.get().toString());
+        return shop.map(value -> ResponseEntity.ok().body(value.toString()))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop not found"));
     }
+
     // method to update the address of the shop
     @PutMapping("/{id}/address")
     public ResponseEntity<String> updateShopAddress(@PathVariable("id") Long shopId, @RequestBody String newAddress) {
@@ -54,11 +52,10 @@ public class ShopController {
         shopManager.modifyAddress(shop.get(), newAddress);
         return ResponseEntity.ok("Shop address updated successfully");
     }
+
     // method to modify a day's planning of a shop
-    @PutMapping(path="/{id}/planning")
-    public ResponseEntity<String> modifyPlanning(
-            @PathVariable("id") Long id, @RequestBody PlanningDTO planning
-    ){
+    @PutMapping(path = "/{id}/planning")
+    public ResponseEntity<String> modifyPlanning(@PathVariable("id") Long id, @RequestBody PlanningDTO planning) {
         Optional<Shop> shop = shopManager.findShopById(id);
         if (shop.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("shop not found");
@@ -66,20 +63,20 @@ public class ShopController {
         if (planning.getDayWorking() == null) {
             return ResponseEntity.badRequest().body("Invalid day parameter");
         }
+
         LocalTime closingHours = LocalTime.parse(planning.getClosingHours());
         LocalTime openingHours = LocalTime.parse(planning.getOpeningHours());
-        if (openingHours != null && closingHours!= null && openingHours.isAfter(closingHours)) {
+        if (openingHours.isAfter(closingHours)) {
             return ResponseEntity.badRequest().body("Invalid opening/closing hours parameters");
         }
         shopManager.modifyPlanning(shop.get(), WeekDay.valueOf(planning.getDayWorking().toUpperCase()), openingHours, closingHours);
         return ResponseEntity.ok("Shop planning for " + planning.getDayWorking() + " updated successfully");
     }
+
     @GetMapping("/shopKeepers/{shopKeeperId}")
     public ResponseEntity<String> getShopKeeperById(@PathVariable("shopKeeperId") Long shopKeepersId) {
         Optional<ShopKeeperAccount> shop = shopManager.findShopkeeperAccountById(shopKeepersId);
-        if(shop.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop keeper not found");
-        return ResponseEntity.ok()
-                .body(shop.get().toString());
+        return shop.map(shopKeeperAccount -> ResponseEntity.ok().body(shopKeeperAccount.toString()))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Shop keeper not found"));
     }
 }

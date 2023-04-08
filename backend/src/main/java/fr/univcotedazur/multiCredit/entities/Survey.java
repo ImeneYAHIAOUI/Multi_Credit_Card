@@ -1,8 +1,10 @@
 package fr.univcotedazur.multiCredit.entities;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -23,7 +25,6 @@ public class Survey {
     }
 
     public Survey() {
-
     }
 
     public List<Question> getQuestions() {
@@ -42,11 +43,11 @@ public class Survey {
         this.sender = sender;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -2,13 +2,11 @@ package fr.univcotedazur.multiCredit.controllers.dto;
 
 import javax.validation.constraints.Pattern;
 
-public class  UpdateStatusDTO
-{
+public class UpdateStatusDTO {
 
     @Pattern(regexp = "^(.+)@(.+)$", message = "email should be valid")
     private String mail;
     private String status;
-
 
     public UpdateStatusDTO(String mail, String status) {
         this.mail = mail;

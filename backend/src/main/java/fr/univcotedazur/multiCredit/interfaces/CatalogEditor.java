@@ -13,5 +13,6 @@ public interface CatalogEditor {
     void removeProductFromCatalog(Shop shop,Product product) throws ProductNotFoundException;
     void addGift(Long id, Gift gift)throws AlreadyExistingGiftException,ShopNotFoundException;
     void removeGift(Shop shop, Gift gift) throws GiftNotFoundException;
-    void addDiscountToProduct(Shop shop, Product product, double discount)throws ProductNotFoundException;
+
+    void addDiscountToProduct(Shop shop, Product product, double discount) throws ProductNotFoundException;
 }

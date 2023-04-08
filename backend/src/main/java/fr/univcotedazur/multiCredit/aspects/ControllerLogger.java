@@ -18,16 +18,22 @@ public class ControllerLogger {
 
     @Before("allControllerMethods()")
     public void logMethodNameAndParametersAtEntry(JoinPoint joinPoint) {
-        LOG.info("\033[1;34m" + PREFIX + joinPoint.getThis() + "\033[0m:Called \033[1;32m{}\033[0m \033[1;35m{}\033[0m"+"\n", joinPoint.getSignature().getName(), joinPoint.getArgs());
+        LOG.info("\u001B[1;34m%s%s\u001B[0m:Called \u001B[1;32m{}\u001B[0m \u001B[1;35m{}\u001B[0m%n".formatted(PREFIX, joinPoint.getThis()),
+                joinPoint.getSignature().getName(),
+                joinPoint.getArgs());
     }
 
     @AfterReturning(pointcut = "allControllerMethods()", returning = "resultVal")
     public void logMethodReturningProperly(JoinPoint joinPoint, Object resultVal) {
-        LOG.info("\033[1;34m" + PREFIX + joinPoint.getThis() + "\033[0m:Returned \033[1;32m{}\033[0m with value \033[1;32m{}\033[0m"+"\n", joinPoint.getSignature().getName(), resultVal);
-    }
-    @AfterThrowing(pointcut = "allControllerMethods()", throwing = "exception")
-    public void logMethodException(JoinPoint joinPoint, Exception exception) {
-        LOG.warn("\033[1;31m" + PREFIX + joinPoint.getThis() + "\033[0m:Exception from \033[1;32m{}\033[0m with exception \033[1;31m{}\033[0m"+"\n", joinPoint.getSignature().getName(), exception);
+        LOG.info("\u001B[1;34m%s%s\u001B[0m:Returned \u001B[1;32m{}\u001B[0m with value \u001B[1;32m{}\u001B[0m%n".formatted(PREFIX, joinPoint.getThis()),
+                joinPoint.getSignature().getName(),
+                resultVal);
     }
 
+    @AfterThrowing(pointcut = "allControllerMethods()", throwing = "exception")
+    public void logMethodException(JoinPoint joinPoint, Exception exception) {
+        LOG.warn("\u001B[1;31m%s%s\u001B[0m:Exception from \u001B[1;32m{}\u001B[0m with exception \u001B[1;31m{}\u001B[0m%n".formatted(PREFIX, joinPoint.getThis()),
+                joinPoint.getSignature().getName(),
+                exception);
+    }
 }

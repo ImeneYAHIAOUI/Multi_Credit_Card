@@ -8,5 +8,4 @@ public interface AdminFinder {
     AdminAccount findAdminByMail(String mail);
 
     Optional<AdminAccount> findAdminById(Long id);
-
 }

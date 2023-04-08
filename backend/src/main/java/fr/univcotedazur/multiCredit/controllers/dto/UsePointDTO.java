@@ -1,13 +1,13 @@
 package fr.univcotedazur.multiCredit.controllers.dto;
 
-public class UsePointDTO extends TransactionDTO{
+public class UsePointDTO extends TransactionDTO {
     private int pointsUsed;
-    private long Gift;
+    private long gift;
 
-    public UsePointDTO(long id, String date, long memberAccount,long shop,int pointsUsed, long Gift){
-        super(id,date,memberAccount,shop);
+    public UsePointDTO(long id, String date, long memberAccount, long shop, int pointsUsed, long gift) {
+        super(id, date, memberAccount, shop);
         this.pointsUsed = pointsUsed;
-        this.Gift = Gift;
+        this.gift = gift;
     }
 
     public int getPointsUsed() {
@@ -19,10 +19,10 @@ public class UsePointDTO extends TransactionDTO{
     }
 
     public long getGift() {
-        return Gift;
+        return gift;
     }
 
     public void setGift(long gift) {
-        Gift = gift;
+        this.gift = gift;
     }
 }

@@ -16,10 +16,11 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "Transaction_id")
     private Purchase purchase;
+
     public Item() {
     }
 
-    public  Item(Product product, int amount){
+    public Item(Product product, int amount) {
         this.product = product;
         this.amount = amount;
     }

@@ -1,12 +1,10 @@
 package fr.univcotedazur.multiCredit.controllers.dto;
 
 public class FormDTO {
-private String name;
+    private String name;
     private String mail;
     private String password;
     private String birthDate;
-
-
 
     public String getName() {
         return name;

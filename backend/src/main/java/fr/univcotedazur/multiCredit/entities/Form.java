@@ -7,12 +7,8 @@ import java.time.LocalDate;
 public class Form {
 
     private String name;
-
     private String mail;
-
     private String password;
-
-
     private LocalDate birthDate;
 
     public Form(String name, String mail, String password, LocalDate birthDate) {

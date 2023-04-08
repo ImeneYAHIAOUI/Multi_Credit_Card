@@ -1,7 +1,5 @@
 package fr.univcotedazur.multiCredit.controllers.dto;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 public class MailDTO {
@@ -11,7 +9,6 @@ public class MailDTO {
     private String mailContent;
     @NotBlank
     private String subject;
-
     private Long id;
 
     public MailDTO(String sender, String mailContent, String subject) {
@@ -44,11 +41,11 @@ public class MailDTO {
         this.sender = sender;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

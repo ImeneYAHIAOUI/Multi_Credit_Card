@@ -6,6 +6,7 @@ import fr.univcotedazur.multiCredit.exceptions.AlreadyExistingAdminException;
 import fr.univcotedazur.multiCredit.exceptions.MissingInformationException;
 
 public interface AdminRegistration {
-    public AdminAccount createAdminAccount(Form form) throws MissingInformationException, AlreadyExistingAdminException;
-    public void deleteAdminAccount(AdminAccount account);
+    AdminAccount createAdminAccount(Form form) throws MissingInformationException, AlreadyExistingAdminException;
+
+    void deleteAdminAccount(AdminAccount account);
 }

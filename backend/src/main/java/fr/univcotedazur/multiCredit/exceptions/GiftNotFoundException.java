@@ -1,4 +1,4 @@
 package fr.univcotedazur.multiCredit.exceptions;
 
-public class GiftNotFoundException extends Exception{
+public class GiftNotFoundException extends Exception {
 }

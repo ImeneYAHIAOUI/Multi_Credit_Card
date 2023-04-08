@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface ShopkeeperFinder {
 
-     Optional<ShopKeeperAccount>findShopKeeperAccountByName(String name);
+    Optional<ShopKeeperAccount> findShopKeeperAccountByName(String name);
 
-     Optional<ShopKeeperAccount> findShopkeeperAccountById(Long id);
+    Optional<ShopKeeperAccount> findShopkeeperAccountById(Long id);
+
     ShopKeeperAccount findShopkeeperAccountByMail(String mail);
-
 }
 

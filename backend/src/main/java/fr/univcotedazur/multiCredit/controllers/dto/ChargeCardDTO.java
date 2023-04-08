@@ -6,6 +6,12 @@ public class ChargeCardDTO {
     double amount;
     String cardNumber;
 
+    public ChargeCardDTO(long memberId, double amount, String cardNumber) {
+        this.memberId = memberId;
+        this.amount = amount;
+        this.cardNumber = cardNumber;
+    }
+
     public long getMemberId() {
         return memberId;
     }
@@ -27,12 +33,6 @@ public class ChargeCardDTO {
     }
 
     public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public ChargeCardDTO(long memberId, double amount, String cardNumber) {
-        this.memberId = memberId;
-        this.amount = amount;
         this.cardNumber = cardNumber;
     }
 }

@@ -7,19 +7,18 @@ public class TransactionDTO {
 
     private long shop;
 
+    public TransactionDTO(long id, String date, long memberId, long shop) {
+        this.id = id;
+        this.date = date;
+        this.memberAccount = memberId;
+        this.shop = shop;
+    }
 
     public long getShop() {
         return shop;
     }
 
     public void setShop(long shop) {
-        this.shop = shop;
-    }
-
-    public TransactionDTO(long id, String date, long memberId, long shop) {
-        this.id = id;
-        this.date = date;
-        this.memberAccount = memberId;
         this.shop = shop;
     }
 
@@ -46,7 +45,4 @@ public class TransactionDTO {
     public void setDate(String date) {
         this.date = date;
     }
-
-
-
 }

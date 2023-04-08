@@ -10,9 +10,14 @@ public class ParkingDTO {
 
     @NotBlank(message = "car registration number should not be blank")
     private String carRegistrationNumber;
+    private String startTime;
+    private String endTime;
+    private int parkingSpotNumber;
 
-    public void setMail(String mail) {
+    public ParkingDTO(String carRegistrationNumber, String mail, int parkingSpotNumber) {
+        this.carRegistrationNumber = carRegistrationNumber;
         this.mail = mail;
+        this.parkingSpotNumber = parkingSpotNumber;
     }
 
     public int getParkingSpotNumber() {
@@ -22,9 +27,6 @@ public class ParkingDTO {
     public void setParkingSpotNumber(int parkingSpotNumber) {
         this.parkingSpotNumber = parkingSpotNumber;
     }
-
-    private String startTime;
-    private String endTime;
 
     public String getStartTime() {
         return startTime;
@@ -42,27 +44,19 @@ public class ParkingDTO {
         this.endTime = endTime;
     }
 
-    private int parkingSpotNumber;
-
-
-    public ParkingDTO(String carRegistrationNumber, String mail, int parkingSpotNumber) {
-        this.carRegistrationNumber = carRegistrationNumber;
-        this.mail = mail;
-        this.parkingSpotNumber = parkingSpotNumber;
-    }
-
-
-    public String getCarRegistrationNumber()
-    {
+    public String getCarRegistrationNumber() {
         return carRegistrationNumber;
     }
 
-    public void setCarRegistrationNumber(String carRegistrationNumber)
-    {
+    public void setCarRegistrationNumber(String carRegistrationNumber) {
         this.carRegistrationNumber = carRegistrationNumber;
     }
 
     public String getMail() {
         return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }

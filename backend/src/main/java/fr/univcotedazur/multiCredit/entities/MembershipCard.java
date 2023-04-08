@@ -1,8 +1,7 @@
 package fr.univcotedazur.multiCredit.entities;
 
 
-
-import javax.persistence.*;
+import javax.persistence.Embeddable;
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,12 +12,9 @@ public class MembershipCard {
     private LocalDate expirationDate;
 
     public MembershipCard() {
-
     }
 
-
-
-    public MembershipCard( LocalDate creationDate, LocalDate expirationDate) {
+    public MembershipCard(LocalDate creationDate, LocalDate expirationDate) {
         this.number = String.valueOf(ThreadLocalRandom.current().nextInt(100000000, 1000000000));
         this.creationDate = creationDate;
         this.expirationDate = expirationDate;
@@ -31,7 +27,6 @@ public class MembershipCard {
     public void setNumber(String number) {
         this.number = number;
     }
-
 
 
     public LocalDate getCreationDate() {

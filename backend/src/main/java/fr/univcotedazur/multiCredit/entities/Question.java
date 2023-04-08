@@ -1,6 +1,9 @@
 package fr.univcotedazur.multiCredit.entities;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -9,7 +12,6 @@ public class Question {
 
     @NotBlank
     private String title;
-
     @ElementCollection
     private List<String> possibleAnswers;
     @Id
@@ -20,9 +22,10 @@ public class Question {
         this.title = title;
         this.possibleAnswers = possibleAnswers;
     }
-    public Question() {
 
+    public Question() {
     }
+
     public String getTitle() {
         return title;
     }
@@ -39,11 +42,11 @@ public class Question {
         this.possibleAnswers = possibleAnswers;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

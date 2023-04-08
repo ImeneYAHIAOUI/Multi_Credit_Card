@@ -6,5 +6,6 @@ import fr.univcotedazur.multiCredit.exceptions.*;
 
 public interface ShopkeeperRegistration {
     ShopKeeperAccount createShopKeeperAccount(Form form, long shopId) throws ShopNotFoundException,MissingInformationException, AlreadyExistingMemberException, UnderAgeException;
+
     void deleteShopKeeperAccount(Long id)throws ShopKeeperNotFoundException;
 }

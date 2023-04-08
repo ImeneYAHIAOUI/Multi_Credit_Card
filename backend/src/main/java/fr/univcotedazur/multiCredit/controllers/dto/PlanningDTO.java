@@ -9,23 +9,23 @@ public class PlanningDTO {
         return closingHours;
     }
 
+    public void setClosingHours(String closingHours) {
+        this.closingHours = closingHours;
+    }
+
     public String getOpeningHours() {
         return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 
     public String getDayWorking() {
         return dayWorking;
     }
 
-    public void setClosingHours(String closingHours) {
-        this.closingHours = closingHours;
-    }
-
     public void setDayWorking(String dayWorking) {
         this.dayWorking = dayWorking;
-    }
-
-    public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
     }
 }
