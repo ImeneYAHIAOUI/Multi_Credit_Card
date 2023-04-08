@@ -108,6 +108,7 @@ class AdminManagerTest {
     @Test
     void createShopKeeperAccount() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException, ShopNotFoundException, AlreadyExistingShopException {
         Shop shop = shopRegistration.addShop("sephora", "adresse");
+
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2002, 3, 24);
         Form form = new Form("Sacha", "sachatouille@gmail.com", "1234", birthday);
@@ -119,6 +120,7 @@ class AdminManagerTest {
     @Test
     void createShopKeeperAccount1() throws MissingInformationException, AlreadyExistingMemberException, UnderAgeException, AlreadyExistingShopException {
         Shop shop = shopRegistration.addShop("sephora", "adresse");
+
         assertNotNull(shop);
         LocalDate birthday = LocalDate.of(2019, 3, 24);
         Form form = new Form("Sacha", "sachatouille@gmail.com", "1234", birthday);

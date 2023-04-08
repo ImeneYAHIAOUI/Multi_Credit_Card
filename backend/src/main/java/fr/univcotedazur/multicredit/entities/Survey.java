@@ -7,17 +7,12 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@Entity
 public class Survey {
 
-    @NotBlank
     private String sender;
 
-    @OneToMany(targetEntity = Question.class)
     private List<Question> questions;
-    @Id
-    @GeneratedValue
-    private Long id;
+
 
     public Survey(String sender, List<Question> questions) {
         this.sender = sender;
@@ -43,11 +38,4 @@ public class Survey {
         this.sender = sender;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

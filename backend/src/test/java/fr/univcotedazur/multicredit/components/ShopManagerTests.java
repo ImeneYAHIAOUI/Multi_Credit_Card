@@ -32,6 +32,7 @@ class ShopManagerTests {
     GiftRepository giftRepository;
     @Autowired
     ShopRepository shopRepository;
+
     Shop shop;
     Gift gift;
     Gift gift1;

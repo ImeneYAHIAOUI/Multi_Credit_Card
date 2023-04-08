@@ -3,10 +3,7 @@ package fr.univcotedazur.multicredit.cucumber.Transaction;
 import fr.univcotedazur.multicredit.components.TransactionHandler;
 import fr.univcotedazur.multicredit.entities.*;
 import fr.univcotedazur.multicredit.exceptions.*;
-import fr.univcotedazur.multicredit.interfaces.Bank;
-import fr.univcotedazur.multicredit.interfaces.MemberFinder;
-import fr.univcotedazur.multicredit.interfaces.MemberHandler;
-import fr.univcotedazur.multicredit.interfaces.ShopRegistration;
+import fr.univcotedazur.multicredit.interfaces.*;
 import fr.univcotedazur.multicredit.repositories.CatalogRepository;
 import fr.univcotedazur.multicredit.repositories.MemberRepository;
 import io.cucumber.java.en.Given;
@@ -44,6 +41,8 @@ public class EarnsPointsDefs {
     @Autowired
     private ShopRegistration shopRegistration;
     @Autowired
+    private ShopFinder shopFinder;
+    @Autowired
     CatalogRepository catalogRepository;
     String card;
     @Autowired
@@ -60,7 +59,7 @@ public class EarnsPointsDefs {
     @When("the client makes a valid purchase")
     public void the_client_makes_a_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException, AlreadyExistingShopException {
         Product product3=new Product("phone",1.0,20,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue hadi chaker");
+        Shop shop=shopRegistration.addShop("A", "1 rue de la paix");
         product3.setShop(shop);
         catalogRepository.save(product3);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));
@@ -73,10 +72,17 @@ public class EarnsPointsDefs {
        assertEquals(40,memberAccount.getPoints());
     }
     @When("the client makes an invalid purchase")
-    public void the_client_makes_an_invalid_purchase() throws AccountNotFoundException, PaymentException, MissingInformationException, AlreadyExistingShopException {
+    public void the_client_makes_an_invalid_purchase() throws  MissingInformationException, AlreadyExistingShopException {
         assertEquals(0,memberAccount.getPoints());
         Product product3=new Product("phone",1.0,20,0.0);
-        Shop shop=shopRegistration.addShop("A", "1 rue de la sqpaix");
+        Shop shop;
+        try {
+            shop=shopRegistration.addShop("A", "1 rue de la paix");
+        }
+        catch (AlreadyExistingShopException e){
+            shop=shopFinder.findShopByAddress("1 rue de la paix").get(0);
+        }
+
         product3.setShop(shop);
         catalogRepository.save(product3);
         Purchase tran=new Purchase(LocalDate.now(),memberAccount,List.of(new Item(product3,2)));

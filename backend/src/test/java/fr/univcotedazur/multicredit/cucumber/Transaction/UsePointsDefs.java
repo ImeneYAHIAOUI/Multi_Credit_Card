@@ -5,8 +5,12 @@ import fr.univcotedazur.multicredit.entities.*;
 import fr.univcotedazur.multicredit.exceptions.*;
 import fr.univcotedazur.multicredit.interfaces.MemberFinder;
 import fr.univcotedazur.multicredit.interfaces.MemberHandler;
+import fr.univcotedazur.multicredit.interfaces.ShopFinder;
 import fr.univcotedazur.multicredit.interfaces.ShopRegistration;
-import fr.univcotedazur.multicredit.repositories.*;
+import fr.univcotedazur.multicredit.repositories.CatalogRepository;
+import fr.univcotedazur.multicredit.repositories.GiftRepository;
+import fr.univcotedazur.multicredit.repositories.MemberRepository;
+import fr.univcotedazur.multicredit.repositories.TransactionRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -35,6 +39,8 @@ public class UsePointsDefs {
     @Autowired
     private ShopRegistration shopRegistration;
     @Autowired
+    private ShopFinder shopFinder;
+    @Autowired
     MemberFinder memberFinder;
     @Autowired
     TransactionHandler transactionHandler;
@@ -45,9 +51,6 @@ public class UsePointsDefs {
     @Autowired
     GiftRepository giftRepository;
     UsePoints transaction;
-    @Autowired
-    ShopRepository shopRepository;
-
 
     @Autowired
     TransactionRepository transactionRepository;
@@ -61,7 +64,6 @@ public class UsePointsDefs {
             memberHandler.deleteAccount(memberFinder.findByMail("John.Doe@mail.com").get());
             memberAccount = memberHandler.createAccount("John Doe", "John.Doe@mail.com", "password", LocalDate.parse("11/04/2001", formatter));
         }
-        shopRepository.deleteAll();
         memberAccount=memberFinder.findByMail("John.Doe@mail.com").orElse(null);
         Gift gift=new Gift();
         gift.setRequiredStatus(AccountStatus.VFP);
@@ -70,7 +72,12 @@ public class UsePointsDefs {
         transaction.setUsedPoints(100);
         transaction.setGift(gift);
         Product product3=new Product("phone",1.0,0,0.0);
-        Shop shop=shopRegistration.addShop("A", "111 bd de la paaaaaaaaaix");
+        Shop shop;
+        try {
+            shop = shopRegistration.addShop("A", "1 rue de la paix");
+        }catch (AlreadyExistingShopException e){
+            shop=shopFinder.findShopByAddress("1 rue de la paix").get(0);
+        }
         product3.setShop(shop);
         gift.setShop(shop);
         catalogRepository.save(product3);

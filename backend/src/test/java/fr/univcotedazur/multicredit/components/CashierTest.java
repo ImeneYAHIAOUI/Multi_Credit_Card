@@ -34,8 +34,15 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @Transactional
 class CashierTest {
+
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    private Payment cashier;
+
+    @MockBean
+    private Bank bankMock;
     @Autowired
     MemberHandler memberHandler;
     MemberAccount john;
@@ -52,10 +59,7 @@ class CashierTest {
     Purchase purchaseOfJohn;
     Purchase purchaseOfPat;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-    @Autowired
-    private Payment cashier;
-    @MockBean
-    private Bank bankMock;
+
 
     @BeforeEach
     public void setUp() throws Exception {
