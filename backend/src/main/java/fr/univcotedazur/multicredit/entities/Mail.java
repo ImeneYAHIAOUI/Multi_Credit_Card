@@ -5,17 +5,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
-@Entity
 public class Mail {
 
-    @NotBlank
     private String sender;
-    @NotBlank
     private String mailContent;
-    @NotBlank
     private String subject;
-    @Id
-    @GeneratedValue
+
     private Long id;
 
     public Mail(String sender, String mailContent, String subject) {

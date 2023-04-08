@@ -1,5 +1,6 @@
 package fr.univcotedazur.multicredit.cli.commands;
 
+import fr.univcotedazur.multicredit.cli.model.CliQuestion;
 import fr.univcotedazur.multicredit.cli.CliContext;
 import fr.univcotedazur.multicredit.cli.model.*;
 import org.springframework.beans.factory.annotation.Autowired;

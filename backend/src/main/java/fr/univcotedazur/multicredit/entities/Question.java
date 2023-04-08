@@ -7,16 +7,13 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@Entity
 public class Question {
 
-    @NotBlank
     private String title;
-    @ElementCollection
+
     private List<String> possibleAnswers;
-    @Id
-    @GeneratedValue
-    private Long id;
+
+
 
     public Question(String title, List<String> possibleAnswers) {
         this.title = title;
@@ -42,11 +39,5 @@ public class Question {
         this.possibleAnswers = possibleAnswers;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

@@ -1,6 +1,7 @@
 package fr.univcotedazur.multicredit.cli.commands;
 
 import fr.univcotedazur.multicredit.cli.CliContext;
+
 import fr.univcotedazur.multicredit.cli.model.CliPlanning;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -20,7 +21,7 @@ public class ShopCommands {
     @Autowired
     RestTemplate restTemplate;
 
-    public ShopCommands(CliContext cliContext) {
+    public ShopCommands( CliContext cliContext) {
         this.cliContext = cliContext;
     }
 
