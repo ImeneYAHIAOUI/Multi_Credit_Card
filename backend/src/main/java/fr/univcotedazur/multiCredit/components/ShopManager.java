@@ -1,5 +1,6 @@
 package fr.univcotedazur.multiCredit.components;
 
+import fr.univcotedazur.multiCredit.connectors.MailProxy;
 import fr.univcotedazur.multiCredit.entities.*;
 import fr.univcotedazur.multiCredit.interfaces.*;
 import fr.univcotedazur.multiCredit.repositories.*;
@@ -10,8 +11,6 @@ import javax.transaction.Transactional;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 @Transactional
@@ -20,14 +19,18 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     private ShopRepository shopRepository;
     private ShopKeeperAccountRepository shopKeeperAccountRepository;
     private  PlanningRepository planningRepository;
+    private MailSender mailSender;
+    private MemberFinder memberFinder;
 
     @Autowired
     public ShopManager(ShopRepository shopRepository,
                        ShopKeeperAccountRepository shopKeeperAccountRepository,
-                  PlanningRepository  planningRepository){
+                       PlanningRepository  planningRepository, MailSender mailSender, MemberFinder memberFinder){
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
         this.planningRepository=planningRepository;
+        this.mailSender = mailSender;
+        this.memberFinder = memberFinder;
     }
     public Optional<Planning> findPlanningByDay(Shop shop, WeekDay day){
         return shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst();
@@ -65,6 +68,12 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
         if(planning!=null){
             planningRepository.save(planning);
         }
+        List<String> mails = memberFinder.findAll().stream().map(MemberAccount::getMail).toList();
+        List<String> newPlanning = shop.getPlanningList().stream().map(Planning::toString).toList();
+        String strNewPlanning = String.join("/n", newPlanning);
+        Mail mail = new Mail(shop.getName(), "here is the new planning : " + strNewPlanning,shop.getName() + "'s new Planning");
+        mailSender.sendMail(mails,mail);
+
     }
     @Override
     public void modifyName(Shop shop, String name){
@@ -79,6 +88,9 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
             shop.setAddress(address);
             shopRepository.save(shop);
         }
+        List<String> mails = memberFinder.findAll().stream().map(MemberAccount::getMail).toList();
+        Mail mail = new Mail(shop.getName(), "here is the new address : " + shop.getAddress(),shop.getName() + "'s new Address");
+        mailSender.sendMail(mails,mail);
     }
     @Override
     public  Optional<ShopKeeperAccount> findShopkeeperAccountById(Long id) {
