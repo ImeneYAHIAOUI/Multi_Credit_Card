@@ -127,7 +127,8 @@ impl ResponseError for MailError {
             .body(self.to_string())
     }
 
-}#[derive(Debug, Display)]
+}
+#[derive(Debug, Display)]
 pub enum SurveyError {
     MissingSender,
     MissingReceivers,

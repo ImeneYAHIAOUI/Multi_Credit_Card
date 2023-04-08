@@ -32,6 +32,7 @@ done
 
 ./end2endTests/memberTests.sh
 ./end2endTests/parkingTests.sh
+./end2endTests/transactionTests.sh
 
 
 docker-compose down
