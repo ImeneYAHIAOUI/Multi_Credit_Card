@@ -65,11 +65,6 @@ pipeline {
             }
         }
         stage('Code Analysis') {
-            when {
-                not {
-                    branch 'main'
-                }
-            }
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo 'Analyzing Backend:'
@@ -86,10 +81,24 @@ pipeline {
             }
             steps {
                 echo 'Packaging Backend:'
-                sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
+                sh '''
+                    if [ "${BRANCH_NAME}" == "main" ]; then
+                        REPO_ID="artifactoryReleases"
+                    else
+                        REPO_ID="artifactorySnapshots"
+                    fi
+                    mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}
+                '''
 
                 echo 'Packaging CLI:'
-                sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=artifactorySnapshots'
+                sh '''
+                    if [ "${BRANCH_NAME}" == "main" ]; then
+                        REPO_ID="artifactoryReleases"
+                    else
+                        REPO_ID="artifactorySnapshots"
+                    fi
+                    mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}
+                '''
             }
         }
         stage('Deploy') {
