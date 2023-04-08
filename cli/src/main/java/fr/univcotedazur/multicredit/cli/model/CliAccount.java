@@ -1,13 +1,10 @@
 package fr.univcotedazur.multicredit.cli.model;
 
 
-
 // A cli side class being equivalent to the backend AccountDTO, in terms of attributes
 // so that the automatic JSON (de-)/serialization will make the two compatible on each side
 
 public class CliAccount {
-
-
 
     private long id;
     private String name;

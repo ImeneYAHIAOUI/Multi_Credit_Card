@@ -1,19 +1,23 @@
 package fr.univcotedazur.multicredit.cli.model;
 
-public class CliShopKeeper  extends CliAccount{
-    private long ShopId;
-    public   CliShopKeeper(  String name, String mail, String password, String birthDate) {
-        super(  name, mail, password, birthDate);
+public class CliShopKeeper extends CliAccount {
+    private long shopId;
+
+    public CliShopKeeper(String name, String mail, String password, String birthDate) {
+        super(name, mail, password, birthDate);
     }
+
     public long getShopId() {
-        return ShopId;
+        return shopId;
     }
-     public void setShopId(long id){
-        this.ShopId=id;
-     }
+
+    public void setShopId(long id) {
+        this.shopId = id;
+    }
+
     @Override
     public String toString() {
-        return "Shop id : "+ShopId +", name : "+this.getName()+", mail : "+getMail()
-        +", birthDate : "+getBirthDate();
+        return "Shop id : " + shopId + ", name : " + this.getName() + ", mail : " + getMail()
+                + ", birthDate : " + getBirthDate();
     }
 }

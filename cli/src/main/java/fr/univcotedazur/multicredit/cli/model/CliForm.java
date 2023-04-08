@@ -6,15 +6,15 @@ public class CliForm {
     private String password;
     private String birthDate;
 
-    public String getName() {
-        return name;
-    }
-
     public CliForm(String name, String mail, String password, String birthDate) {
         this.name = name;
         this.mail = mail;
         this.password = password;
         this.birthDate = birthDate;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -44,6 +44,4 @@ public class CliForm {
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
-
-
 }

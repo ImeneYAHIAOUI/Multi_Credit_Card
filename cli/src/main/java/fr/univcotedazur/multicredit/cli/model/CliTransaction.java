@@ -20,26 +20,21 @@ public class CliTransaction {
     private String paymentMethod;
 
 
-    public long getShop() {
-        return shop;
-    }
-
-
     @JsonCreator
     public CliTransaction(
-            @JsonProperty("id")long id,
-            @JsonProperty("date")String date,
-            @JsonProperty("memberAccount")long memberAccount,
-            @JsonProperty("shopId")long shop,
+            @JsonProperty("id") long id,
+            @JsonProperty("date") String date,
+            @JsonProperty("memberAccount") long memberAccount,
+            @JsonProperty("shopId") long shop,
             @JsonProperty("earnedPoints") int earnedPoints,
             @JsonProperty("totalPrice") double totalPrice,
             @JsonProperty("creditCardNumber") String creditCardNumber,
             @JsonProperty("items") long[] items,
             @JsonProperty("quantities") int[] quantities,
-            @JsonProperty("pointsUsed")int pointsUsed,
-            @JsonProperty("gift")long gift,
-            @JsonProperty("paymentMethod")String paymentMethod
-            ) {
+            @JsonProperty("pointsUsed") int pointsUsed,
+            @JsonProperty("gift") long gift,
+            @JsonProperty("paymentMethod") String paymentMethod
+    ) {
         this.id = id;
         this.date = date;
         this.memberAccount = memberAccount;
@@ -54,11 +49,14 @@ public class CliTransaction {
         this.paymentMethod = paymentMethod;
     }
 
-    private void setItems(long[] items) {
+
+    public CliTransaction(long memberId, long shop) {
+        this.memberAccount = memberId;
+        this.shop = shop;
     }
 
-    private void setQuantities(int[] quantities) {
-        this.quantities = quantities;
+    public long getShop() {
+        return shop;
     }
 
     public void setShop(long shop) {
@@ -77,7 +75,6 @@ public class CliTransaction {
         return date;
     }
 
-
     public void setDate(String date) {
         this.date = date;
     }
@@ -90,31 +87,22 @@ public class CliTransaction {
         this.memberAccount = memberAccount;
     }
 
-    public CliTransaction( long memberId,long shop) {
-        this.memberAccount = memberId;
-        this.shop = shop;
+    public String toString() {
+        if (earnedPoints > 0) return "purchase{" +
+                "memberId=" + getMemberAccount() +
+                ", shop=" + getShop() +
+                "earnedPoints=" + earnedPoints +
+                ", totalPrice=" + totalPrice +
+                ", creditCardNumber='" + creditCardNumber + '\'' +
+                ", items=" + List.of(items) +
+                ", quantities=" + List.of(quantities) +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                "}\n";
+        else return "usePoints{" +
+                "memberId=" + getMemberAccount() +
+                ", shop=" + getShop() +
+                ", pointsUsed=" + pointsUsed +
+                ", gift=" + gift +
+                "}\n";
     }
-
-    public String toString()
-    {
-        if (earnedPoints > 0)
-            return "purchase{" +
-                    "memberId=" + getMemberAccount() +
-                    ", shop=" + getShop() +
-                    "earnedPoints=" + earnedPoints +
-                    ", totalPrice=" + totalPrice +
-                    ", creditCardNumber='" + creditCardNumber + '\'' +
-                    ", items=" + List.of(items) +
-                    ", quantities=" + List.of(quantities)+
-                    ", paymentMethod='" + paymentMethod + '\'' +
-                    "}\n";
-        else
-            return "usePoints{" +
-                    "memberId=" + getMemberAccount() +
-                    ", shop=" + getShop() +
-                    ", pointsUsed=" + pointsUsed +
-                    ", gift=" + gift +
-                    "}\n";
-    }
-
 }

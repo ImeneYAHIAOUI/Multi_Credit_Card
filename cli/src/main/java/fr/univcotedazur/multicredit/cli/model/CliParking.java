@@ -1,7 +1,6 @@
 package fr.univcotedazur.multicredit.cli.model;
 
 
-
 public class CliParking {
 
     private String carRegistrationNumber;
@@ -60,10 +59,9 @@ public class CliParking {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return
-                "parking {"+
+                "parking {" +
                         "car registration number : " + carRegistrationNumber +
                         ", " +
                         "mail : " + mail +
@@ -72,7 +70,7 @@ public class CliParking {
                         ", " +
                         "starting time : " + startTime +
                         ", " +
-                      "ending time : " + endTime +
+                        "ending time : " + endTime +
                         "}";
     }
 }

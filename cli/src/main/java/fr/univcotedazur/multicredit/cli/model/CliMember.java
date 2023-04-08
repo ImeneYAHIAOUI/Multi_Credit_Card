@@ -1,17 +1,15 @@
 package fr.univcotedazur.multicredit.cli.model;
 
 
-
-public class CliMember extends CliAccount{
-    public CliMember( String name, String mail, String password, String birthDate) {
-        super( name, mail, password, birthDate);
-    }
-
-
-
+public class CliMember extends CliAccount {
     private int points;
     private double balance;
     private String status;
+    private String membershipCardNumber;
+
+    public CliMember(String name, String mail, String password, String birthDate) {
+        super(name, mail, password, birthDate);
+    }
 
     public int getPoints() {
         return points;
@@ -45,21 +43,13 @@ public class CliMember extends CliAccount{
         this.membershipCardNumber = membershipCardNumber;
     }
 
-    private String membershipCardNumber;
-
-
     @Override
     public String toString() {
-        String str = "member { id="+getId()+", name=" + getName() + ", mail=" + getMail() + ", password=" + getPassword() + ", birthDate=" + getBirthDate();
-        if(membershipCardNumber != null){
-            str += ", membershipCardNumber=" + membershipCardNumber+", points=" + points + ", balance=" + balance + ", status=" + status;
+        String str = "member { id=" + getId() + ", name=" + getName() + ", mail=" + getMail() + ", password=" + getPassword() + ", birthDate=" + getBirthDate();
+        if (membershipCardNumber != null) {
+            str += ", membershipCardNumber=" + membershipCardNumber + ", points=" + points + ", balance=" + balance + ", status=" + status;
         }
         str += " }";
         return str;
     }
-
-
-
-
-
 }

@@ -6,16 +6,17 @@ public class CliGift {
 
     private CliShop shop;
 
-    private int pointsNeeded;
-    private String status;
+    private final int pointsNeeded;
+    private final String status;
 
-    private String description;
+    private final String description;
 
-    public CliGift( int pointsNeeded, String description, String status) {
-        this.status=status;
+    public CliGift(int pointsNeeded, String description, String status) {
+        this.status = status;
         this.pointsNeeded = pointsNeeded;
         this.description = description;
     }
+
     public CliShop getShop() {
         return shop;
     }
@@ -24,12 +25,12 @@ public class CliGift {
         return description;
     }
 
-    public void setGiftId(Long giftId) {
-        this.giftId = giftId;
-    }
-
     public Long getGiftId() {
         return giftId;
+    }
+
+    public void setGiftId(Long giftId) {
+        this.giftId = giftId;
     }
 
     public int getPointsNeeded() {
@@ -50,5 +51,4 @@ public class CliGift {
                 ", description='" + description + '\'' +
                 '}';
     }
-
 }

@@ -1,4 +1,5 @@
 package fr.univcotedazur.multicredit.cli.model;
+
 public class CliMail {
     private String sender;
     private String mailContent;
@@ -33,5 +34,4 @@ public class CliMail {
     public void setSender(String sender) {
         this.sender = sender;
     }
-
 }
