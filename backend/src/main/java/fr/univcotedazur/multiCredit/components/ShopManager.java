@@ -88,6 +88,7 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
     public Optional<Shop> findShopById(Long id){
         return shopRepository.findById(id);
     }
+    @Override
     public List<Shop> findShopByAddress(String address){
         return shopRepository.findAll().stream().filter(shop-> shop.getAddress().equals(address)).toList();
     }

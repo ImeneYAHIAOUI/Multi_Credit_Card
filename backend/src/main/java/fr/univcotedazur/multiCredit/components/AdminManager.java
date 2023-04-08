@@ -22,16 +22,19 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
     private final AdminAccountRepository adminAccountRepository;
     private final ShopRepository shopRepository;
     private final ShopKeeperAccountRepository shopKeeperAccountRepository;
-    private final ShopManager shopManager;
+    private final ShopFinder shopFinder;
+    private final ShopkeeperFinder shopKeeperFinder;
+
     private MemberRepository memberRepository;
 
     @Autowired
-    public AdminManager(MailSender mailSender, AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager, MemberRepository memberRepository) {
+    public AdminManager(MailSender mailSender, ShopFinder shopFinder,ShopkeeperFinder shopkeeperFinder,AdminAccountRepository adminAccountRepository, ShopRepository shopRepository, ShopKeeperAccountRepository shopKeeperAccountRepository, ShopManager shopManager, MemberRepository memberRepository) {
         this.mailSender = mailSender;
         this.adminAccountRepository = adminAccountRepository;
         this.shopRepository = shopRepository;
         this.shopKeeperAccountRepository = shopKeeperAccountRepository;
-        this.shopManager = shopManager;
+        this.shopFinder=shopFinder;
+        this.shopKeeperFinder=shopkeeperFinder;
         this.memberRepository = memberRepository;
     }
 
@@ -82,7 +85,7 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         if (name == null || address == null) {
             throw new MissingInformationException();
         }
-        else if(shopManager.findShopByAddress(address).isEmpty()){
+        else if(shopFinder.findShopByAddress(address).isEmpty()){
             Shop shop = new Shop(name, address);
             shopRepository.save(shop);
             return shop;
@@ -93,20 +96,20 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
 
     @Override
     public void removeShop(Long id ) throws  ShopNotFoundException{
-        if(shopManager.findShopById(id).isPresent()){
+        if(shopFinder.findShopById(id).isPresent()){
             shopRepository.deleteById(id);
         }else throw  new ShopNotFoundException();
     }
 
     @Override
     public ShopKeeperAccount createShopKeeperAccount(Form form, long id) throws ShopNotFoundException , MissingInformationException,AlreadyExistingMemberException, UnderAgeException {
-        Optional<Shop> shop=shopManager.findShopById(id);
+        Optional<Shop> shop=shopFinder.findShopById(id);
              if(shop.isEmpty())
                 throw new ShopNotFoundException();
             if (form.getName() == null || form.getMail() == null || form.getPassword() == null || form.getBirthDate() == null) {
                 throw new MissingInformationException();
             }
-            ShopKeeperAccount shopKeeperAccount = shopManager.findShopkeeperAccountByMail(form.getMail());
+            ShopKeeperAccount shopKeeperAccount = shopKeeperFinder.findShopkeeperAccountByMail(form.getMail());
             if(shopKeeperAccount != null ){
                 throw new AlreadyExistingMemberException();
             }
@@ -121,7 +124,7 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
 
         @Override
         public void deleteShopKeeperAccount(Long id)throws ShopKeeperNotFoundException {
-                if(shopManager.findShopkeeperAccountById(id).isPresent())
+                if(shopKeeperFinder.findShopkeeperAccountById(id).isPresent())
                      shopKeeperAccountRepository.deleteById(id);
                 else
                     throw new ShopKeeperNotFoundException();
