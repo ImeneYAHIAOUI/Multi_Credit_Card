@@ -7,7 +7,7 @@ We focus here on several kinds of tests that can be done in the Spring stack. It
 ## Basic Testing: the `Catalog` Component
 
 We focus here on the implementation of a first very simple component that contains the catalog of cookie recipes. The implementation is really straightforward with only two methods, one to list all recipes, the other one to find recipes matching a given string.
-As a result, writing the functiona parts of the tests for the two methods is rather simple (see [CatalogTest](../backend/src/test/java/fr/univcotedazur/multiCredit/components/CatalogTest.java)):
+As a result, writing the functiona parts of the tests for the two methods is rather simple (see [CatalogTest](../backend/src/test/java/fr/univcotedazur/multicredit/components/CatalogTest.java)):
 
 ```java
     @Test
@@ -110,7 +110,7 @@ If one wants to separate integration tests (e.g., in a CI) the following command
 Let's now focus on the implementation of a more complex component, dedicated to handle customer's carts. 
 Some explanations on the `CartHandler` component implementation can be found in the [Business Components](BusinessComponents.md) chapter.
 
-The previously implemented component should ensure the four following properties: (i) the cart of a given customer is empty by default, (ii) adding multiple items results in a cart containing such items, (iii) one can remove cookies from a cart and finally (iii) one can modify the already existing quantity for a given item. Considering a reference on each of two interfaces, `cartModifier` for the `CartModifier` and `cartProcessor`for the `CartProcessor`, it is again quite simple to write some tests to cover the functionalities (see [CartHandlerTest](../backend/src/test/java/fr/univcotedazur/multiCredit/components/CartHandlerTest.java)).
+The previously implemented component should ensure the four following properties: (i) the cart of a given customer is empty by default, (ii) adding multiple items results in a cart containing such items, (iii) one can remove cookies from a cart and finally (iii) one can modify the already existing quantity for a given item. Considering a reference on each of two interfaces, `cartModifier` for the `CartModifier` and `cartProcessor`for the `CartProcessor`, it is again quite simple to write some tests to cover the functionalities (see [CartHandlerTest](../backend/src/test/java/fr/univcotedazur/multicredit/components/CartHandlerTest.java)).
 
 ```java
     @Test
@@ -193,7 +193,7 @@ But wait, we also need to setup a proper environment (note that we are not mocki
 
 In the previous test, the `CartHandler` component was tested through its two provided interfaces, but it has also required interfaces. Actually, the Spring test container was behaving like the normal one, looking for dependencies (`@Autowire`) recursively. So the `Cashier` component was created, injected through its interface `Payment` inside `CartHandler`, and so on for the `BankProxy` created and connected to `Cashier`.
 
-Now let's test the `Cashier`component, which provides the `Payment` interface with a single method `Order payOrder(Customer customer, Set<Item> items) throws PaymentException;`. It looks easy, we should write a test to get the Order if the payment is going well, and another one in case the payment is rejected with the method throwing `PaymentException` (see [CashierTest](../backend/src/test/java/fr/univcotedazur/multiCredit/components/CashierTest.java)).
+Now let's test the `Cashier`component, which provides the `Payment` interface with a single method `Order payOrder(Customer customer, Set<Item> items) throws PaymentException;`. It looks easy, we should write a test to get the Order if the payment is going well, and another one in case the payment is rejected with the method throwing `PaymentException` (see [CashierTest](../backend/src/test/java/fr/univcotedazur/multicredit/components/CashierTest.java)).
 
 ```java
     @Test
@@ -542,7 +542,7 @@ This annotation disables full auto-configuration and only applies configuration 
 
 When the test is run, only the `recipeCommands` component is created. Then in the test code, we use the `expect` method to specify that a GET call to the mocked server on the "/recipes" route should respond with success and with a specified JSON payload. Next, we call `client.recipes()`, the method being tested that makes the REST call, and checks whether the result being transformed in objects is equals to our set of Cookies enum.
 
-Note that this example is in the [RecipeCommandsTest](../cli/src/test/java/fr/univcotedazur/multiCredit/cli/commands/recipeCommandsTest.java) within the *cli* project.
+Note that this example is in the [RecipeCommandsTest](../cli/src/test/java/fr/univcotedazur/multicredit/cli/commands/recipeCommandsTest.java) within the *cli* project.
 
 ```java
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;

@@ -47,7 +47,7 @@ More configuration options are available in a configuration file (and XML file n
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOGS" value="./logs" />
+    <property name="LOGS" value="./logs"/>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
@@ -80,14 +80,14 @@ More configuration options are available in a configuration file (and XML file n
 
     <!-- LOG everything at INFO level -->
     <root level="info">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="Console" />
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Console"/>
     </root>
 
     <!-- LOG TCFS elements at TRACE level -->
-    <logger name="fr.univcotedazur.multiCredit" level="trace" additivity="false">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="Console" />
+    <logger name="fr.univcotedazur.multicredit" level="trace" additivity="false">
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Console"/>
     </logger>
 
 </configuration>
@@ -166,7 +166,7 @@ public class ControllerLogger {
         private static final Logger LOG = LoggerFactory.getLogger(ControllerLogger.class);
         private static final String PREFIX = "TCFS:Rest-Controller:";
 
-        @Pointcut("execution(public * fr.univcotedazur.multiCredit.controllers..*(..))")
+        @Pointcut("execution(public * fr.univcotedazur.multicredit.controllers..*(..))")
         private void allControllerMethods() {} // This enables to attach the pointcut to a method name we can reuse below
 
         @Before("allControllerMethods()")

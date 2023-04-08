@@ -76,13 +76,10 @@ pipeline {
             }
         }
         stage('Package') {
-            when {
-                branch 'main'
-            }
             steps {
                 echo 'Packaging Backend:'
                 sh '''
-                    if [ "${BRANCH_NAME}" == "main" ]; then
+                    if [ ${BRANCH_NAME} == "main" ]; then
                         REPO_ID="artifactoryReleases"
                     else
                         REPO_ID="artifactorySnapshots"
