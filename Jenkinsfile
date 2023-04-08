@@ -83,10 +83,10 @@ pipeline {
                 echo "Packaging to Artifactory... on Repo: ${REPO_ID}"
 
                 echo 'Packaging Backend:'
-                sh 'mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}'
+                sh "mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}"
 
                 echo 'Packaging CLI:'
-                sh 'mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}'
+                sh "mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}"
             }
         }
         stage('Deploy') {
@@ -101,7 +101,7 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    echo '$DOCKER_USERNAME logged in to DockerHub'
+                    echo "$DOCKER_USERNAME logged in to DockerHub"
 
                     echo 'Building Backend Container'
                     sh 'docker build -t sswaz/multicard-backend:latest -f backend/Dockerfile backend'
