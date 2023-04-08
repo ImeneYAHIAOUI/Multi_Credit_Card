@@ -77,6 +77,8 @@ pipeline {
         }
         stage('Package') {
             steps {
+                echo 'BRANCH_NAME: ${BRANCH_NAME} - ${BRANCH_NAME == "main"}'
+
                 echo 'Packaging Backend:'
                 sh '''
                     if [ ${BRANCH_NAME} == "main" ]; then
