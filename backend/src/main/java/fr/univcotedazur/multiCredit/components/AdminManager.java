@@ -37,7 +37,6 @@ public class AdminManager implements ShopRegistration,ShopkeeperRegistration, Ad
         this.shopKeeperFinder=shopkeeperFinder;
         this.memberRepository = memberRepository;
     }
-
     @Override
     public Optional<AdminAccount> findAdminById(Long id) {
         while (adminAccountRepository.findAll().iterator().hasNext()) {
