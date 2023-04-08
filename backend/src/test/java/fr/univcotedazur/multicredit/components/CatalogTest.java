@@ -46,7 +46,7 @@ class CatalogTest {
 
     @BeforeEach
     public void setUp() throws MissingInformationException, AlreadyExistingProductException,
-            AlreadyExistingGiftException, ShopNotFoundException, AlreadyExistingShopException {
+            AlreadyExistingGiftException, AlreadyExistingShopException, ShopNotFoundException {
         shopRepository.deleteAll();
         product = new Product("ring", 1.0, 0, 0.0);
         product1 = new Product("Cookie", 2.0, 0, 0.0);

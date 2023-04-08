@@ -1,9 +1,8 @@
-package fr.univcotedazur.multiCredit.components;
+package fr.univcotedazur.multicredit.components;
 
-import fr.univcotedazur.multiCredit.connectors.MailProxy;
-import fr.univcotedazur.multiCredit.entities.*;
-import fr.univcotedazur.multiCredit.interfaces.*;
-import fr.univcotedazur.multiCredit.repositories.*;
+import fr.univcotedazur.multicredit.entities.*;
+import fr.univcotedazur.multicredit.interfaces.*;
+import fr.univcotedazur.multicredit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,11 +43,11 @@ public class ShopManager implements ShopHandler, ShopFinder, ShopkeeperFinder{
                     planning =new Planning(day,openingHours, closingHours);
                     planning.setShop(shop);
                     shop.addPlanning(planning);
-                 }
+                }
             }
             else{
                 // update existing planning
-                 planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
+                planning = shop.getPlanningList().stream().filter(plan-> plan.getDayWorking().equals(day)).findFirst().get();
                 if(openingHours!=null && closingHours!=null){
                     if( openingHours.isBefore(closingHours)){
                         planning.setOpeningHours(openingHours);
