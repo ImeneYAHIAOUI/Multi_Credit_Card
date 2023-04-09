@@ -65,6 +65,11 @@ pipeline {
             }
         }
         stage('Code Analysis') {
+            when{
+                not {
+                    branch 'main'
+                }
+            }
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo 'Analyzing Backend:'
