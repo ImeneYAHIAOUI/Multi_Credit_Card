@@ -65,7 +65,7 @@ Une fois connecter au VPN de l'Université, il est possible d'accéder aux servi
         <td><strong>Artifactory</strong></td>
         <td><a>http://vmpx06.polytech.unice.fr:8002</a></td>
         <td>admin</td>
-        <td>DevOpsvmpx06</td>
+        <td>DevOps#vmpx06</td>
     </tr>
 </tbody>
 </table>
