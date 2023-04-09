@@ -110,7 +110,14 @@ Nous avons donc opté pour utiliser la connexion SSH où Docker est déjà confi
 
 Nous avons ensuite configuré une Multi-branch déclarative Pipeline qui récupère le code via GitHub avec un Token d’authentification qui est stocké dans le Credential Manager de Jenkins. 
 Dans notre projet, nous avons un fichier : [Jenkinsfile](./../Jenkinsfile) qui permet de décrire les étapes qu’on veut que Jenkins réalise. 
+Nous avons mis en place une stratégie de CI/CD qui se déroule en 6 étapes : 
 
+  1. Build
+  2. Test
+  3. Tests end-to-end
+  4. Code analysis (si on est sur la branche master)
+  5. Package (si on est sur la branche master)
+  6. Deploy (si on est sur la branche master)
 
 ### 3.3. SonarQube
 
