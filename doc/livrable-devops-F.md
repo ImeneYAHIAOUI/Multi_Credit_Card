@@ -10,7 +10,7 @@ ssh teamf@vmpx06.polytech.unice.fr
 docker ps -a
 ```
 
-En fonction de l'état, il faut suivre les instruction du fichier : [README.md](./../config-docker-vm/README.md)
+En fonction de l'état, il faut suivre les instructions du fichier : [README.md](./../config-docker-vm/README.md)
 
 ## 2. Status du livrable ur l'aspect DevOps
     
@@ -26,18 +26,18 @@ Pour permettre d'automatiser le processus d'intégration et de déploiement, fac
 
 #### Artifactory
 
-Pour permettre de stocker et de gérer les artefacts, offrir une réplication et une distribution avancées, fournir des fonctionnalités de sécurité avancées, et permettre de gérer les versions des artefacts.
+Pour permettre de stocker et de gérer les artefacts, offrir une réplication et une distribution avancée, fournir des fonctionnalités de sécurité avancées, et permettre de gérer les versions des artefacts.
 
 
 #### SonarQube
 
-Ce service va être lancer par Jenkins lors de la phase de test. Il va permettre de vérifier la qualité du code.
+Ce service va être lancé par Jenkins lors de la phase de test. Il va permettre de vérifier la qualité du code.
 Pour fournir une analyse approfondie et continue du code, aider à gérer la dette technique, faciliter la collaboration en équipe et permettre de détecter les problèmes de qualité du code dès qu'ils se produisent.
 
 
 ### 2.2. Comment accéder aux services DevOps
 
-Une fois connecter au VPN de l'Université, il est possible d'accéder aux services DevOps en suivant les liens ci-dessous :
+Une fois connecté au VPN de l'Université, il est possible d'accéder aux services DevOps en suivant les liens ci-dessous :
 
 [//]: # (table of links)
 <table>
@@ -83,7 +83,7 @@ Nous avons configuré notre application pour qu'elle tourne dans des conteneurs 
 
 Docker nous a également servi pour configurer et ordonner différents services open-source que nous avons récupérés depuis Docker Hub, ce qui a facilité grandement l'installation de Jenkins, SonarQube et Artifactory. 
 Cette approche nous a permis de résoudre les problèmes de manière isolée en ne touchant que les conteneurs, plutôt que d'impacter toute la machine hôte sur laquelle les services tournent. 
-Ces différents conteneurs sont crée à partir d'un fichier [docker-compose.yml](./../config-docker-vm/docker-compose.yml).
+Ces différents conteneurs sont créés à partir d'un fichier [docker-compose.yml](./../config-docker-vm/docker-compose.yml).
 
 De plus, Docker nous permet de publier des images facilement via Docker Hub. 
 Par ce biais, les images Docker construites de notre projet sont ensuite déployées et peuvent être récupérées par tout le monde via une commande docker search.
@@ -136,4 +136,4 @@ Nous utilisons Artifactory pour centraliser tous nos artefacts, et comme pour So
 Dans notre [pipeline](./../Jenkinsfile), nous appelons artifactory lors de la phase de Package. 
 En fonction de la branche, nous publions sur le Repository Snapshot ou Release. 
 
-Nous ne réalisons pas encore les artefacts publiés sur Artifactory pour créer des images Docker, car l’agent qui s’en occupe à déjà les mêmes artefacts localement, mais il nous suffirait d’une requête cURL avec une authentification pour les récupérer.
+Nous ne réalisons pas encore les artefacts publiés sur Artifactory pour créer des images Docker, car l’agent qui s’en occupe a déjà les mêmes artefacts localement, mais il nous suffirait d’une requête cURL avec une authentification pour les récupérer.
