@@ -166,4 +166,10 @@ docker-compose up -d
 
 ### SonarQube
 
+1. Create a new **SonarQube** admin user
+2. Generate authentication token: *My Account > Security > Generate Token*
+
 ### Artifactory
+
+1. Create a new **Artifactory** admin user
+2. Generate authentication token: *Profile > Security > API Keys*
