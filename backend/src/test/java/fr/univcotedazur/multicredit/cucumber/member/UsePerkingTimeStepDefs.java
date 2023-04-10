@@ -13,13 +13,15 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class UsePerkingTimeStepDefs {
@@ -31,25 +33,22 @@ public class UsePerkingTimeStepDefs {
     MemberAccount memberAccount;
     @Autowired
     ParkingHandler parkingHandler;
-
     @Autowired
     ISWUPLSProxy parkingProxy;
-
-
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
     @Given("a member")
     public void aMember() throws UnderAgeException, MissingInformationException {
-        when(parkingProxy.startParkingTimer(anyString(),anyInt())).thenReturn(true);
+        when(parkingProxy.startParkingTimer(anyString(), anyInt())).thenReturn(true);
         try {
-            memberAccount = memberHandler.createAccount("john doe","john.doe@mail.com","password", LocalDate.parse("11/04/2004", formatter));
+            memberAccount = memberHandler.createAccount("john doe", "john.doe@mail.com", "password", LocalDate.parse("11/04/2004", formatter));
         } catch (AlreadyExistingMemberException e) {
             memberAccount = memberFinder.findByMail("john.doe@mail.com").orElse(null);
         }
     }
 
     @When("the member is a vfp")
-    public void vfpMember() throws AccountNotFoundException
-    {
+    public void vfpMember() throws AccountNotFoundException {
         memberHandler.updateAccountStatus(memberAccount, AccountStatus.VFP);
     }
 
@@ -59,20 +58,17 @@ public class UsePerkingTimeStepDefs {
     }
 
     @And("they want to use parking time")
-    public void AndParkingTime()  {
+    public void AndParkingTime() {
 
     }
 
     @Then("they get a positive response")
-    public void positive()  {
-
-        assertDoesNotThrow(() -> parkingHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null),"123456789",50));
-
+    public void positive() {
+        assertDoesNotThrow(() -> parkingHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null), "123456789", 50));
     }
 
     @Then("they get a negative response")
     public void negative() {
         assertThrows(NotVFPException.class, () -> parkingHandler.useParkingTime(memberFinder.findByMail("john.doe@mail.com").orElse(null), "123456789", 50));
-
     }
 }

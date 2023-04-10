@@ -1,7 +1,8 @@
 package fr.univcotedazur.multicredit.cucumber.Shop;
 
 import fr.univcotedazur.multicredit.components.AdminManager;
-import fr.univcotedazur.multicredit.entities.*;
+import fr.univcotedazur.multicredit.entities.Shop;
+import fr.univcotedazur.multicredit.entities.ShopKeeperAccount;
 import fr.univcotedazur.multicredit.exceptions.AccountNotFoundException;
 import fr.univcotedazur.multicredit.exceptions.AlreadyExistingMemberException;
 import fr.univcotedazur.multicredit.exceptions.MissingInformationException;
@@ -19,9 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @SpringBootTest
 public class CreateShopKeeperAccountDefs {
     ShopKeeperAccount shopKeeperAccount;
@@ -35,12 +33,13 @@ public class CreateShopKeeperAccountDefs {
     @Autowired
     ShopkeeperFinder shopkeeperFinder;
     @Autowired
-    private ShopRegistration shopRegistration;
-    @Autowired
     ShopRepository shopRepository;
     Shop shop;
+    @Autowired
+    private ShopRegistration shopRegistration;
+
     @Given("a shop who wants to create an account")
-    public void aMemberWhoWantsToCreateAnAccount() throws MissingInformationException{
+    public void aMemberWhoWantsToCreateAnAccount() throws MissingInformationException {
         /*shopRepository.deleteAll();
         List<Planning> planning =new ArrayList<>();
         planning.add(new Planning(WeekDay.Friday,LocalTime.of(10,00),LocalTime.of(15,00)));
@@ -61,17 +60,17 @@ public class CreateShopKeeperAccountDefs {
 
     @When("the shop submits the name {string}")
     public void a_member_with_named(String name) {
-       // this.name = name;
+        // this.name = name;
     }
 
     @And("the mail is {string}")
     public void with_mail(String mail) {
-       // this.mail = mail;
+        // this.mail = mail;
     }
 
     @And("the password is {string}")
     public void with_password(String password) {
-       // this.password = password;
+        // this.password = password;
     }
 
     @And("the birth date is {string}")
@@ -92,14 +91,14 @@ public class CreateShopKeeperAccountDefs {
     }
 
     @Then("this shop keeper account is not created because of missing information")
-    public void the_member_does_not_create_an_account2()  {
+    public void the_member_does_not_create_an_account2() {
         /*assertThrows(MissingInformationException.class, () -> adminManager.createShopKeeperAccount(
                 new Form(name,mail,password,birthDate),
                 shop));*/
     }
 
     @Then("this shop keeper account is not created because they are under age")
-    public void the_member_does_not_create_an_account3()  {
+    public void the_member_does_not_create_an_account3() {
         /*assertThrows(UnderAgeException.class, () -> adminManager.createShopKeeperAccount(
                 new Form(name,mail,password,birthDate),
                 shop));*/
@@ -119,7 +118,4 @@ public class CreateShopKeeperAccountDefs {
     public void the_member_does_not_create_an_account() throws AccountNotFoundException {
         //adminManager.deleteShopKeeperAccount(shopKeeperAccount);
     }
-
-
-
 }

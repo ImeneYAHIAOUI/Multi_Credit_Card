@@ -12,8 +12,4 @@ public class AdminCucumberConfig {
     @Autowired
     @SpyBean
     AdminManager adminManager;
-
-
-
-
 }

@@ -65,6 +65,11 @@ pipeline {
             }
         }
         stage('Code Analysis') {
+            when{
+                not {
+                    branch 'main'
+                }
+            }
             steps {
                 withSonarQubeEnv('DevOpsSonarQube') {
                     echo 'Analyzing Backend:'
@@ -76,28 +81,17 @@ pipeline {
             }
         }
         stage('Package') {
+            environment {
+              REPO_ID = "${(GIT_BRANCH.split('/').size() > 1 ? GIT_BRANCH.split('/')[1..-1].join('/') : GIT_BRANCH) == 'main' ? 'artifactoryReleases' : 'artifactorySnapshots'}"
+            }
             steps {
-                echo 'BRANCH_NAME: ${BRANCH_NAME} - ${BRANCH_NAME == "main"}'
+                echo "Packaging to Artifactory... on Repo: ${REPO_ID}"
 
                 echo 'Packaging Backend:'
-                sh '''
-                    if [ ${BRANCH_NAME} == "main" ]; then
-                        REPO_ID="artifactoryReleases"
-                    else
-                        REPO_ID="artifactorySnapshots"
-                    fi
-                    mvn -f backend/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}
-                '''
+                sh "mvn -f backend/pom.xml -s settings.xml deploy -DskipTests -DrepositoryId=${REPO_ID}"
 
                 echo 'Packaging CLI:'
-                sh '''
-                    if [ ${BRANCH_NAME} == "main" ]; then
-                        REPO_ID="artifactoryReleases"
-                    else
-                        REPO_ID="artifactorySnapshots"
-                    fi
-                    mvn -f cli/pom.xml -s settings.xml deploy -Drepo.id=${REPO_ID}
-                '''
+                sh "mvn -f cli/pom.xml -s settings.xml deploy -DskipTests -DrepositoryId=${REPO_ID}"
             }
         }
         stage('Deploy') {
@@ -112,7 +106,7 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHubToken', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    echo '$DOCKER_USERNAME logged in to DockerHub'
+                    echo "$DOCKER_USERNAME logged in to DockerHub"
 
                     echo 'Building Backend Container'
                     sh 'docker build -t sswaz/multicard-backend:latest -f backend/Dockerfile backend'
